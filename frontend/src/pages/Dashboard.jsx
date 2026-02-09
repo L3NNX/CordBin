@@ -1,5 +1,4 @@
 import { useState, useEffect } from "react";
-import axios from "axios";
 import { toast } from "sonner";
 import MainLayout from "../components/layout/MainLayout";
 import FileUploadZone from "../components/files/FileUploadZone";
@@ -17,8 +16,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "../components/ui/dialog";
-
-
+import { fileService } from "../services/api";
 
 const Dashboard = () => {
   const [files, setFiles] = useState([]);
@@ -26,8 +24,6 @@ const Dashboard = () => {
   const [currentFolder, setCurrentFolder] = useState(null);
   const [viewMode, setViewMode] = useState("grid");
   const [searchQuery, setSearchQuery] = useState("");
-  const [sortBy, setSortBy] = useState("uploadedAt");
-  const [sortOrder, setSortOrder] = useState("desc");
   const [showUploadDialog, setShowUploadDialog] = useState(false);
   const [showNewFolderDialog, setShowNewFolderDialog] = useState(false);
   const [newFolderName, setNewFolderName] = useState("");
@@ -40,91 +36,52 @@ const Dashboard = () => {
   useEffect(() => {
     loadFiles();
     loadFolders();
-  }, [currentFolder, searchQuery, sortBy, sortOrder]);
-
-  // const loadFiles = async () => {
-  //   try {
-  //     setLoading(true);
-  //     const params = new URLSearchParams();
-  //     if (currentFolder) params.append("folderId", currentFolder);
-  //     if (searchQuery) params.append("search", searchQuery);
-  //     params.append("sortBy", sortBy);
-  //     params.append("sortOrder", sortOrder);
-
-  //     const response = await axios.get(`${API}/files?${params}`);
-  //     setFiles(response.data);
-  //   } catch (error) {
-  //     console.error("Error loading files:", error);
-  //     toast.error("Failed to load files");
-  //   } finally {
-  //     setLoading(false);
-  //   }
-  // };
-
-  // const loadFolders = async () => {
-  //   try {
-  //     const params = new URLSearchParams();
-  //     if (currentFolder) params.append("parentId", currentFolder);
-
-  //     const response = await axios.get(`${API}/folders?${params}`);
-  //     setFolders(response.data);
-  //   } catch (error) {
-  //     console.error("Error loading folders:", error);
-  //   }
-  // };
-
+  }, [currentFolder, searchQuery]);
 
   const loadFiles = async () => {
-  try {
-    setLoading(true);
-    // Mock data for development
-    const mockFiles = [
-      {
-        id: "1",
-        name: "example-document.pdf",
-        type: "application/pdf",
-        size: 2048576,
-        uploadedAt: new Date().toISOString(),
-        thumbnailId: null,
-      },
-      {
-        id: "2",
-        name: "vacation-photo.jpg",
-        type: "image/jpeg",
-        size: 1536000,
-        uploadedAt: new Date().toISOString(),
-        thumbnailId: "thumb-2",
-      },
-    ];
-    setFiles(mockFiles);
-  } catch (error) {
-    console.error("Error loading files:", error);
-    toast.error("Failed to load files");
-  } finally {
-    setLoading(false);
-  }
-};
+    try {
+      setLoading(true);
+      const response = await fileService.listFiles();
+      
+      // Transform backend data to match frontend structure
+      const transformedFiles = response.files.map(file => ({
+        id: file._id,
+        name: file.fileName,
+        type: file.fileType,
+        size: file.fileSize,
+        uploadedAt: file.uploadDate,
+        thumbnailId: file.thumbnail || null,
+      }));
+      
+      setFiles(transformedFiles);
+    } catch (error) {
+      console.error("Error loading files:", error);
+      toast.error("Failed to load files");
+    } finally {
+      setLoading(false);
+    }
+  };
 
-const loadFolders = async () => {
-  try {
-    // Mock data for development
-    const mockFolders = [
-      {
-        id: "folder-1",
-        name: "Documents",
-        fileCount: 5,
-      },
-      {
-        id: "folder-2",
-        name: "Photos",
-        fileCount: 12,
-      },
-    ];
-    setFolders(mockFolders);
-  } catch (error) {
-    console.error("Error loading folders:", error);
-  }
-};
+  const loadFolders = async () => {
+    try {
+      // Mock data for development - folders not yet implemented in backend
+      const mockFolders = [
+        {
+          id: "folder-1",
+          name: "Documents",
+          fileCount: 5,
+        },
+        {
+          id: "folder-2",
+          name: "Photos",
+          fileCount: 12,
+        },
+      ];
+      setFolders(mockFolders);
+    } catch (error) {
+      console.error("Error loading folders:", error);
+    }
+  };
 
   const handleUploadComplete = () => {
     loadFiles();
@@ -136,10 +93,11 @@ const loadFolders = async () => {
     if (!newFolderName.trim()) return;
 
     try {
-      await axios.post(`/folders`, {
-        name: newFolderName,
-        parentId: currentFolder,
-      });
+      // TODO: Implement folder creation API
+      // await axios.post(`/folders`, {
+      //   name: newFolderName,
+      //   parentId: currentFolder,
+      // });
       setNewFolderName("");
       setShowNewFolderDialog(false);
       loadFolders();
@@ -152,7 +110,7 @@ const loadFolders = async () => {
 
   const handleDeleteFile = async (fileId) => {
     try {
-      await axios.delete(`/files/${fileId}`);
+      await fileService.deleteFile([fileId]);
       loadFiles();
       toast.success("File deleted");
     } catch (error) {
@@ -161,9 +119,9 @@ const loadFolders = async () => {
     }
   };
 
-  const handleDeleteFolder = async (folderId) => {
+  const handleDeleteFolder = async () => {
     try {
-      await axios.delete(`/folders/${folderId}`);
+      // TODO: Implement folder deletion API
       loadFolders();
       toast.success("Folder deleted");
     } catch (error) {
@@ -184,16 +142,19 @@ const loadFolders = async () => {
 
   const handleDownload = async (file) => {
     try {
-      const response = await axios.get(`/files/${file.id}/download`, {
-        responseType: "blob",
-      });
-      const url = window.URL.createObjectURL(new Blob([response.data]));
+      const response = await fileService.downloadFile(file.id);
+      
+      // Create blob and download
+      const blob = new Blob([response.data]);
+      const url = window.URL.createObjectURL(blob);
       const link = document.createElement("a");
       link.href = url;
       link.setAttribute("download", file.name);
       document.body.appendChild(link);
       link.click();
       link.remove();
+      window.URL.revokeObjectURL(url);
+      
       toast.success("Download started");
     } catch (error) {
       console.error("Error downloading file:", error);
