@@ -1,21 +1,34 @@
-// API Configuration
+// config/api.jsx
+import axios from "axios";
+
 export const API_CONFIG = {
-  BASE_URL: 'http://localhost:3000',
+  BASE_URL: import.meta.env.VITE_API_URL || "http://localhost:3000",
   ENDPOINTS: {
-    // Auth endpoints
-    AUTH_GOOGLE_REDIRECT: '/api/auth/google/redirect',
-    AUTH_GOOGLE_CALLBACK: '/api/auth/google/callback',
-    AUTH_VERIFY: '/api/auth/verify',
-    AUTH_LOGOUT: '/api/auth/logout',
-    
-    // File endpoints
-    FILE_UPLOAD_INIT: '/api/files/upload/init',
-    FILE_UPLOAD_CHUNK: '/api/files/upload/chunk',
-    FILE_DOWNLOAD: '/api/files/download',
-    FILE_LIST: '/api/files/list',
-    FILE_DELETE: '/api/files/delete',
-    FILE_DATA: '/api/files/filedata',
-  }
+    AUTH_GOOGLE_REDIRECT: "/api/auth/google/redirect",
+    AUTH_GOOGLE_CALLBACK: "/api/auth/google/callback",
+    AUTH_VERIFY: "/api/auth/verify",
+    AUTH_LOGOUT: "/api/auth/logout",
+
+    FILE_UPLOAD_INIT: "/api/files/upload/init",
+    FILE_UPLOAD_CHUNK: "/api/files/upload/chunk",
+    FILE_LIST: "/api/files/list",
+    FILE_DELETE: "/api/files/delete",
+    FILE_DATA: "/api/files/filedata",
+  },
 };
 
-export default API_CONFIG;
+// ✅ Axios instance (THIS is what has .get / .post)
+const api = axios.create({
+  baseURL: API_CONFIG.BASE_URL,
+});
+
+// Attach JWT automatically
+api.interceptors.request.use((config) => {
+  const token = localStorage.getItem("accessToken");
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`;
+  }
+  return config;
+});
+
+export default api;

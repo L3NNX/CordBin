@@ -2,10 +2,13 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Cloud } from 'lucide-react';
-
+import { useAuth } from "../../hooks/useAuth";
+import { API_CONFIG } from '../../config/api';
 const Navbar = () => {
   const navigate = useNavigate();
+  const { user, loading } = useAuth();
 
+  if (loading) return null; // or skeleton
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 backdrop-blur-xl bg-white/80 border-b border-slate-100">
       <div className="container mx-auto px-6">
@@ -16,7 +19,7 @@ const Navbar = () => {
             </div>
             <span className="text-xl font-black tracking-tight text-slate-900">Vaultly</span>
           </div>
-          
+
           <div className="hidden md:flex items-center gap-10">
             <a href="#features" className="text-sm font-semibold text-slate-500 hover:text-slate-900 transition-colors">
               Features
@@ -28,22 +31,39 @@ const Navbar = () => {
               FAQ
             </a>
           </div>
-          
+
           <div className="flex items-center gap-3">
-            <button
-              onClick={() => navigate('/dashboard')}
-              className="text-sm font-bold text-slate-900 px-5 py-2.5 rounded-xl hover:bg-slate-100 transition-colors"
-              data-testid="login-btn"
-            >
-              Sign In
-            </button>
-            <button
-              onClick={() => navigate('/dashboard')}
-              className="text-sm font-bold text-white bg-slate-900 px-6 py-2.5 rounded-xl hover:bg-indigo-600 transition-all shadow-lg shadow-slate-200"
-              data-testid="get-started-nav-btn"
-            >
-              Get Started
-            </button>
+            {!user ? (
+              <>
+                <button
+                  onClick={() => {
+                    window.location.href =
+                      `${API_CONFIG.BASE_URL}${API_CONFIG.ENDPOINTS.AUTH_GOOGLE_REDIRECT}`;
+                  }}
+                  className="text-sm font-bold text-slate-900 px-5 py-2.5 rounded-xl hover:bg-slate-100 transition-colors"
+                  data-testid="login-btn"
+                >
+                  Sign In
+                </button>
+                <button
+                  onClick={() => {
+                    window.location.href =
+                      `${API_CONFIG.BASE_URL}${API_CONFIG.ENDPOINTS.AUTH_GOOGLE_REDIRECT}`;
+                  }}
+                  className="text-sm font-bold text-white bg-slate-900 px-6 py-2.5 rounded-xl hover:bg-indigo-600 transition-all shadow-lg shadow-slate-200"
+                  data-testid="get-started-nav-btn"
+                >
+                  Get Started
+                </button>
+              </>
+            ) : (
+              <button
+                onClick={() => navigate("/dashboard")}
+                className="text-sm font-bold text-white bg-indigo-600 px-6 py-2.5 rounded-xl"
+              >
+                Dashboard
+              </button>
+            )}
           </div>
         </div>
       </div>

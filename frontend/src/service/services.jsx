@@ -1,14 +1,5 @@
-import axios from 'axios';
-import API_CONFIG from '../config/api';
-
-// Create axios instance with base configuration
-const apiClient = axios.create({
-  baseURL: API_CONFIG.BASE_URL,
-  withCredentials: true, // Important for cookie-based authentication
-  headers: {
-    'Content-Type': 'application/json',
-  }
-});
+// import axios from 'axios';
+import apiClient, { API_CONFIG } from '../config/api';
 
 // Auth Services
 export const authService = {

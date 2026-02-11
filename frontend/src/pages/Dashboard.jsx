@@ -16,7 +16,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "../components/ui/dialog";
-import { fileService } from "../services/api";
+import { fileService } from "../service/services";
 
 const Dashboard = () => {
   const [files, setFiles] = useState([]);
@@ -284,7 +284,7 @@ const Dashboard = () => {
 
       {/* Upload Dialog */}
       <Dialog open={showUploadDialog} onOpenChange={setShowUploadDialog}>
-        <DialogContent className="max-w-2xl" data-testid="upload-dialog">
+        <DialogContent  data-testid="upload-dialog">
           <DialogHeader>
             <DialogTitle>Upload Files</DialogTitle>
           </DialogHeader>
