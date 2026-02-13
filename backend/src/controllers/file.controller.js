@@ -278,6 +278,25 @@ const streamFileFromDiscord = async (metaData, res) => {
   }
 };
 
+export const previewFile = async (req, res) => {
+  const { fileId } = req.params;
+
+  const metaData = await metaDataModel.findById(fileId);
+  if (!metaData) {
+    return res.status(404).json({ message: "File not found" });
+  }
+
+  // IMPORTANT: inline, not attachment
+  res.setHeader("Content-Type", metaData.fileType);
+  res.setHeader(
+    "Content-Disposition",
+    `inline; filename="${metaData.fileName}"`
+  );
+
+  await streamFileFromDiscord(metaData, res);
+};
+
+
 export const listALlFiles = async (req, res) => {
   try {
     const userId = req.userId;

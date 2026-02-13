@@ -5,10 +5,13 @@ import { Download, Share2, X } from "lucide-react";
 
 
 const FilePreviewModal = ({ file, open, onClose, onDownload, onShare }) => {
-  const isImage = file.type.startsWith("image/");
-  const isPDF = file.type === "application/pdf";
-  const isVideo = file.type.startsWith("video/");
-  const isText = file.type.startsWith("text/");
+const ext = file.name.split(".").pop()?.toLowerCase();
+
+const isImage = ["jpg", "jpeg", "png", "gif", "webp"].includes(ext);
+const isPDF = ext === "pdf";
+const isVideo = ["mp4", "webm", "mov"].includes(ext);
+const isText = ["txt", "md", "json"].includes(ext);
+const previewUrl = `${import.meta.env.VITE_API_URL}/api/files/preview/${file.id}`;
 
   const formatFileSize = (bytes) => {
     if (bytes < 1024) return bytes + " B";
@@ -49,7 +52,7 @@ const FilePreviewModal = ({ file, open, onClose, onDownload, onShare }) => {
               <Download className="h-4 w-4" />
             </Button>
             <Button
-              variant="ghost"
+              variant="outline"
               size="icon"
               onClick={onClose}
               className="rounded-full"
@@ -64,7 +67,7 @@ const FilePreviewModal = ({ file, open, onClose, onDownload, onShare }) => {
         <div className="rounded-lg overflow-hidden bg-muted/30">
           {isImage && (
             <img
-              src={`/files/${file.id}/preview`}
+             src={previewUrl}
               alt={file.name}
               className="w-full h-auto max-h-[70vh] object-contain"
               data-testid="preview-image"
@@ -73,7 +76,7 @@ const FilePreviewModal = ({ file, open, onClose, onDownload, onShare }) => {
 
           {isPDF && (
             <iframe
-              src={`/files/${file.id}/preview`}
+              src={previewUrl}
               className="w-full h-[70vh]"
               title={file.name}
               data-testid="preview-pdf"
@@ -86,14 +89,14 @@ const FilePreviewModal = ({ file, open, onClose, onDownload, onShare }) => {
               className="w-full max-h-[70vh]"
               data-testid="preview-video"
             >
-              <source src={`/files/${file.id}/preview`} type={file.type} />
+              <source src={previewUrl} type={file.type} />
               Your browser does not support the video tag.
             </video>
           )}
 
           {isText && (
             <iframe
-              src={`/files/${file.id}/preview`}
+              src={previewUrl}
               className="w-full h-[70vh]"
               title={file.name}
               data-testid="preview-text"

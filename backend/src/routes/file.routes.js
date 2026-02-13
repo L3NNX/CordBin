@@ -7,6 +7,7 @@ import {
   listALlFiles,
   fileDelete,
   fileDetails,
+  previewFile,
 } from "../controllers/file.controller.js";
 import { verifyJWT } from "../middleware/verifyJWT.js";
 
@@ -18,6 +19,7 @@ router.post("/upload/chunk", upload.single("chunk"), uploadChunk);
 router.get("/download/:fileId", downloadFile);
 router.get("/list",verifyJWT, listALlFiles);
 // router.get("/list", listALlFiles);
+router.get("/preview/:fileId", previewFile);
 router.delete("/delete",verifyJWT, fileDelete);
 // router.delete("/delete", fileDelete);
 router.post("/filedata", fileDetails);
