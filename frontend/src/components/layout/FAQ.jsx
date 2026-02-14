@@ -1,7 +1,6 @@
-// components/FAQ.tsx
 import React, { useState } from 'react';
 import { ChevronDown } from 'lucide-react';
-
+import { cn } from '../../lib/utils';
 
 const faqs = [
   {
@@ -34,50 +33,76 @@ const FAQ = () => {
   const [openIndex, setOpenIndex] = useState(null);
 
   return (
-    <section id="faq" className="py-32 bg-slate-50/50" data-testid="faq-section">
-      <div className="container mx-auto px-6">
-        <div className="max-w-3xl mx-auto text-center mb-20">
-          <h2 className="text-4xl md:text-6xl font-[900] tracking-tighter text-slate-900 mb-6" data-testid="faq-title">
-            Frequently asked questions
+    <section id="faq" className="py-28 md:py-36 bg-muted/50" data-testid="faq-section">
+      <div className="container mx-auto max-w-6xl px-6">
+        {/* Section header */}
+        <div className="mx-auto mb-16 max-w-3xl text-center md:mb-20">
+          <div className="mb-6 inline-flex items-center gap-2.5 rounded-full border border-accent/20 bg-accent/5 px-5 py-2">
+            <span className="h-2 w-2 rounded-full bg-accent animate-pulse-dot" />
+            <span className="font-mono text-[11px] uppercase tracking-[0.15em] text-accent">
+              Support
+            </span>
+          </div>
+
+          <h2
+            className="font-display text-3xl tracking-tight text-foreground sm:text-4xl md:text-[3.25rem] md:leading-[1.15]"
+            data-testid="faq-title"
+          >
+            Frequently asked{' '}
+            <span className="gradient-text">questions</span>
           </h2>
-          <p className="text-lg text-slate-500 font-medium" data-testid="faq-description">
-            Everything you need to know about FileVault Pro
+
+          <p className="mt-5 text-base text-muted-foreground sm:text-lg" data-testid="faq-description">
+            Everything you need to know about StashBox
           </p>
         </div>
-        
-        <div className="max-w-3xl mx-auto space-y-4">
-          {faqs.map((faq, index) => (
-            <div
-              key={index}
-              className={`bg-white rounded-2xl border transition-all duration-300 overflow-hidden ${
-                openIndex === index 
-                  ? 'border-indigo-200 shadow-lg shadow-indigo-50' 
-                  : 'border-slate-100 hover:border-slate-200'
-              }`}
-              data-testid={`faq-item-${index}`}
-            >
-              <button
-                onClick={() => setOpenIndex(openIndex === index ? null : index)}
-                className="w-full p-6 text-left flex items-center justify-between gap-4"
-              >
-                <h3 className="text-lg font-bold text-slate-900">{faq.question}</h3>
-                <ChevronDown
-                  className={`h-5 w-5 text-slate-400 flex-shrink-0 transition-transform duration-300 ${
-                    openIndex === index ? 'rotate-180 text-indigo-600' : ''
-                  }`}
-                />
-              </button>
+
+        {/* FAQ items */}
+        <div className="mx-auto max-w-3xl space-y-3">
+          {faqs.map((faq, index) => {
+            const isOpen = openIndex === index;
+
+            return (
               <div
-                className={`overflow-hidden transition-all duration-300 ${
-                  openIndex === index ? 'max-h-96' : 'max-h-0'
-                }`}
+                key={index}
+                className={cn(
+                  "rounded-xl border bg-card overflow-hidden transition-all duration-300",
+                  isOpen
+                    ? "border-accent/25 shadow-lg shadow-accent/5"
+                    : "border-border hover:border-border/80"
+                )}
+                data-testid={`faq-item-${index}`}
               >
-                <p className="px-6 pb-6 text-slate-500 leading-relaxed">
-                  {faq.answer}
-                </p>
+                <button
+                  onClick={() => setOpenIndex(isOpen ? null : index)}
+                  className="flex w-full items-center justify-between gap-4 p-5 text-left sm:p-6"
+                >
+                  <h3 className="text-base font-semibold text-foreground sm:text-lg">
+                    {faq.question}
+                  </h3>
+                  <ChevronDown
+                    className={cn(
+                      "h-5 w-5 shrink-0 transition-all duration-300",
+                      isOpen
+                        ? "rotate-180 text-accent"
+                        : "text-muted-foreground"
+                    )}
+                  />
+                </button>
+
+                <div
+                  className={cn(
+                    "overflow-hidden transition-all duration-300",
+                    isOpen ? "max-h-96" : "max-h-0"
+                  )}
+                >
+                  <p className="px-5 pb-5 leading-relaxed text-muted-foreground sm:px-6 sm:pb-6">
+                    {faq.answer}
+                  </p>
+                </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       </div>
     </section>
