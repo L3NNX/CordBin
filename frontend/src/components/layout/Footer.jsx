@@ -1,106 +1,79 @@
 import React from 'react';
 import { HardDrive } from 'lucide-react';
 
+const footerLinks = [
+  {
+    title: 'Product',
+    links: [
+      { label: 'Features', href: '#features' },
+      { label: 'Pricing', href: '#pricing' },
+      { label: 'FAQ', href: '#faq' },
+      { label: 'Security', href: '#' },
+    ],
+  },
+  {
+    title: 'Company',
+    links: [
+      { label: 'About', href: '#' },
+      { label: 'Blog', href: '#' },
+      { label: 'Careers', href: '#' },
+      { label: 'Contact', href: '#' },
+    ],
+  },
+  {
+    title: 'Legal',
+    links: [
+      { label: 'Privacy Policy', href: '#' },
+      { label: 'Terms of Service', href: '#' },
+      { label: 'Cookie Policy', href: '#' },
+    ],
+  },
+];
+
 const Footer = () => {
   return (
-    <footer className="border-t border-border bg-background" data-testid="footer">
-      <div className="max-w-6xl mx-auto px-6 py-16 lg:py-24">
-        {/* Footer Content Grid */}
-        <div className="grid md:grid-cols-4 gap-12 mb-12">
-          {/* Brand Column */}
+    <footer className="border-t border-border/60 bg-card" data-testid="footer">
+      <div className="container mx-auto max-w-6xl px-6 py-16 lg:py-24">
+        <div className="mb-12 grid gap-12 md:grid-cols-4">
+          {/* Brand */}
           <div>
-            <div className="flex items-center gap-3 mb-6">
-              <div className="w-10 h-10 bg-gradient-to-br from-[#0052FF] to-[#4D7CFF] rounded-xl flex items-center justify-center shadow-lg shadow-[#0052FF]/20">
-                <HardDrive className="h-5 w-5 text-white" strokeWidth={2} />
+            <a href="/" className="mb-6 flex items-center gap-3">
+              <div className="grid h-9 w-9 place-items-center rounded-xl gradient-accent shadow-accent-sm">
+                <HardDrive className="h-4 w-4 text-accent-foreground" />
               </div>
-              <span className="text-xl font-bold tracking-tight text-foreground">StashBox</span>
-            </div>
-            <p className="text-sm text-muted-foreground leading-relaxed max-w-xs">
+              <span className="font-display text-lg text-foreground">StashBox</span>
+            </a>
+            <p className="max-w-xs text-sm leading-relaxed text-muted-foreground">
               Secure file storage and sharing for everyone. Built with privacy and simplicity in mind.
             </p>
           </div>
 
-          {/* Product Links */}
-          <div>
-            <h3 className="font-semibold text-foreground mb-6 text-sm uppercase tracking-wider">Product</h3>
-            <ul className="space-y-4 text-sm text-muted-foreground">
-              <li>
-                <a href="#features" className="hover:text-[#0052FF] transition-colors">
-                  Features
-                </a>
-              </li>
-              <li>
-                <a href="#pricing" className="hover:text-[#0052FF] transition-colors">
-                  Pricing
-                </a>
-              </li>
-              <li>
-                <a href="#faq" className="hover:text-[#0052FF] transition-colors">
-                  FAQ
-                </a>
-              </li>
-              <li>
-                <a href="#" className="hover:text-[#0052FF] transition-colors">
-                  Security
-                </a>
-              </li>
-            </ul>
-          </div>
-
-          {/* Company Links */}
-          <div>
-            <h3 className="font-semibold text-foreground mb-6 text-sm uppercase tracking-wider">Company</h3>
-            <ul className="space-y-4 text-sm text-muted-foreground">
-              <li>
-                <a href="#" className="hover:text-[#0052FF] transition-colors">
-                  About
-                </a>
-              </li>
-              <li>
-                <a href="#" className="hover:text-[#0052FF] transition-colors">
-                  Blog
-                </a>
-              </li>
-              <li>
-                <a href="#" className="hover:text-[#0052FF] transition-colors">
-                  Careers
-                </a>
-              </li>
-              <li>
-                <a href="#" className="hover:text-[#0052FF] transition-colors">
-                  Contact
-                </a>
-              </li>
-            </ul>
-          </div>
-
-          {/* Legal Links */}
-          <div>
-            <h3 className="font-semibold text-foreground mb-6 text-sm uppercase tracking-wider">Legal</h3>
-            <ul className="space-y-4 text-sm text-muted-foreground">
-              <li>
-                <a href="#" className="hover:text-[#0052FF] transition-colors">
-                  Privacy Policy
-                </a>
-              </li>
-              <li>
-                <a href="#" className="hover:text-[#0052FF] transition-colors">
-                  Terms of Service
-                </a>
-              </li>
-              <li>
-                <a href="#" className="hover:text-[#0052FF] transition-colors">
-                  Cookie Policy
-                </a>
-              </li>
-            </ul>
-          </div>
+          {/* Link columns */}
+          {footerLinks.map((group) => (
+            <div key={group.title}>
+              <h3 className="mb-5 font-mono text-[11px] uppercase tracking-[0.12em] text-muted-foreground/50">
+                {group.title}
+              </h3>
+              <ul className="space-y-3.5">
+                {group.links.map((link) => (
+                  <li key={link.label}>
+                    <a
+                      href={link.href}
+                      className="text-sm text-muted-foreground transition-colors duration-150 hover:text-accent"
+                    >
+                      {link.label}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))}
         </div>
 
-        {/* Footer Divider & Copyright */}
-        <div className="border-t border-border pt-8 text-center">
-          <p className="text-sm text-muted-foreground">
-            © 2025 StashBox. All rights reserved.
+        {/* Bottom bar */}
+        <div className="border-t border-border/60 pt-8 text-center">
+          <p className="text-sm text-muted-foreground/60">
+            © {new Date().getFullYear()} StashBox. All rights reserved.
           </p>
         </div>
       </div>
