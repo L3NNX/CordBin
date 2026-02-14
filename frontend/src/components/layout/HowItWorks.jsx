@@ -71,7 +71,7 @@ const HowItWorks = () => {
 
                   {/* Arrow connector between steps — desktop only */}
                   {index < steps.length - 1 && (
-                    <div className="absolute -right-[calc(50%+1rem)] top-1/2 hidden -translate-y-1/2 md:block">
+                    <div className="absolute -right-4/2 top-1/2 hidden -translate-y-1/4 md:block">
                       <div className="grid h-7 w-7 place-items-center rounded-full gradient-accent shadow-accent-sm">
                         <ArrowRight size={14} className="text-accent-foreground" />
                       </div>
