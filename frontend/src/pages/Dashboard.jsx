@@ -9,7 +9,7 @@ import ShareModal from "../components/files/ShareModal";
 import StorageDashboard from "../components/dashboard/StorageDashboard";
 import { Button } from "../components/ui/button";
 import { Input } from "../components/ui/input";
-import { Grid, List, Upload, Search, Plus } from "lucide-react";
+import { Grid, List, Upload, Search, Plus, FolderPlus } from "lucide-react";
 import {
   Dialog,
   DialogContent,
@@ -17,6 +17,7 @@ import {
   DialogTitle,
 } from "../components/ui/dialog";
 import { fileService } from "../service/services";
+import { cn } from "../lib/utils";
 
 const Dashboard = () => {
   const [files, setFiles] = useState([]);
@@ -42,9 +43,7 @@ const Dashboard = () => {
     try {
       setLoading(true);
       const response = await fileService.listFiles();
-      
-      // Transform backend data to match frontend structure
-      const transformedFiles = response.files.map(file => ({
+      const transformedFiles = response.files.map((file) => ({
         id: file._id,
         name: file.fileName,
         type: file.fileType,
@@ -52,7 +51,6 @@ const Dashboard = () => {
         uploadedAt: file.uploadDate,
         thumbnailId: file.thumbnail || null,
       }));
-      
       setFiles(transformedFiles);
     } catch (error) {
       console.error("Error loading files:", error);
@@ -64,18 +62,9 @@ const Dashboard = () => {
 
   const loadFolders = async () => {
     try {
-      // Mock data for development - folders not yet implemented in backend
       const mockFolders = [
-        {
-          id: "folder-1",
-          name: "Documents",
-          fileCount: 5,
-        },
-        {
-          id: "folder-2",
-          name: "Photos",
-          fileCount: 12,
-        },
+        { id: "folder-1", name: "Documents", fileCount: 5 },
+        { id: "folder-2", name: "Photos", fileCount: 12 },
       ];
       setFolders(mockFolders);
     } catch (error) {
@@ -91,13 +80,7 @@ const Dashboard = () => {
 
   const handleCreateFolder = async () => {
     if (!newFolderName.trim()) return;
-
     try {
-      // TODO: Implement folder creation API
-      // await axios.post(`/folders`, {
-      //   name: newFolderName,
-      //   parentId: currentFolder,
-      // });
       setNewFolderName("");
       setShowNewFolderDialog(false);
       loadFolders();
@@ -121,7 +104,6 @@ const Dashboard = () => {
 
   const handleDeleteFolder = async () => {
     try {
-      // TODO: Implement folder deletion API
       loadFolders();
       toast.success("Folder deleted");
     } catch (error) {
@@ -143,8 +125,6 @@ const Dashboard = () => {
   const handleDownload = async (file) => {
     try {
       const response = await fileService.downloadFile(file.id);
-      
-      // Create blob and download
       const blob = new Blob([response.data]);
       const url = window.URL.createObjectURL(blob);
       const link = document.createElement("a");
@@ -154,7 +134,6 @@ const Dashboard = () => {
       link.click();
       link.remove();
       window.URL.revokeObjectURL(url);
-      
       toast.success("Download started");
     } catch (error) {
       console.error("Error downloading file:", error);
@@ -170,91 +149,117 @@ const Dashboard = () => {
       onDeleteFolder={handleDeleteFolder}
       onShowStats={() => setShowStats(true)}
     >
-      {/* Header */}
-      <div className="sticky top-0 z-10 backdrop-blur-xl bg-background/80 border-b pb-4 mb-6">
-        <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
+      {/* Sticky toolbar */}
+      <div className="sticky top-0 z-10 -mx-6 mb-6 border-b border-border/60 bg-background/80 px-6 pb-5 backdrop-blur-xl">
+        {/* Top row: title + actions */}
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <div>
-            <h1 className="text-3xl md:text-4xl font-heading font-bold tracking-tight" data-testid="dashboard-title">
+            <h1
+              className="font-display text-2xl tracking-tight text-foreground md:text-3xl"
+              data-testid="dashboard-title"
+            >
               My Files
             </h1>
-            <p className="text-sm text-muted-foreground mt-1">
-              {files.length} files {folders.length > 0 && `• ${folders.length} folders`}
+            <p className="mt-1 text-sm text-muted-foreground">
+              {files.length} file{files.length !== 1 && "s"}
+              {folders.length > 0 && ` · ${folders.length} folders`}
             </p>
           </div>
 
           <div className="flex gap-2">
-            <Button
+            <button
               onClick={() => setShowNewFolderDialog(true)}
-              variant="outline"
-              size="sm"
-              className="rounded-full"
+              className="flex items-center gap-2 rounded-xl border border-border px-4 py-2 text-sm font-medium text-foreground
+                transition-all duration-200 hover:border-accent/30 hover:bg-accent/5 active:scale-[0.98]"
               data-testid="new-folder-btn"
             >
-              <Plus className="h-4 w-4 mr-2" />
-              New Folder
-            </Button>
-            <Button
+              <FolderPlus className="h-4 w-4" />
+              <span className="hidden sm:inline">New Folder</span>
+            </button>
+
+            <button
               onClick={() => setShowUploadDialog(true)}
-              size="sm"
-              className="rounded-full shadow-lg shadow-primary/20"
+              className="group flex items-center gap-2 rounded-xl gradient-accent px-5 py-2 text-sm font-medium text-accent-foreground
+                shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:shadow-accent-sm active:scale-[0.98]"
               data-testid="upload-btn"
             >
-              <Upload className="h-4 w-4 mr-2" />
+              <Upload className="h-4 w-4" />
               Upload Files
-            </Button>
+            </button>
           </div>
         </div>
 
-        {/* Search and View Toggle */}
-        <div className="flex flex-col sm:flex-row gap-4 mt-4">
+        {/* Bottom row: search + view toggle */}
+        <div className="mt-4 flex gap-3">
           <div className="relative flex-1">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-            <Input
+            <Search className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+            <input
+              type="text"
               placeholder="Search files..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="pl-10 rounded-full"
+              className="h-10 w-full rounded-xl border border-border bg-card pl-10 pr-4 text-sm text-foreground
+                placeholder:text-muted-foreground/50 transition-colors duration-150
+                focus:border-accent/40 focus:outline-none focus:ring-2 focus:ring-accent/20"
               data-testid="search-input"
             />
           </div>
 
-          <div className="flex gap-2">
-            <Button
-              variant={viewMode === "grid" ? "default" : "outline"}
-              size="icon"
+          <div className="flex gap-1 rounded-xl border border-border p-1">
+            <button
               onClick={() => setViewMode("grid")}
-              className="rounded-full"
+              className={cn(
+                "grid h-8 w-8 place-items-center rounded-lg transition-all duration-150",
+                viewMode === "grid"
+                  ? "gradient-accent text-accent-foreground shadow-sm"
+                  : "text-muted-foreground hover:text-foreground"
+              )}
               data-testid="grid-view-btn"
+              aria-label="Grid view"
             >
               <Grid className="h-4 w-4" />
-            </Button>
-            <Button
-              variant={viewMode === "list" ? "default" : "outline"}
-              size="icon"
+            </button>
+            <button
               onClick={() => setViewMode("list")}
-              className="rounded-full"
+              className={cn(
+                "grid h-8 w-8 place-items-center rounded-lg transition-all duration-150",
+                viewMode === "list"
+                  ? "gradient-accent text-accent-foreground shadow-sm"
+                  : "text-muted-foreground hover:text-foreground"
+              )}
               data-testid="list-view-btn"
+              aria-label="List view"
             >
               <List className="h-4 w-4" />
-            </Button>
+            </button>
           </div>
         </div>
       </div>
 
-      {/* Content */}
+      {/* Content area */}
       {loading ? (
-        <div className="text-center py-12" data-testid="loading-state">
-          <p className="text-muted-foreground">Loading files...</p>
+        <div className="flex flex-col items-center justify-center py-20" data-testid="loading-state">
+          <div className="h-8 w-8 animate-spin rounded-full border-2 border-accent/20 border-t-accent" />
+          <p className="mt-4 text-sm text-muted-foreground">Loading files...</p>
         </div>
       ) : files.length === 0 && folders.length === 0 ? (
-        <div className="text-center py-12" data-testid="empty-state">
-          <Upload className="h-16 w-16 mx-auto text-muted-foreground mb-4" />
-          <h3 className="text-lg font-medium mb-2">No files yet</h3>
-          <p className="text-muted-foreground mb-4">Upload your first file to get started</p>
-          <Button onClick={() => setShowUploadDialog(true)} className="rounded-full" data-testid="upload-first-btn">
-            <Upload className="h-4 w-4 mr-2" />
+        <div className="flex flex-col items-center justify-center py-20" data-testid="empty-state">
+          <div className="mb-5 grid h-16 w-16 place-items-center rounded-2xl bg-accent/5 border border-accent/10">
+            <Upload className="h-7 w-7 text-accent/60" />
+          </div>
+          <h3 className="text-lg font-semibold text-foreground">No files yet</h3>
+          <p className="mt-1.5 mb-6 text-sm text-muted-foreground">
+            Upload your first file to get started
+          </p>
+          <button
+            onClick={() => setShowUploadDialog(true)}
+            className="group flex items-center gap-2 rounded-xl gradient-accent px-6 py-2.5 text-sm font-medium text-accent-foreground
+              shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:shadow-accent-sm active:scale-[0.98]"
+            data-testid="upload-first-btn"
+          >
+            <Upload className="h-4 w-4" />
             Upload Files
-          </Button>
+          </button>
         </div>
       ) : (
         <div data-testid="files-container">
@@ -284,7 +289,7 @@ const Dashboard = () => {
 
       {/* Upload Dialog */}
       <Dialog open={showUploadDialog} onOpenChange={setShowUploadDialog}>
-        <DialogContent  data-testid="upload-dialog">
+        <DialogContent data-testid="upload-dialog">
           <DialogHeader>
             <DialogTitle>Upload Files</DialogTitle>
           </DialogHeader>
@@ -301,27 +306,40 @@ const Dashboard = () => {
           <DialogHeader>
             <DialogTitle>Create New Folder</DialogTitle>
           </DialogHeader>
-          <div className="space-y-4">
-            <Input
+          <div className="space-y-4 pt-2">
+            <input
+              type="text"
               placeholder="Folder name"
               value={newFolderName}
               onChange={(e) => setNewFolderName(e.target.value)}
               onKeyDown={(e) => e.key === "Enter" && handleCreateFolder()}
+              className="h-11 w-full rounded-xl border border-border bg-card px-4 text-sm text-foreground
+                placeholder:text-muted-foreground/50 transition-colors duration-150
+                focus:border-accent/40 focus:outline-none focus:ring-2 focus:ring-accent/20"
               data-testid="folder-name-input"
             />
             <div className="flex justify-end gap-2">
-              <Button variant="outline" onClick={() => setShowNewFolderDialog(false)}>
+              <button
+                onClick={() => setShowNewFolderDialog(false)}
+                className="rounded-xl border border-border px-4 py-2.5 text-sm font-medium text-foreground
+                  transition-colors duration-150 hover:bg-accent/5"
+              >
                 Cancel
-              </Button>
-              <Button onClick={handleCreateFolder} data-testid="create-folder-btn">
+              </button>
+              <button
+                onClick={handleCreateFolder}
+                className="rounded-xl gradient-accent px-5 py-2.5 text-sm font-medium text-accent-foreground
+                  shadow-sm transition-all duration-200 hover:shadow-accent-sm active:scale-[0.98]"
+                data-testid="create-folder-btn"
+              >
                 Create
-              </Button>
+              </button>
             </div>
           </div>
         </DialogContent>
       </Dialog>
 
-      {/* File Preview Modal */}
+      {/* File Preview */}
       {selectedFile && (
         <FilePreviewModal
           file={selectedFile}
@@ -335,7 +353,7 @@ const Dashboard = () => {
         />
       )}
 
-      {/* Share Modal */}
+      {/* Share */}
       {selectedFile && (
         <ShareModal
           file={selectedFile}
@@ -344,7 +362,7 @@ const Dashboard = () => {
         />
       )}
 
-      {/* Storage Dashboard */}
+      {/* Storage Stats */}
       <StorageDashboard open={showStats} onClose={() => setShowStats(false)} />
     </MainLayout>
   );

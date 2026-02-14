@@ -9,63 +9,73 @@ import {
   Share2,
   Trash2,
 } from "lucide-react";
-import { Button } from "../ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "../ui/dropdown-menu";
+// import { cn } from "../../lib/utils";
 
-const FileGrid = ({ 
-  files = [], 
-  folders = [], 
-  onFileClick, 
-  onFolderClick, 
-  onDelete, 
-  onShare, 
-  onDownload 
+const getFileIcon = (type) => {
+  if (type.startsWith("image/")) return ImageIcon;
+  if (type.startsWith("video/")) return Video;
+  if (type.includes("pdf") || type.includes("text")) return FileText;
+  return FileIcon;
+};
+
+const formatFileSize = (bytes) => {
+  if (bytes < 1024) return bytes + " B";
+  if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + " KB";
+  return (bytes / (1024 * 1024)).toFixed(1) + " MB";
+};
+
+const formatDate = (isoDate) => {
+  return new Date(isoDate).toLocaleDateString("en-US", {
+    month: "short",
+    day: "numeric",
+    year: "numeric",
+  });
+};
+
+const FileGrid = ({
+  files = [],
+  folders = [],
+  onFileClick,
+  onFolderClick,
+  onDelete,
+  onShare,
+  onDownload,
 }) => {
-  const getFileIcon = (type) => {
-    if (type.startsWith("image/")) return <ImageIcon className="h-8 w-8" />;
-    if (type.startsWith("video/")) return <Video className="h-8 w-8" />;
-    if (type.includes("pdf") || type.includes("text")) return <FileText className="h-8 w-8" />;
-    return <FileIcon className="h-8 w-8" />;
-  };
-
-  const formatFileSize = (bytes) => {
-    if (bytes < 1024) return bytes + " B";
-    if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(2) + " KB";
-    return (bytes / (1024 * 1024)).toFixed(2) + " MB";
-  };
-
-  const formatDate = (isoDate) => {
-    const date = new Date(isoDate);
-    return date.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
-  };
-
-  // Safety check - ensure arrays exist
   const safeFiles = Array.isArray(files) ? files : [];
   const safeFolders = Array.isArray(folders) ? folders : [];
 
   return (
-    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+    <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
       {/* Folders */}
       {safeFolders.map((folder) => (
         <div
           key={folder.id}
-          className="group relative overflow-hidden rounded-xl border bg-card text-card-foreground shadow-sm transition-all hover:shadow-md hover:-translate-y-1 cursor-pointer"
           onClick={() => onFolderClick(folder.id)}
+          className="group relative cursor-pointer overflow-hidden rounded-xl border border-border bg-card
+            transition-all duration-200 hover:-translate-y-0.5 hover:border-accent/20 hover:shadow-md"
           data-testid={`folder-card-${folder.id}`}
         >
           <div className="p-4">
-            <div className="flex items-center justify-between mb-2">
-              <FolderIcon className="h-8 w-8 text-primary" />
+            <div className="mb-3 flex items-center justify-between">
+              <div className="grid h-10 w-10 place-items-center rounded-xl bg-accent/10">
+                <FolderIcon className="h-5 w-5 text-accent" />
+              </div>
+
               <DropdownMenu>
                 <DropdownMenuTrigger asChild onClick={(e) => e.stopPropagation()}>
-                  <Button variant="ghost" size="icon" className="h-8 w-8" data-testid={`folder-menu-${folder.id}`}>
-                    <MoreVertical className="h-4 w-4" />
-                  </Button>
+                  <button
+                    className="grid h-7 w-7 place-items-center rounded-lg text-muted-foreground
+                      opacity-0 transition-all duration-150 hover:bg-accent/5 hover:text-foreground group-hover:opacity-100"
+                    data-testid={`folder-menu-${folder.id}`}
+                  >
+                    <MoreVertical className="h-3.5 w-3.5" />
+                  </button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end">
                   <DropdownMenuItem
@@ -73,95 +83,117 @@ const FileGrid = ({
                       e.stopPropagation();
                       onDelete(folder.id);
                     }}
-                    className="text-destructive"
+                    className="text-destructive focus:text-destructive"
                     data-testid={`delete-folder-${folder.id}`}
                   >
-                    <Trash2 className="h-4 w-4 mr-2" />
+                    <Trash2 className="mr-2 h-4 w-4" />
                     Delete
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
             </div>
-            <h3 className="font-medium truncate mb-1" data-testid={`folder-name-${folder.id}`}>{folder.name}</h3>
-            <p className="text-xs text-muted-foreground">{folder.fileCount} files</p>
+
+            <h3 className="truncate text-sm font-semibold text-foreground" data-testid={`folder-name-${folder.id}`}>
+              {folder.name}
+            </h3>
+            <p className="mt-0.5 font-mono text-[11px] text-muted-foreground">
+              {folder.fileCount} file{folder.fileCount !== 1 && "s"}
+            </p>
           </div>
         </div>
       ))}
 
       {/* Files */}
-      {safeFiles.map((file) => (
-        <div
-          key={file.id}
-          className="group relative overflow-hidden rounded-xl border bg-card text-card-foreground shadow-sm transition-all hover:shadow-md hover:-translate-y-1 cursor-pointer"
-          onClick={() => onFileClick(file)}
-          data-testid={`file-card-${file.id}`}
-        >
-          {/* Thumbnail or Icon */}
-          <div className="file-card-thumbnail flex items-center justify-center bg-muted">
-            {file.type.startsWith("image/") && file.thumbnailId ? (
-              <img
-                src={`$/files/${file.id}/thumbnail`}
-                alt={file.name}
-                className="w-full h-full object-cover"
-                data-testid={`file-thumbnail-${file.id}`}
-              />
-            ) : (
-              <div className="text-muted-foreground">{getFileIcon(file.type)}</div>
-            )}
-          </div>
+      {safeFiles.map((file) => {
+        const Icon = getFileIcon(file.type);
 
-          {/* File Info */}
-          <div className="p-3">
-            <div className="flex items-start justify-between gap-2 mb-1">
-              <h3 className="font-medium text-sm truncate flex-1" data-testid={`file-name-${file.id}`}>
+        return (
+          <div
+            key={file.id}
+            onClick={() => onFileClick(file)}
+            className="group relative cursor-pointer overflow-hidden rounded-xl border border-border bg-card
+              transition-all duration-200 hover:-translate-y-0.5 hover:border-accent/20 hover:shadow-md"
+            data-testid={`file-card-${file.id}`}
+          >
+            {/* Thumbnail / Icon area */}
+            <div className="relative flex h-36 items-center justify-center bg-muted/50">
+              {file.type.startsWith("image/") && file.thumbnailId ? (
+                <img
+                  src={`/files/${file.id}/thumbnail`}
+                  alt={file.name}
+                  className="h-full w-full object-cover"
+                  data-testid={`file-thumbnail-${file.id}`}
+                />
+              ) : (
+                <div className="grid h-12 w-12 place-items-center rounded-xl bg-accent/10">
+                  <Icon className="h-6 w-6 text-accent" />
+                </div>
+              )}
+
+              {/* Menu — overlaid top-right, visible on hover */}
+              <div className="absolute right-2 top-2">
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild onClick={(e) => e.stopPropagation()}>
+                    <button
+                      className="grid h-7 w-7 place-items-center rounded-lg bg-card/80 text-muted-foreground
+                        opacity-0 shadow-sm backdrop-blur-sm transition-all duration-150
+                        hover:bg-card hover:text-foreground group-hover:opacity-100"
+                      data-testid={`file-menu-${file.id}`}
+                    >
+                      <MoreVertical className="h-3.5 w-3.5" />
+                    </button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end">
+                    <DropdownMenuItem
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        onDownload(file);
+                      }}
+                      data-testid={`download-file-${file.id}`}
+                    >
+                      <Download className="mr-2 h-4 w-4" />
+                      Download
+                    </DropdownMenuItem>
+                    <DropdownMenuItem
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        onShare(file);
+                      }}
+                      data-testid={`share-file-${file.id}`}
+                    >
+                      <Share2 className="mr-2 h-4 w-4" />
+                      Share
+                    </DropdownMenuItem>
+                    <DropdownMenuItem
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        onDelete(file.id);
+                      }}
+                      className="text-destructive focus:text-destructive"
+                      data-testid={`delete-file-${file.id}`}
+                    >
+                      <Trash2 className="mr-2 h-4 w-4" />
+                      Delete
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              </div>
+            </div>
+
+            {/* File info */}
+            <div className="p-3.5">
+              <h3 className="truncate text-sm font-medium text-foreground" data-testid={`file-name-${file.id}`}>
                 {file.name}
               </h3>
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild onClick={(e) => e.stopPropagation()}>
-                  <Button variant="ghost" size="icon" className="h-6 w-6" data-testid={`file-menu-${file.id}`}>
-                    <MoreVertical className="h-3 w-3" />
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="end">
-                  <DropdownMenuItem
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      onDownload(file);
-                    }}
-                    data-testid={`download-file-${file.id}`}
-                  >
-                    <Download className="h-4 w-4 mr-2" />
-                    Download
-                  </DropdownMenuItem>
-                  <DropdownMenuItem
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      onShare(file);
-                    }}
-                    data-testid={`share-file-${file.id}`}
-                  >
-                    <Share2 className="h-4 w-4 mr-2" />
-                    Share
-                  </DropdownMenuItem>
-                  <DropdownMenuItem
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      onDelete(file.id);
-                    }}
-                    className="text-destructive"
-                    data-testid={`delete-file-${file.id}`}
-                  >
-                    <Trash2 className="h-4 w-4 mr-2" />
-                    Delete
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
+              <div className="mt-1.5 flex items-center gap-2 text-[11px] text-muted-foreground">
+                <span className="font-mono">{formatFileSize(file.size)}</span>
+                <span className="h-0.5 w-0.5 rounded-full bg-muted-foreground/40" />
+                <span>{formatDate(file.uploadedAt)}</span>
+              </div>
             </div>
-            <p className="text-xs text-muted-foreground">{formatFileSize(file.size)}</p>
-            <p className="text-xs text-muted-foreground mt-1">{formatDate(file.uploadedAt)}</p>
           </div>
-        </div>
-      ))}
+        );
+      })}
     </div>
   );
 };
