@@ -1,4 +1,4 @@
-@import "tailwindcss";
+
 .App {
   min-height: 100vh;
   width: 100%;
@@ -6,37 +6,61 @@
 
 .upload-zone {
   border: 2px dashed hsl(var(--border));
-  transition: border-color 0.2s, background-color 0.2s;
+  transition: border-color 0.2s ease-out, background-color 0.2s ease-out;
+}
+
+.upload-zone:hover {
+  border-color: hsl(var(--muted-foreground) / 0.3);
 }
 
 .upload-zone.drag-active {
-  border-color: hsl(var(--primary));
-  background-color: hsl(var(--primary) / 0.05);
+  border-color: hsl(var(--accent));
+  background-color: hsl(var(--accent) / 0.05);
+  box-shadow: 0 0 0 4px hsl(var(--accent) / 0.1);
 }
 
+
+/* ============================================
+   FILE CARDS & THUMBNAILS
+   ============================================ */
 .file-card-thumbnail {
   width: 100%;
   height: 160px;
   object-fit: cover;
   background: hsl(var(--muted));
+  border-radius: var(--radius-md) var(--radius-md) 0 0;
 }
 
+
+/* ============================================
+   FILE VIEWS — Grid & List
+   ============================================ */
+
+/* Grid View */
 .grid-view {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
   gap: 1rem;
 }
 
+/* List View */
 .list-view .file-item {
   display: flex;
   align-items: center;
-  padding: 0.75rem;
+  padding: 0.75rem 1rem;
   border: 1px solid hsl(var(--border));
-  border-radius: 0.5rem;
+  border-radius: var(--radius-lg);
   margin-bottom: 0.5rem;
-  transition: background-color 0.2s;
+  transition: background-color 0.15s ease-out,
+              border-color 0.15s ease-out,
+              box-shadow 0.15s ease-out;
 }
 
 .list-view .file-item:hover {
-  background-color: hsl(var(--accent));
+  background-color: hsl(var(--accent) / 0.04);
+  border-color: hsl(var(--accent) / 0.2);
+}
+
+.list-view .file-item:active {
+  background-color: hsl(var(--accent) / 0.08);
 }

@@ -1,127 +1,230 @@
-// components/Hero.tsx
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ArrowRight, ShieldCheck, Lock, Globe, Zap } from 'lucide-react';
+import { cn } from '../../lib/utils';
 
 const Hero = () => {
   const navigate = useNavigate();
 
   return (
-    <section className="pt-44 pb-32 w-full max-w-6xl mx-auto px-6 flex flex-col items-center text-center" data-testid="hero-section">
-      <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white border border-slate-200 text-slate-500 text-[10px] font-black uppercase tracking-[0.2em] mb-12 shadow-sm" data-testid="hero-badge">
-        <ShieldCheck size={14} className="text-emerald-500" />
-        Trusted by 50,000+ users worldwide
-      </div>
-      
-      <h1 className="text-5xl md:text-8xl font-[900] tracking-tighter text-slate-900 leading-[0.9] mb-10 max-w-4xl" data-testid="hero-title">
-        Secure File Storage &{' '}
-        <span className="text-indigo-600">Sharing Made Simple</span>
-      </h1>
-      
-      <p className="text-lg md:text-xl text-slate-500 max-w-2xl mx-auto mb-14 leading-relaxed font-medium" data-testid="hero-description">
-        Store, organize, and share your files securely in the cloud. Access your content from anywhere, collaborate with your team, and never lose important files again.
-      </p>
-      
-      <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-8 w-full">
-        <button 
-          onClick={() => navigate('/dashboard')}
-          className="w-full sm:w-auto bg-slate-900 text-white text-lg font-bold px-10 py-4 rounded-2xl flex items-center justify-center gap-3 hover:bg-indigo-600 transition-all shadow-2xl shadow-indigo-100 hover:translate-y-[-2px] active:scale-95"
-          data-testid="hero-cta-primary"
+    <section
+      className="relative w-full overflow-hidden pt-36 pb-28 md:pt-44 md:pb-32"
+      data-testid="hero-section"
+    >
+      {/* ── Ambient background glow ── */}
+      <div
+        className="pointer-events-none absolute top-0 left-1/2 -translate-x-1/2 h-[600px] w-[800px]"
+        style={{
+          background: 'radial-gradient(ellipse at center, hsl(var(--accent) / 0.06), transparent 70%)',
+        }}
+        aria-hidden="true"
+      />
+
+      <div className="container relative mx-auto flex max-w-6xl flex-col items-center px-6 text-center">
+
+        <div
+          className="mb-10 inline-flex items-center gap-2.5 rounded-full border border-accent/20 bg-accent/5 px-5 py-2 shadow-xs md:mb-12"
+          data-testid="hero-badge"
         >
-          Get Started Free
-          <ArrowRight size={20} />
-        </button>
-        <button 
-          onClick={() => document.getElementById('features')?.scrollIntoView({ behavior: 'smooth' })}
-          className="w-full sm:w-auto bg-white text-slate-900 text-lg font-bold px-10 py-4 rounded-2xl border border-slate-200 hover:border-slate-300 hover:bg-slate-50 transition-all active:scale-95"
-          data-testid="hero-cta-secondary"
-        >
-          Learn More
-        </button>
-      </div>
-
-      <p className="text-sm text-slate-400 font-medium mb-32" data-testid="hero-note">
-        No credit card required • Free forever plan • Cancel anytime
-      </p>
-
-      {/* Dashboard Mockup */}
-      <div className="relative w-full group">
-        <div className="absolute -inset-10 bg-indigo-500/10 blur-[120px] rounded-full opacity-60"></div>
-        
-        <div className="relative bg-white border border-slate-200 rounded-[40px] shadow-[0_50px_100px_-20px_rgba(0,0,0,0.12)] overflow-hidden">
-          <div className="h-16 border-b border-slate-100 bg-slate-50/50 flex items-center justify-between px-8">
-            <div className="flex gap-2">
-              <div className="w-3 h-3 rounded-full bg-slate-200"></div>
-              <div className="w-3 h-3 rounded-full bg-slate-200"></div>
-              <div className="w-3 h-3 rounded-full bg-slate-200"></div>
-            </div>
-            <div className="flex items-center gap-4">
-               <div className="h-8 w-8 rounded-full bg-indigo-100 flex items-center justify-center">
-                 <Zap size={14} className="text-indigo-600" />
-               </div>
-               <div className="h-2 w-32 bg-slate-200 rounded-full"></div>
-            </div>
-            <div className="h-8 w-8 bg-slate-900 rounded-lg"></div>
-          </div>
-
-          <div className="grid grid-cols-12 h-[500px]">
-            <div className="col-span-3 border-r border-slate-100 p-8 hidden md:block text-left">
-              <div className="space-y-8">
-                <div className="space-y-3">
-                  <div className="h-2 w-12 bg-slate-200 rounded-full"></div>
-                  <div className="space-y-2">
-                    <div className="h-8 bg-indigo-50 border border-indigo-100 rounded-xl w-full"></div>
-                    <div className="h-8 bg-slate-50 rounded-xl w-full"></div>
-                    <div className="h-8 bg-slate-50 rounded-xl w-full"></div>
-                  </div>
-                </div>
-                <div className="space-y-3">
-                  <div className="h-2 w-16 bg-slate-200 rounded-full"></div>
-                  <div className="flex flex-wrap gap-2">
-                    <div className="h-6 w-14 bg-emerald-50 rounded-full border border-emerald-100"></div>
-                    <div className="h-6 w-10 bg-purple-50 rounded-full border border-purple-100"></div>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div className="col-span-12 md:col-span-9 p-8 md:p-12 bg-white text-left">
-              <div className="flex items-end justify-between mb-12">
-                <div>
-                  <h4 className="text-2xl font-black tracking-tight text-slate-900">My Files</h4>
-                  <p className="text-sm text-slate-400 font-medium">Last updated 2 mins ago</p>
-                </div>
-                <div className="flex gap-2">
-                  <div className="w-10 h-10 rounded-xl border border-slate-100 flex items-center justify-center text-slate-400 hover:text-slate-900 transition-colors cursor-pointer">
-                    <Globe size={18} />
-                  </div>
-                  <div className="w-10 h-10 rounded-xl border border-slate-100 flex items-center justify-center text-slate-400 hover:text-slate-900 transition-colors cursor-pointer">
-                    <Lock size={18} />
-                  </div>
-                </div>
-              </div>
-
-              <div className="grid grid-cols-2 lg:grid-cols-3 gap-6">
-                {[1, 2, 3, 4, 5, 6].map((i) => (
-                  <div key={i} className="p-6 bg-slate-50 rounded-3xl border border-slate-100 flex flex-col items-center justify-center gap-4 transition-transform hover:scale-105 cursor-pointer">
-                    <div className="w-14 h-14 bg-white rounded-2xl shadow-sm border border-slate-100 flex items-center justify-center">
-                       {i % 2 === 0 ? <ShieldCheck className="text-emerald-500" size={24} /> : <Zap className="text-indigo-600" size={24} />}
-                    </div>
-                    <div className="h-2 w-20 bg-slate-200 rounded-full"></div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
+          <span className="h-2 w-2 shrink-0 rounded-full bg-accent animate-pulse-dot" />
+          <span className="font-mono text-[11px] uppercase tracking-[0.15em] text-accent">
+            Trusted by 50,000+ users worldwide
+          </span>
         </div>
 
-        <div className="absolute -bottom-6 -right-6 md:right-10 md:-bottom-10 bg-slate-900 text-white p-6 rounded-3xl shadow-2xl flex items-center gap-4 max-w-[280px] text-left">
-          <div className="p-3 bg-indigo-600 rounded-xl shadow-lg">
-            <Lock size={20} />
+
+        <h1
+          className="mb-8 max-w-4xl font-display text-[2.75rem] leading-[1.05] tracking-tight text-foreground sm:text-6xl md:mb-10 md:text-[5.25rem]"
+          data-testid="hero-title"
+        >
+          Secure File Storage &{' '}
+          <span className="gradient-text">Sharing Made Simple</span>
+        </h1>
+
+  
+        <p
+          className="mx-auto mb-12 max-w-2xl text-base leading-relaxed text-muted-foreground sm:text-lg md:mb-14 md:text-xl"
+          data-testid="hero-description"
+        >
+          Store, organize, and share your files securely in the cloud. Access
+          your content from anywhere, collaborate with your team, and never lose
+          important files again.
+        </p>
+
+        <div className="mb-6 flex w-full flex-col items-center justify-center gap-4 sm:flex-row sm:w-auto">
+          <button
+            onClick={() => navigate('/dashboard')}
+            className="group flex w-full items-center justify-center gap-3 rounded-xl
+              gradient-accent px-8 py-3.5 text-base font-medium text-accent-foreground
+              shadow-sm transition-all duration-200
+              hover:-translate-y-0.5 hover:shadow-accent-sm hover:brightness-110
+              active:scale-[0.98]
+              sm:w-auto"
+            data-testid="hero-cta-primary"
+          >
+            Get Started Free
+            <ArrowRight
+              size={18}
+              className="transition-transform duration-200 group-hover:translate-x-1"
+            />
+          </button>
+
+          <button
+            onClick={() =>
+              document
+                .getElementById('features')
+                ?.scrollIntoView({ behavior: 'smooth' })
+            }
+            className="w-full rounded-xl border border-border bg-card px-8 py-3.5
+              text-base font-medium text-foreground shadow-sm
+              transition-all duration-200
+              hover:border-accent/30 hover:bg-accent/5
+              active:scale-[0.98]
+              sm:w-auto"
+            data-testid="hero-cta-secondary"
+          >
+            Learn More
+          </button>
+        </div>
+
+        <p
+          className="mb-24 text-sm text-muted-foreground/60 md:mb-28"
+          data-testid="hero-note"
+        >
+          No credit card required · Free forever plan · Cancel anytime
+        </p>
+
+        {/* 
+            Dashboard Mockup
+            
+      */}
+        <div className="relative w-full">
+          {/* Ambient glow behind mockup */}
+          <div
+            className="pointer-events-none absolute -inset-10 rounded-full opacity-50 blur-[120px]"
+            style={{
+              background: 'radial-gradient(ellipse at center, hsl(var(--accent) / 0.12), transparent 70%)',
+            }}
+            aria-hidden="true"
+          />
+
+          {/* Main mockup card */}
+          <div className="relative overflow-hidden rounded-3xl border border-border bg-card shadow-2xl md:rounded-[2.5rem]">
+            {/* ── Window chrome bar ── */}
+            <div className="flex h-14 items-center justify-between border-b border-border/60 bg-muted/50 px-6 md:h-16 md:px-8">
+              {/* Traffic lights */}
+              <div className="flex gap-2">
+                <div className="h-3 w-3 rounded-full bg-border" />
+                <div className="h-3 w-3 rounded-full bg-border" />
+                <div className="h-3 w-3 rounded-full bg-border" />
+              </div>
+
+              {/* Center icon + URL bar */}
+              <div className="flex items-center gap-4">
+                <div className="flex h-8 w-8 items-center justify-center rounded-full bg-accent/10">
+                  <Zap size={14} className="text-accent" />
+                </div>
+                <div className="hidden h-2 w-32 rounded-full bg-border sm:block" />
+              </div>
+
+              {/* Right icon */}
+              <div className="h-8 w-8 rounded-lg bg-foreground" />
+            </div>
+
+            {/* ── Dashboard body ── */}
+            <div className="grid grid-cols-12" style={{ minHeight: '420px' }}>
+              {/* Sidebar mock — hidden on mobile */}
+              <div className="col-span-3 hidden border-r border-border/60 p-6 text-left md:block lg:p-8">
+                <div className="space-y-8">
+                  {/* Nav section */}
+                  <div className="space-y-3">
+                    <div className="h-2 w-12 rounded-full bg-border" />
+                    <div className="space-y-2">
+                      <div className="h-8 w-full rounded-xl border border-accent/20 bg-accent/5" />
+                      <div className="h-8 w-full rounded-xl bg-muted" />
+                      <div className="h-8 w-full rounded-xl bg-muted" />
+                    </div>
+                  </div>
+                  {/* Tags section */}
+                  <div className="space-y-3">
+                    <div className="h-2 w-16 rounded-full bg-border" />
+                    <div className="flex flex-wrap gap-2">
+                      <div className="h-6 w-14 rounded-full border border-accent/20 bg-accent/5" />
+                      <div className="h-6 w-10 rounded-full border border-border bg-muted" />
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Main content area */}
+              <div className="col-span-12 bg-card p-6 text-left md:col-span-9 md:p-10 lg:p-12">
+                {/* Content header */}
+                <div className="mb-10 flex items-end justify-between md:mb-12">
+                  <div>
+                    <h4 className="text-xl font-semibold tracking-tight text-foreground md:text-2xl">
+                      My Files
+                    </h4>
+                    <p className="mt-1 text-sm text-muted-foreground">
+                      Last updated 2 mins ago
+                    </p>
+                  </div>
+                  <div className="flex gap-2">
+                    <div className="flex h-10 w-10 items-center justify-center rounded-xl border border-border text-muted-foreground transition-colors duration-150 hover:border-accent/30 hover:text-foreground">
+                      <Globe size={18} />
+                    </div>
+                    <div className="flex h-10 w-10 items-center justify-center rounded-xl border border-border text-muted-foreground transition-colors duration-150 hover:border-accent/30 hover:text-foreground">
+                      <Lock size={18} />
+                    </div>
+                  </div>
+                </div>
+
+                {/* File cards grid */}
+                <div className="grid grid-cols-2 gap-4 lg:grid-cols-3 lg:gap-6">
+                  {[1, 2, 3, 4, 5, 6].map((i) => (
+                    <div
+                      key={i}
+                      className="group flex cursor-pointer flex-col items-center justify-center gap-4 rounded-2xl border border-border bg-muted/50 p-5 transition-all duration-200 hover:-translate-y-0.5 hover:border-accent/20 hover:shadow-md lg:rounded-3xl lg:p-6"
+                    >
+                      <div className="flex h-12 w-12 items-center justify-center rounded-xl border border-border bg-card shadow-xs lg:h-14 lg:w-14 lg:rounded-2xl">
+                        {i % 2 === 0 ? (
+                          <ShieldCheck
+                            className="text-accent transition-transform duration-200 group-hover:scale-110"
+                            size={22}
+                          />
+                        ) : (
+                          <Zap
+                            className="text-accent transition-transform duration-200 group-hover:scale-110"
+                            size={22}
+                          />
+                        )}
+                      </div>
+                      <div className="h-2 w-20 rounded-full bg-border" />
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
           </div>
-          <div>
-            <p className="text-xs font-bold uppercase tracking-widest text-indigo-400 mb-1">Status: Secured</p>
-            <p className="text-sm font-medium leading-tight">256-bit Encryption Active.</p>
+
+   
+          <div
+            className={cn(
+              "absolute -bottom-4 right-4 z-10 flex max-w-[280px] items-center gap-4 rounded-2xl p-5 text-left shadow-xl",
+              "bg-foreground text-background",
+              "md:-bottom-8 md:right-10 md:rounded-3xl md:p-6"
+            )}
+          >
+            <div className="grid h-11 w-11 shrink-0 place-items-center rounded-xl gradient-accent shadow-accent-sm">
+              <Lock size={18} className="text-accent-foreground" />
+            </div>
+            <div>
+              <p className="mb-0.5 font-mono text-[11px] uppercase tracking-[0.12em] text-accent">
+                Status: Secured
+              </p>
+              <p className="text-sm font-medium leading-tight text-background/90">
+                256-bit Encryption Active.
+              </p>
+            </div>
           </div>
         </div>
       </div>
