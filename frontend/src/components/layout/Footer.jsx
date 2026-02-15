@@ -33,7 +33,7 @@ const footerLinks = [
 const Footer = () => {
   return (
     <footer className="border-t border-border/60 bg-card" data-testid="footer">
-      <div className="container mx-auto max-w-6xl px-6 py-16 lg:py-24">
+      <div className="container mx-auto max-w-6xl px-6 py-6 lg:py-14">
         <div className="mb-12 grid gap-12 md:grid-cols-4">
           {/* Brand */}
           <div>

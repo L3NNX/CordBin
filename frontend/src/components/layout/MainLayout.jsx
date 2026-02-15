@@ -14,7 +14,7 @@ import {
   PanelLeft,
   ChevronRight,
 } from "lucide-react";
-// import { button } from "../ui/button";
+import { useNavigate } from "react-router-dom";
 import { ScrollArea } from "../ui/scroll-area";
 import { cn } from "../../lib/utils";
 
@@ -31,12 +31,12 @@ const SidebarContent = ({
     onFolderChange(folderId);
     setMobileSidebarOpen(false);
   };
-
+  const navigate = useNavigate();
   return (
     <div className="flex h-full flex-col">
 
       <div className="px-5 pb-4 pt-6">
-        <div className="flex items-center gap-3">
+        <button className="flex items-center gap-3 cursor-pointer" onClick={() => navigate("/")}>
           <div className="grid h-10 w-10 place-items-center rounded-xl gradient-accent shadow-accent-sm">
             <HardDrive className="h-5 w-5 text-accent-foreground" />
           </div>
@@ -51,7 +51,8 @@ const SidebarContent = ({
               Modern file storage
             </p>
           </div>
-        </div>
+          
+        </button>
       </div>
 
 
