@@ -21,12 +21,15 @@ const Dashboard = () => {
   const [files, setFiles] = useState([]);
   const [viewMode, setViewMode] = useState("grid");
   const [searchQuery, setSearchQuery] = useState("");
+  const [activeFilter, setActiveFilter] = useState("all");
   const [showUploadDialog, setShowUploadDialog] = useState(false);
   const [selectedFile, setSelectedFile] = useState(null);
   const [showPreview, setShowPreview] = useState(false);
   const [showShare, setShowShare] = useState(false);
   const [showStats, setShowStats] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [visibleCount, setVisibleCount] = useState(20);
+
 
   useEffect(() => {
     loadFiles();
@@ -53,12 +56,54 @@ const Dashboard = () => {
     }
   };
 
+  // ─── Filter by category ────────────────────────────────────
+  const categoryFilteredFiles = useMemo(() => {
+    if (activeFilter === "all") return files;
+
+    return files.filter((file) => {
+      const type = file.type?.toLowerCase() || "";
+      switch (activeFilter) {
+        case "image":
+          return type.startsWith("image/");
+        case "video":
+          return type.startsWith("video/");
+        case "audio":
+          return type.startsWith("audio/");
+        case "document":
+          return (
+            type.includes("pdf") ||
+            type.includes("text") ||
+            type.includes("document") ||
+            type.includes("spreadsheet") ||
+            type.includes("presentation") ||
+            type.includes("word") ||
+            type.includes("excel") ||
+            type.includes("powerpoint")
+          );
+        case "other":
+          return (
+            !type.startsWith("image/") &&
+            !type.startsWith("video/") &&
+            !type.startsWith("audio/") &&
+            !type.includes("pdf") &&
+            !type.includes("text") &&
+            !type.includes("document") &&
+            !type.includes("spreadsheet") &&
+            !type.includes("word")
+          );
+        default:
+          return true;
+      }
+    });
+  }, [files, activeFilter]);
+
+  // ─── Then filter by search ─────────────────────────────────
   const filteredFiles = useMemo(() => {
-    if (!searchQuery.trim()) return files;
+    if (!searchQuery.trim()) return categoryFilteredFiles;
 
     const query = searchQuery.toLowerCase().trim();
 
-    return files.filter((file) => {
+    return categoryFilteredFiles.filter((file) => {
       const nameMatch = file.name?.toLowerCase().includes(query);
       const typeMatch = file.type?.toLowerCase().includes(query);
       const extension = file.name?.split(".").pop()?.toLowerCase();
@@ -66,12 +111,38 @@ const Dashboard = () => {
 
       return nameMatch || typeMatch || extensionMatch;
     });
-  }, [files, searchQuery]);
+  }, [categoryFilteredFiles, searchQuery]);
+
+  // ─── Compute storage used ──────────────────────────────────
+  const storageUsed = useMemo(() => {
+    return files.reduce((total, file) => total + (file.size || 0), 0);
+  }, [files]);
 
   const isSearching = searchQuery.trim().length > 0;
 
   const clearSearch = () => {
     setSearchQuery("");
+  };
+  
+  // Instead of passing all filteredFiles, slice them
+  const visibleFiles = filteredFiles.slice(0, visibleCount);
+  const hasMore = visibleCount < filteredFiles.length;
+
+  useEffect(() => {
+    setVisibleCount(20);
+  }, [searchQuery, activeFilter]);
+  // Category label for display
+  const getCategoryLabel = () => {
+    const labels = {
+      all: "All Files",
+      image: "Images",
+      video: "Videos",
+      audio: "Audio",
+      document: "Documents",
+      other: "Other Files",
+      shared: "Shared Files",
+    };
+    return labels[activeFilter] || "All Files";
   };
 
   const handleUploadComplete = () => {
@@ -121,7 +192,14 @@ const Dashboard = () => {
   };
 
   return (
-    <MainLayout onShowStats={() => setShowStats(true)}>
+    <MainLayout
+      onShowStats={() => setShowStats(true)}
+      onUpload={() => setShowUploadDialog(true)}
+      onFilterChange={setActiveFilter}
+      activeFilter={activeFilter}
+      storageUsed={storageUsed}
+      storageTotal={1073741824} // 1 GB — replace with actual limit from your API
+    >
       {/* Sticky toolbar */}
       <div className="sticky top-0 z-10 -mx-6 mb-6 border-b border-border/60 bg-background/80 px-6 pb-5 backdrop-blur-xl">
         {/* Top row: title + actions */}
@@ -131,7 +209,7 @@ const Dashboard = () => {
               className="font-display text-2xl tracking-tight text-foreground md:text-3xl"
               data-testid="dashboard-title"
             >
-              {isSearching ? "Search Results" : "My Files"}
+              {isSearching ? "Search Results" : getCategoryLabel()}
             </h1>
             <p className="mt-1 text-sm text-muted-foreground">
               {isSearching ? (
@@ -145,7 +223,8 @@ const Dashboard = () => {
                 </>
               ) : (
                 <>
-                  {files.length} file{files.length !== 1 && "s"}
+                  {filteredFiles.length} file
+                  {filteredFiles.length !== 1 && "s"}
                 </>
               )}
             </p>
@@ -229,19 +308,13 @@ const Dashboard = () => {
           <p className="mt-4 text-sm text-muted-foreground">Loading files...</p>
         </div>
       ) : isSearching && filteredFiles.length === 0 ? (
-        <div
-          className="flex flex-col items-center justify-center py-20"
-          data-testid="no-results-state"
-        >
+        <div className="flex flex-col items-center justify-center py-20" data-testid="no-results-state">
           <div className="mb-5 grid h-16 w-16 place-items-center rounded-2xl bg-accent/5 border border-accent/10">
             <Search className="h-7 w-7 text-accent/60" />
           </div>
-          <h3 className="text-lg font-semibold text-foreground">
-            No results found
-          </h3>
+          <h3 className="text-lg font-semibold text-foreground">No results found</h3>
           <p className="mt-1.5 mb-6 text-sm text-muted-foreground">
-            No files match{" "}
-            <span className="font-medium">&ldquo;{searchQuery}&rdquo;</span>
+            No files match <span className="font-medium">&ldquo;{searchQuery}&rdquo;</span>
           </p>
           <button
             onClick={clearSearch}
@@ -252,14 +325,18 @@ const Dashboard = () => {
             Clear Search
           </button>
         </div>
-      ) : files.length === 0 ? (
+      ) : filteredFiles.length === 0 ? (
         <div className="flex flex-col items-center justify-center py-20" data-testid="empty-state">
           <div className="mb-5 grid h-16 w-16 place-items-center rounded-2xl bg-accent/5 border border-accent/10">
             <Upload className="h-7 w-7 text-accent/60" />
           </div>
-          <h3 className="text-lg font-semibold text-foreground">No files yet</h3>
+          <h3 className="text-lg font-semibold text-foreground">
+            {activeFilter === "all" ? "No files yet" : `No ${getCategoryLabel().toLowerCase()}`}
+          </h3>
           <p className="mt-1.5 mb-6 text-sm text-muted-foreground">
-            Upload your first file to get started
+            {activeFilter === "all"
+              ? "Upload your first file to get started"
+              : `You don't have any ${getCategoryLabel().toLowerCase()} yet`}
           </p>
           <button
             onClick={() => setShowUploadDialog(true)}
@@ -275,7 +352,7 @@ const Dashboard = () => {
         <div data-testid="files-container">
           {viewMode === "grid" ? (
             <FileGrid
-              files={filteredFiles}
+              files={visibleFiles}
               onFileClick={handleFileClick}
               onDelete={handleDeleteFile}
               onShare={handleShare}
@@ -283,12 +360,30 @@ const Dashboard = () => {
             />
           ) : (
             <FileList
-              files={filteredFiles}
+              // files={filteredFiles}
+              files={visibleFiles}
               onFileClick={handleFileClick}
               onDelete={handleDeleteFile}
               onShare={handleShare}
               onDownload={handleDownload}
             />
+          )}
+
+          {hasMore && (
+            <div className="mt-8 flex flex-col items-center gap-2">
+              <p className="text-xs text-muted-foreground">
+                Showing {visibleFiles.length} of {filteredFiles.length} files
+              </p>
+              <button
+                onClick={() => setVisibleCount((prev) => prev + 20)}
+                className="rounded-xl border border-border px-6 py-2.5 text-sm 
+          font-medium text-foreground transition-all duration-200 
+          hover:bg-accent/5 active:scale-[0.98]"
+                data-testid="load-more-btn"
+              >
+                Load More
+              </button>
+            </div>
           )}
         </div>
       )}
