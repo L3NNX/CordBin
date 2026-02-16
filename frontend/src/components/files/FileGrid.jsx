@@ -3,7 +3,6 @@ import {
   Image as ImageIcon,
   Video,
   FileText,
-  Folder as FolderIcon,
   MoreVertical,
   Download,
   Share2,
@@ -15,7 +14,6 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "../ui/dropdown-menu";
-// import { cn } from "../../lib/utils";
 
 const getFileIcon = (type) => {
   if (type.startsWith("image/")) return ImageIcon;
@@ -40,70 +38,15 @@ const formatDate = (isoDate) => {
 
 const FileGrid = ({
   files = [],
-  folders = [],
   onFileClick,
-  onFolderClick,
   onDelete,
   onShare,
   onDownload,
 }) => {
   const safeFiles = Array.isArray(files) ? files : [];
-  const safeFolders = Array.isArray(folders) ? folders : [];
 
   return (
     <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
-      {/* Folders */}
-      {safeFolders.map((folder) => (
-        <div
-          key={folder.id}
-          onClick={() => onFolderClick(folder.id)}
-          className="group relative cursor-pointer overflow-hidden rounded-xl border border-border bg-card
-            transition-all duration-200 hover:-translate-y-0.5 hover:border-accent/20 hover:shadow-md"
-          data-testid={`folder-card-${folder.id}`}
-        >
-          <div className="p-4">
-            <div className="mb-3 flex items-center justify-between">
-              <div className="grid h-10 w-10 place-items-center rounded-xl bg-accent/10">
-                <FolderIcon className="h-5 w-5 text-accent" />
-              </div>
-
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild onClick={(e) => e.stopPropagation()}>
-                  <button
-                    className="grid h-7 w-7 place-items-center rounded-lg text-muted-foreground
-                      opacity-0 transition-all duration-150 hover:bg-accent/5 hover:text-foreground group-hover:opacity-100"
-                    data-testid={`folder-menu-${folder.id}`}
-                  >
-                    <MoreVertical className="h-3.5 w-3.5" />
-                  </button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="end">
-                  <DropdownMenuItem
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      onDelete(folder.id);
-                    }}
-                    className="text-destructive focus:text-destructive"
-                    data-testid={`delete-folder-${folder.id}`}
-                  >
-                    <Trash2 className="mr-2 h-4 w-4" />
-                    Delete
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
-            </div>
-
-            <h3 className="truncate text-sm font-semibold text-foreground" data-testid={`folder-name-${folder.id}`}>
-              {folder.name}
-            </h3>
-            <p className="mt-0.5 font-mono text-[11px] text-muted-foreground">
-              {folder.fileCount} file{folder.fileCount !== 1 && "s"}
-            </p>
-          </div>
-        </div>
-      ))}
-
-      {/* Files */}
       {safeFiles.map((file) => {
         const Icon = getFileIcon(file.type);
 

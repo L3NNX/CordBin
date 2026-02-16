@@ -3,7 +3,6 @@ import {
   Image as ImageIcon,
   Video,
   FileText,
-  Folder as FolderIcon,
   Download,
   Share2,
   Trash2,
@@ -49,9 +48,8 @@ const ActionButton = ({ onClick, label, destructive, children }) => (
   </button>
 );
 
-const FileList = ({ files = [], folders = [], onFileClick, onFolderClick, onDelete, onShare, onDownload }) => {
+const FileList = ({ files = [], onFileClick, onDelete, onShare, onDownload }) => {
   const safeFiles = Array.isArray(files) ? files : [];
-  const safeFolders = Array.isArray(folders) ? folders : [];
 
   return (
     <div className="space-y-1">
@@ -69,48 +67,6 @@ const FileList = ({ files = [], folders = [], onFileClick, onFolderClick, onDele
         </p>
         <div className="w-28" />
       </div>
-
-      {/* Folders */}
-      {safeFolders.map((folder) => (
-        <div
-          key={folder.id}
-          onClick={() => onFolderClick(folder.id)}
-          className="group flex cursor-pointer items-center gap-4 rounded-xl border border-transparent
-            px-4 py-3 transition-all duration-150
-            hover:border-accent/15 hover:bg-accent/[0.02]"
-          data-testid={`folder-list-item-${folder.id}`}
-        >
-          <div className="grid h-9 w-9 shrink-0 place-items-center rounded-lg bg-accent/10">
-            <FolderIcon className="h-4 w-4 text-accent" />
-          </div>
-
-          <div className="min-w-0 flex-1">
-            <p className="truncate text-sm font-medium text-foreground" data-testid={`folder-list-name-${folder.id}`}>
-              {folder.name}
-            </p>
-            <p className="mt-0.5 font-mono text-[11px] text-muted-foreground sm:hidden">
-              {folder.fileCount} file{folder.fileCount !== 1 && "s"}
-            </p>
-          </div>
-
-          <p className="hidden w-24 font-mono text-[11px] text-muted-foreground md:block">
-            {folder.fileCount} file{folder.fileCount !== 1 && "s"}
-          </p>
-
-          <p className="hidden w-28 text-[11px] text-muted-foreground lg:block">—</p>
-
-          <div className="flex w-28 items-center justify-end gap-1">
-            <ActionButton onClick={() => onDelete(folder.id)} label="Delete folder" destructive>
-              <Trash2 className="h-3.5 w-3.5" />
-            </ActionButton>
-          </div>
-        </div>
-      ))}
-
-      {/* Divider between folders and files */}
-      {safeFolders.length > 0 && safeFiles.length > 0 && (
-        <div className="mx-4 border-t border-border/40" />
-      )}
 
       {/* Files */}
       {safeFiles.map((file) => {
