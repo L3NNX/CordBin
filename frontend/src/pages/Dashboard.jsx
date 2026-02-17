@@ -7,6 +7,7 @@ import FileList from "../components/files/FileList";
 import FilePreviewModal from "../components/files/FilePreviewModal";
 import ShareModal from "../components/files/ShareModal";
 import StorageDashboard from "../components/dashboard/StorageDashboard";
+import { useAuth } from "../hooks/useAuth";
 import { Grid, List, Upload, Search, X } from "lucide-react";
 import {
   Dialog,
@@ -18,6 +19,7 @@ import { fileService } from "../service/services";
 import { cn } from "../lib/utils";
 
 const Dashboard = () => {
+  const { logout } = useAuth();
   const [files, setFiles] = useState([]);
   const [viewMode, setViewMode] = useState("grid");
   const [searchQuery, setSearchQuery] = useState("");
@@ -197,6 +199,7 @@ const Dashboard = () => {
       onUpload={() => setShowUploadDialog(true)}
       onFilterChange={setActiveFilter}
       activeFilter={activeFilter}
+      onLogout={logout}
       storageUsed={storageUsed}
       storageTotal={1073741824} // 1 GB — replace with actual limit from your API
     >

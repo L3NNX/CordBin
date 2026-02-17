@@ -18,6 +18,7 @@ import {
   Music,
   File as FileIcon,
   Share2,
+  LogOut,
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { cn } from "../../lib/utils";
@@ -28,6 +29,7 @@ const SidebarContent = ({
   onFilterChange,
   activeFilter,
   storageUsed,
+  onLogout,
   storageTotal,
   setMobileSidebarOpen,
   theme,
@@ -136,7 +138,7 @@ const SidebarContent = ({
         </div>
 
         {/* Shared Files link */}
-        <div className="mt-6">
+        {/* <div className="mt-6">
           <p className="mb-2 px-3 font-mono text-[11px] uppercase tracking-[0.12em] text-muted-foreground/50">
             Quick Access
           </p>
@@ -153,7 +155,7 @@ const SidebarContent = ({
             <Share2 className="h-4 w-4 shrink-0" />
             <span className="flex-1 text-left">Shared Files</span>
           </button>
-        </div>
+        </div> */}
       </nav>
 
       {/* Storage Usage Mini Card */}
@@ -219,12 +221,25 @@ const SidebarContent = ({
             {theme === "dark" ? "Light Mode" : "Dark Mode"}
           </span>
         </button>
+
+          <button
+          onClick={() => {
+            setMobileSidebarOpen(false);
+            onLogout();
+          }}
+          data-testid="logout-btn"
+          className="group flex w-full items-center gap-3 rounded-xl px-3 h-10 text-sm text-muted-foreground
+            transition-colors duration-150 hover:bg-destructive/10 hover:text-destructive"
+        >
+          <LogOut className="h-4 w-4 shrink-0" />
+          <span className="flex-1 text-left">Log Out</span>
+        </button>
       </div>
     </div>
   );
 };
 
-const MainLayout = ({ children, onShowStats, onUpload, onFilterChange, activeFilter, storageUsed = 0, storageTotal = 1073741824 }) => {
+const MainLayout = ({ children, onShowStats, onUpload, onFilterChange, onLogout, activeFilter, storageUsed = 0, storageTotal = 1073741824 }) => {
   const { theme, setTheme } = useTheme();
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
@@ -245,6 +260,7 @@ const MainLayout = ({ children, onShowStats, onUpload, onFilterChange, activeFil
             onShowStats={onShowStats}
             onUpload={onUpload}
             onFilterChange={onFilterChange}
+            onLogout={onLogout}
             activeFilter={activeFilter}
             storageUsed={storageUsed}
             storageTotal={storageTotal}
@@ -276,6 +292,7 @@ const MainLayout = ({ children, onShowStats, onUpload, onFilterChange, activeFil
               onShowStats={onShowStats}
               onUpload={onUpload}
               onFilterChange={onFilterChange}
+               onLogout={onLogout}
               activeFilter={activeFilter}
               storageUsed={storageUsed}
               storageTotal={storageTotal}

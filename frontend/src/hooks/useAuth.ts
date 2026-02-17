@@ -14,5 +14,12 @@ export function useAuth() {
       .finally(() => setLoading(false));
   }, []);
 
-  return { user, loading };
+     const logout = () => {
+    localStorage.removeItem("accessToken");
+    setUser(null);
+    window.location.href = "/";
+  };
+
+
+  return { user, loading,logout  };
 }
