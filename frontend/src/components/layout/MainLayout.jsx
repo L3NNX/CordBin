@@ -336,7 +336,7 @@ const MainLayout = ({ children, onShowStats, onUpload, onFilterChange, onLogout,
         </header>
 
         {/* Content Area */}
-        <main className="flex-1 overflow-auto p-6">{children}</main>
+        <main className="flex-1 overflow-auto px-6 pb-6">{children}</main>
       </div>
     </div>
   );

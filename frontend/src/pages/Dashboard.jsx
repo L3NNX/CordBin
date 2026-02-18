@@ -204,7 +204,7 @@ const Dashboard = () => {
       storageTotal={1073741824} // 1 GB — replace with actual limit from your API
     >
       {/* Sticky toolbar */}
-      <div className="sticky top-0 z-10 -mx-6 mb-6 border-b border-border/60 bg-background/80 px-6 pb-5 backdrop-blur-xl">
+      <div className="sticky top-0 z-10 -mx-6 mb-6 border-b border-border/60 bg-background/80 px-6 pt-6 pb-5 backdrop-blur-xl">
         {/* Top row: title + actions */}
         <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <div>
