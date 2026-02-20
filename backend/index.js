@@ -5,7 +5,6 @@ import connectDB from "./src/db/connectDB.js";
 import fileRoutes from "./src/routes/file.routes.js";
 import userRoutes from "./src/routes/user.routes.js";
 dotenv.config();
-console.log("DISCORD_BOT_TOKEN =", process.env.DISCORD_BOT_TOKEN);
 const app = express();
 const PORT = process.env.PORT || 3000;
 // const FRONTEND_ORIGIN =
@@ -25,6 +24,14 @@ app.use("/api/files", fileRoutes);
 
 app.get("/", (req, res) => {
   res.send("Discord Bot Server is running!");
+});
+
+app.get("/health", (req, res) => {
+  res.status(200).json({
+    status: "ok",
+    uptime: process.uptime(),
+    timestamp: new Date().toISOString(),
+  });
 });
 
 connectDB()
