@@ -16,7 +16,7 @@ const Landing = () => {
   // const navigate = useNavigate();
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-background text-foreground">
       <Navbar />
       <Hero />
       <Features />
