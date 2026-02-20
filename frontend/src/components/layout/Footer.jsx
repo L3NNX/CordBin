@@ -1,5 +1,4 @@
-import React from 'react';
-import { HardDrive } from 'lucide-react';
+
 
 const footerLinks = [
   {
@@ -38,9 +37,13 @@ const Footer = () => {
           {/* Brand */}
           <div>
             <a href="/" className="mb-6 flex items-center gap-3">
-              <div className="grid h-9 w-9 place-items-center rounded-xl gradient-accent shadow-accent-sm">
-                <HardDrive className="h-4 w-4 text-accent-foreground" />
-              </div>
+              <div className="h-9 w-9">
+              <img
+                src="/favicon.svg"
+                alt="StashBox Logo"
+                className="h-full w-full"
+              />
+            </div>
               <span className="font-display text-lg text-foreground">StashBox</span>
             </a>
             <p className="max-w-xs text-sm leading-relaxed text-muted-foreground">

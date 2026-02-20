@@ -1,0 +1,24 @@
+<svg width="512" height="512" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Smooth Continuous Corner Background -->
+  <rect width="512" height="512" rx="128" fill="url(#paint0_linear)" />
+  
+  <!-- Minimalist Isometric Box Shape -->
+  <!-- Top Face -->
+  <path d="M256 160L360 215L256 270L152 215L256 160Z" fill="white" fill-opacity="0.9"/>
+  
+  <!-- Right Face (Discord Color Shade) -->
+  <path d="M360 215V315L256 370V270L360 215Z" fill="white" fill-opacity="0.4"/>
+  
+  <!-- Left Face (Subtle darker shade) -->
+  <path d="M152 215V315L256 370V270L152 215Z" fill="white" fill-opacity="0.6"/>
+  
+  <!-- Modern "Stash" Slot (Minimalist Line) -->
+  <path d="M210 210L256 235L302 210" stroke="#5865F2" stroke-width="12" stroke-linecap="round" stroke-linejoin="round"/>
+
+  <defs>
+    <linearGradient id="paint0_linear" x1="0" y1="0" x2="512" y2="512" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#5865F2" />
+      <stop offset="1" stop-color="#727CF5" />
+    </linearGradient>
+  </defs>
+</svg>

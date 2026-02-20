@@ -1,6 +1,6 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { HardDrive, ArrowRight } from 'lucide-react';
+import { ArrowRight } from 'lucide-react';
 import { useAuth } from '../../hooks/useAuth';
 import { API_CONFIG } from '../../config/api';
 
@@ -26,8 +26,12 @@ const Navbar = () => {
         <div className="flex h-16 items-center justify-between md:h-18">
           {/* Brand */}
           <a href="/" className="flex items-center gap-3" data-testid="logo">
-            <div className="grid h-9 w-9 place-items-center rounded-xl gradient-accent shadow-accent-sm">
-              <HardDrive className="h-4 w-4 text-accent-foreground" />
+            <div className="h-9 w-9">
+              <img
+                src="/favicon.svg"
+                alt="StashBox Logo"
+                className="h-full w-full"
+              />
             </div>
             <span className="font-display text-lg text-foreground">
               StashBox

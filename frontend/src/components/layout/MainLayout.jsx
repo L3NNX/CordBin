@@ -73,9 +73,13 @@ const SidebarContent = ({
             handleNav("all");
           }}
         >
-          <div className="grid h-10 w-10 place-items-center rounded-xl gradient-accent shadow-accent-sm">
-            <HardDrive className="h-5 w-5 text-accent-foreground" />
-          </div>
+           <div className="h-9 w-9">
+              <img
+                src="/favicon.svg"
+                alt="StashBox Logo"
+                className="h-full w-full"
+              />
+            </div>
           <div>
             <h2
               className="font-display text-lg leading-none tracking-tight"
