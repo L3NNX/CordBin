@@ -31,7 +31,7 @@ const Dashboard = () => {
   const [showStats, setShowStats] = useState(false);
   const [loading, setLoading] = useState(false);
   const [visibleCount, setVisibleCount] = useState(20);
-
+ const [isUploading, setIsUploading] = useState(false);
 
   useEffect(() => {
     loadFiles();
@@ -145,6 +145,14 @@ const Dashboard = () => {
       shared: "Shared Files",
     };
     return labels[activeFilter] || "All Files";
+  };
+
+    const handleUploadDialogChange = (open) => {
+    if (!open && isUploading) {
+      toast.warning("Please wait for uploads to finish");
+      return;
+    }
+    setShowUploadDialog(open);
   };
 
   const handleUploadComplete = () => {
@@ -392,12 +400,30 @@ const Dashboard = () => {
       )}
 
       {/* Upload Dialog */}
-      <Dialog open={showUploadDialog} onOpenChange={setShowUploadDialog}>
-        <DialogContent data-testid="upload-dialog">
+      <Dialog open={showUploadDialog} onOpenChange={handleUploadDialogChange}>
+        <DialogContent data-testid="upload-dialog"   onPointerDownOutside={(e) => {
+            if (isUploading) e.preventDefault();
+          }}
+          // ← NEW: block escape key during uploads
+          onEscapeKeyDown={(e) => {
+            if (isUploading) e.preventDefault();
+          }}
+          // ← NEW: block any outside interaction during uploads
+          onInteractOutside={(e) => {
+            if (isUploading) e.preventDefault();
+          }}>
           <DialogHeader>
-            <DialogTitle>Upload Files</DialogTitle>
+                        <DialogTitle className="flex items-center gap-2">
+              Upload Files
+              {isUploading && (
+                <span className="inline-flex items-center gap-1.5 rounded-full bg-accent/10 px-2.5 py-0.5 text-[11px] font-medium text-accent">
+                  <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-accent" />
+                  Uploading…
+                </span>
+              )}
+            </DialogTitle>
           </DialogHeader>
-          <FileUploadZone onUploadComplete={handleUploadComplete} />
+          <FileUploadZone onUploadComplete={handleUploadComplete} onUploadingChange={setIsUploading} />
         </DialogContent>
       </Dialog>
 

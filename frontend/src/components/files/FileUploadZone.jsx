@@ -303,7 +303,7 @@
 // export default FileUploadZone;
 
 
-import { useState, useCallback, useRef } from 'react';
+import { useState, useCallback, useRef, useEffect } from 'react';
 import { useDropzone } from 'react-dropzone';
 import { Upload, File, X, CheckCircle, AlertCircle, RotateCcw, Cloud, ArrowUpRight } from 'lucide-react';
 import { fileService } from '../../service/services';
@@ -318,13 +318,17 @@ const formatSize = (bytes) => {
   return (bytes / (1024 * 1024)).toFixed(1) + " MB";
 };
 
-const FileUploadZone = ({ onUploadComplete }) => {
+const FileUploadZone = ({ onUploadComplete,onUploadingChange  }) => {
   const [uploadQueue, setUploadQueue] = useState([]);
   const { toast } = useToast();
   const activeUploadsRef = useRef(0);
   const totalFilesRef = useRef(0);
   const completedFilesRef = useRef(0);
   const hasErrorRef = useRef(false);
+   const isUploading = uploadQueue.some(f => f.status === 'uploading');
+  useEffect(() => {
+    onUploadingChange?.(isUploading);
+  }, [isUploading, onUploadingChange]);
 
   // Update a single file in the queue
   const updateFile = useCallback((fileId, updates) => {
@@ -473,7 +477,7 @@ const FileUploadZone = ({ onUploadComplete }) => {
   const uploading = uploadQueue.filter(f => f.status === 'uploading');
   const completed = uploadQueue.filter(f => f.status === 'complete');
   const failed = uploadQueue.filter(f => f.status === 'error');
-  const isUploading = uploading.length > 0;
+  // const isUploading = uploading.length > 0;
 
   // Overall progress
   const overallProgress = uploadQueue.length > 0
