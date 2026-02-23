@@ -1,3 +1,4 @@
+import { API_CONFIG } from "../../config/api";
 import { Dialog, DialogContent } from "../ui/dialog";
 import { Download, Share2, X, FileQuestion } from "lucide-react";
 
@@ -14,7 +15,8 @@ const FilePreviewModal = ({ file, open, onClose, onDownload, onShare }) => {
   const isPDF = ext === "pdf";
   const isVideo = ["mp4", "webm", "mov"].includes(ext);
   const isText = ["txt", "md", "json"].includes(ext);
-  const previewUrl = `${import.meta.env.VITE_API_URL}/api/files/preview/${file.id}`;
+  // const previewUrl = `${import.meta.env.VITE_API_URL}/api/files/preview/${file.id}`;
+    const previewUrl = `${API_CONFIG.BASE_URL}${API_CONFIG.ENDPOINTS.FILE_PREVIEW}/${file.id}`;
 
   const canPreview = isImage || isPDF || isVideo || isText;
 
