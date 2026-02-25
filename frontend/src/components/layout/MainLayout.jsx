@@ -94,7 +94,7 @@ const SidebarContent = ({
         </button>
       </div>
 
-      {/* Upload Button */}
+      {/* Upload Button
       <div className="px-3 pb-4">
         <button
           onClick={() => {
@@ -109,7 +109,7 @@ const SidebarContent = ({
           <Upload className="h-4 w-4" />
           Upload Files
         </button>
-      </div>
+      </div> */}
 
       {/* Navigation Categories */}
       <nav className="flex flex-1 flex-col overflow-hidden px-3">
