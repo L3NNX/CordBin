@@ -14,6 +14,7 @@ export const API_CONFIG = {
     FILE_LIST: "/api/files/list",
     FILE_DELETE: "/api/files/delete",
     FILE_DATA: "/api/files/filedata",
+    FILE_DOWNLOAD: "/api/files/download",
   },
 };
 

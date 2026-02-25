@@ -1,10 +1,9 @@
+// components/layout/Navbar.tsx
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
-import { ArrowRight } from 'lucide-react';
-import { useAuth } from '../../hooks/useAuth';
-import { API_CONFIG } from '../../config/api';
 import { useTheme } from "next-themes";
-import { Moon, Sun } from "lucide-react";
+import { Moon, Sun, ArrowRight } from "lucide-react";
+import { API_CONFIG } from '../../config/api';
+
 const navLinks = [
   { label: 'Features', href: '#features' },
   { label: 'Pricing', href: '#pricing' },
@@ -13,10 +12,6 @@ const navLinks = [
 
 const Navbar = () => {
   const { theme, setTheme } = useTheme();
-  const navigate = useNavigate();
-  const { user, loading } = useAuth();
-
-  if (loading) return null;
 
   const handleAuth = () => {
     window.location.href = `${API_CONFIG.BASE_URL}${API_CONFIG.ENDPOINTS.AUTH_GOOGLE_REDIRECT}`;
@@ -59,8 +54,8 @@ const Navbar = () => {
             <button
               onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
               className="grid h-9 w-9 place-items-center rounded-xl border border-border/60
-      text-muted-foreground transition-all duration-150
-      hover:bg-accent/5 hover:text-foreground"
+                text-muted-foreground transition-all duration-150
+                hover:bg-accent/5 hover:text-foreground"
               aria-label="Toggle theme"
             >
               {theme === "dark" ? (
@@ -70,31 +65,18 @@ const Navbar = () => {
               )}
             </button>
 
-            {!user ? (
-              <button
-                onClick={handleAuth}
-                className="group flex items-center gap-2 rounded-xl gradient-accent
-        px-5 py-2 text-sm font-medium text-accent-foreground shadow-sm
-        transition-all duration-200
-        hover:-translate-y-0.5 hover:shadow-accent-sm
-        active:scale-[0.98]"
-              >
-                Get Started
-                <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
-              </button>
-            ) : (
-              <button
-                onClick={() => navigate('/dashboard')}
-                className="group flex items-center gap-2 rounded-xl gradient-accent
-        px-5 py-2 text-sm font-medium text-accent-foreground shadow-sm
-        transition-all duration-200
-        hover:-translate-y-0.5 hover:shadow-accent-sm
-        active:scale-[0.98]"
-              >
-                Dashboard
-                <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
-              </button>
-            )}
+            {/* Always show Sign in — no loading state needed */}
+            <button
+              onClick={handleAuth}
+              className="group flex items-center gap-2 rounded-xl gradient-accent
+                px-5 py-2 text-sm font-medium text-accent-foreground shadow-sm
+                transition-all duration-200
+                hover:-translate-y-0.5 hover:shadow-accent-sm
+                active:scale-[0.98]"
+            >
+              Get Started
+              <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
+            </button>
           </div>
         </div>
       </div>
