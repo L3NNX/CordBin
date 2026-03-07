@@ -20,6 +20,7 @@ export const initaliseFileUpload = async (req, res) => {
       fileType,
       ownerId: userId,
       totalChunks,
+      status: 'uploading',
       chunksMetadata: Array.from({ length: totalChunks }, (_, i) => ({
         chunkIndex: i + 1,
         messageId: "",
@@ -93,6 +94,13 @@ export const uploadChunk = async (req, res) => {
         throw new Error(`Invalid chunk index: ${chunkIndex}`);
       }
       metaData.chunksMetadata[chunkIdx].messageId = message.id;
+      const uploadedCount = metaData.chunksMetadata.filter(
+        (c) => c.messageId && c.messageId !== ""
+      ).length;
+      if (uploadedCount >= metaData.totalChunks) {
+        metaData.status = 'complete';
+        console.log(`✅ All ${metaData.totalChunks} chunks uploaded. File marked complete.`);
+      }
       await metaData.save();
     } catch (saveError) {
       console.error("Failed to update metadata:", saveError);
@@ -134,6 +142,10 @@ export const downloadFile = async (req, res) => {
 
     if (!metaData) {
       return res.status(404).json({ message: "File not found" });
+    }
+
+     if (metaData.status !== 'complete') {
+      return res.status(400).json({ message: "File upload is not complete" });
     }
 
     // Validate metadata has required fields
@@ -286,7 +298,10 @@ export const previewFile = async (req, res) => {
     return res.status(404).json({ message: "File not found" });
   }
 
-  // IMPORTANT: inline, not attachment
+   if (metaData.status !== 'complete') {
+    return res.status(400).json({ message: "File upload is not complete" });
+  }
+
   res.setHeader("Content-Type", metaData.fileType);
   res.setHeader(
     "Content-Disposition",
@@ -302,9 +317,25 @@ export const listALlFiles = async (req, res) => {
     const userId = req.userId;
     const files = await metaDataModel
       .find({ ownerId: userId })
-      .select("fileName fileSize fileType totalChunks uploadDate _id")
+       .select("fileName fileSize fileType totalChunks uploadDate status chunksMetadata _id")
       .sort({ uploadDate: -1 });
-    res.status(200).json({ files });
+       const formatted = files.map((file) => {
+       const chunksUploaded = file.chunksMetadata
+        ? file.chunksMetadata.filter((c) => c.messageId && c.messageId !== "").length
+        : 0;
+
+      return {
+        _id: file._id,
+        fileName: file.fileName,
+        fileSize: file.fileSize,
+        fileType: file.fileType,
+        totalChunks: file.totalChunks,
+        uploadDate: file.uploadDate,
+        status: file.status || 'complete',
+        chunksUploaded,
+      };
+    });
+   res.status(200).json({ files: formatted });
   } catch (error) {
     console.error("Error listing files:", error);
     res.status(500).json({ message: "Internal server error" });

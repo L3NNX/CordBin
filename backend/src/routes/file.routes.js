@@ -15,7 +15,7 @@ const router = Router();
 
 router.post("/upload/init",verifyJWT, initaliseFileUpload);
 // router.post("/upload/init", initaliseFileUpload);
-router.post("/upload/chunk", upload.single("chunk"), uploadChunk);
+router.post("/upload/chunk", verifyJWT, upload.single("chunk"), uploadChunk);
 router.get("/download/:fileId", downloadFile);
 router.get("/list",verifyJWT, listALlFiles);
 // router.get("/list", listALlFiles);

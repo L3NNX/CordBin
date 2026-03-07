@@ -15,7 +15,11 @@ const metaDataSchema = new mongoose.Schema({
   ownerId: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
 
   totalChunks: { type: Number, required: true },
-
+   status: {
+    type: String,
+    enum: ['uploading', 'complete', 'failed'],
+    default: 'uploading',
+  },
   chunksMetadata: {
     type: [chunkSchema],
     default: [],

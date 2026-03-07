@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo,useRef } from "react";
 import { toast } from "sonner";
 import MainLayout from "../components/layout/MainLayout";
 import FileUploadZone from "../components/files/FileUploadZone";
@@ -7,6 +7,7 @@ import FileList from "../components/files/FileList";
 import FilePreviewModal from "../components/files/FilePreviewModal";
 import ShareModal from "../components/files/ShareModal";
 import StorageDashboard from "../components/dashboard/StorageDashboard";
+import IncompleteFileBanner from "../components/files/IncompleteFileBanner";
 import { useAuth } from "../hooks/useAuth";
 import { Grid, List, Upload, Search, X } from "lucide-react";
 import {
@@ -21,6 +22,8 @@ import { cn } from "../lib/utils";
 const Dashboard = () => {
   const { logout } = useAuth();
   const [files, setFiles] = useState([]);
+    const [incompleteFiles, setIncompleteFiles] = useState([]);
+      const [showIncompleteBanner, setShowIncompleteBanner] = useState(true);
   const [viewMode, setViewMode] = useState("grid");
   const [searchQuery, setSearchQuery] = useState("");
   const [activeFilter, setActiveFilter] = useState("all");
@@ -36,20 +39,38 @@ const Dashboard = () => {
   useEffect(() => {
     loadFiles();
   }, []);
-
-  const loadFiles = async () => {
+const loadFiles = async () => {
     try {
       setLoading(true);
       const response = await fileService.listFiles();
-      const transformedFiles = response.files.map((file) => ({
-        id: file._id,
-        name: file.fileName,
-        type: file.fileType,
-        size: file.fileSize,
-        uploadedAt: file.uploadDate,
-        thumbnailId: file.thumbnail || null,
-      }));
-      setFiles(transformedFiles);
+
+      const complete = [];
+      const incomplete = [];
+
+      response.files.forEach((file) => {
+        const transformed = {
+          id: file._id,
+          name: file.fileName,
+          type: file.fileType,
+          size: file.fileSize,
+          uploadedAt: file.uploadDate,
+          thumbnailId: file.thumbnail || null,
+          status: file.status || 'complete',
+          chunksUploaded: file.chunksUploaded || 0,
+          totalChunks: file.totalChunks || 1,
+        };
+
+        if (!file.status || file.status === 'complete') {
+          complete.push(transformed);
+        } else {
+          // 'uploading' or 'failed'
+          incomplete.push(transformed);
+        }
+      });
+
+      setFiles(complete);
+      setIncompleteFiles(incomplete);
+      setShowIncompleteBanner(incomplete.length > 0);
     } catch (error) {
       console.error("Error loading files:", error);
       toast.error("Failed to load files");
@@ -170,6 +191,21 @@ const Dashboard = () => {
       console.error("Error deleting file:", error);
       toast.error("Failed to delete file");
     }
+  };
+
+    const handleDeleteIncomplete = async (fileId) => {
+    try {
+      await fileService.deleteFile([fileId]);
+      setIncompleteFiles(prev => prev.filter(f => f.id !== fileId));
+      toast.success("Incomplete file removed");
+    } catch (error) {
+      toast.error("Failed to remove file");
+    }
+  };
+const handleRetryIncomplete = async (file) => {
+    await handleDeleteIncomplete(file.id);
+    setShowUploadDialog(true);
+    toast.info(`Re-upload "${file.name}" — select the file again`);
   };
 
   const handleFileClick = (file) => {
@@ -311,6 +347,15 @@ const Dashboard = () => {
           </div>
         </div>
       </div>
+
+      {showIncompleteBanner && (
+        <IncompleteFileBanner
+          files={incompleteFiles}
+          onRetry={handleRetryIncomplete}
+          onDelete={handleDeleteIncomplete}
+          onDismiss={() => setShowIncompleteBanner(false)}
+        />
+      )}
 
       {/* Content area */}
       {loading ? (
