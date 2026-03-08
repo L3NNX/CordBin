@@ -76,7 +76,7 @@ const SidebarContent = ({
            <div className="h-9 w-9">
               <img
                 src="/favicon.svg"
-                alt="StashBox Logo"
+                alt="CordBin Logo"
                 className="h-full w-full"
               />
             </div>
@@ -85,7 +85,7 @@ const SidebarContent = ({
               className="font-display text-lg leading-none tracking-tight"
               data-testid="app-title"
             >
-              StashBox
+              CordBin
             </h2>
             <p className="mt-1 text-[11px] text-muted-foreground">
               Modern file storage

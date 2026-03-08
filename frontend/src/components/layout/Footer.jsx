@@ -40,11 +40,11 @@ const Footer = () => {
               <div className="h-9 w-9">
               <img
                 src="/favicon.svg"
-                alt="StashBox Logo"
+                alt="CordBin Logo"
                 className="h-full w-full"
               />
             </div>
-              <span className="font-display text-lg text-foreground">StashBox</span>
+              <span className="font-display text-lg text-foreground">CordBin</span>
             </a>
             <p className="max-w-xs text-sm leading-relaxed text-muted-foreground">
               Secure file storage and sharing for everyone. Built with privacy and simplicity in mind.
@@ -76,7 +76,7 @@ const Footer = () => {
         {/* Bottom bar */}
         <div className="border-t border-border/60 pt-8 text-center">
           <p className="text-sm text-muted-foreground/60">
-            © {new Date().getFullYear()} StashBox. All rights reserved.
+            © {new Date().getFullYear()} CordBin. All rights reserved.
           </p>
         </div>
       </div>

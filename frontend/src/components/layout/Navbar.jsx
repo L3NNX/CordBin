@@ -26,12 +26,12 @@ const Navbar = () => {
             <div className="h-9 w-9">
               <img
                 src="/favicon.svg"
-                alt="StashBox Logo"
+                alt="CordBin Logo"
                 className="h-full w-full"
               />
             </div>
             <span className="font-display text-lg text-foreground">
-              StashBox
+              CordBin
             </span>
           </a>
 

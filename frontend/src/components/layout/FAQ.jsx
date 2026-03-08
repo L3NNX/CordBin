@@ -53,7 +53,7 @@ const FAQ = () => {
           </h2>
 
           <p className="mt-5 text-base text-muted-foreground sm:text-lg" data-testid="faq-description">
-            Everything you need to know about StashBox
+            Everything you need to know about CordBin
           </p>
         </div>
 

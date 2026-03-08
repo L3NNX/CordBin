@@ -7,14 +7,14 @@ const testimonials = [
     role: "Marketing Director",
     company: "TechCorp",
     content:
-      "StashBox has transformed how our team shares and manages files. The interface is intuitive and the sharing features are exactly what we needed.",
+      "CordBin has transformed how our team shares and manages files. The interface is intuitive and the sharing features are exactly what we needed.",
   },
   {
     name: "Michael Chen",
     role: "Freelance Designer",
     company: "Independent",
     content:
-      "I've tried many file storage solutions, but StashBox is by far the best. Fast, secure, and incredibly easy to use. Highly recommended!",
+      "I've tried many file storage solutions, but CordBin is by far the best. Fast, secure, and incredibly easy to use. Highly recommended!",
     featured: true,
   },
   {
