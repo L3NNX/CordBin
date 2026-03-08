@@ -1,7 +1,8 @@
 import { AttachmentBuilder } from "discord.js";
+import crypto from "crypto";     
 import metaDataModel from "../models/metaData.js";
 import client from "../utils/discord.js";
-
+import { encryptChunk, decryptChunk } from "../utils/encryption.js";
 client.login(process.env.DISCORD_BOT_TOKEN);
 
 export const initaliseFileUpload = async (req, res) => {
@@ -21,6 +22,7 @@ export const initaliseFileUpload = async (req, res) => {
       ownerId: userId,
       totalChunks,
       status: 'uploading',
+      isEncrypted: true,
       chunksMetadata: Array.from({ length: totalChunks }, (_, i) => ({
         chunkIndex: i + 1,
         messageId: "",
@@ -57,8 +59,12 @@ export const uploadChunk = async (req, res) => {
       return res.status(400).json({ message: "Chunk file buffer is missing" });
     }
 
-    const attachment = new AttachmentBuilder(chunk.buffer, {
-      name: `${metaData.fileName}.part${chunkIndex}`,
+     const { encrypted, iv } = encryptChunk(chunk.buffer, fileId);
+      // ✅ OBFUSCATE the filename — Discord sees random name, not original
+    const obfuscatedName = `${crypto.randomBytes(6).toString("hex")}_${chunkIndex}.enc`;
+    
+    const attachment = new AttachmentBuilder(encrypted, {
+      name: obfuscatedName, // ✅ Not "test.txt.part1" anymore
     });
 
     let channel;
@@ -75,7 +81,7 @@ export const uploadChunk = async (req, res) => {
     let message;
     try {
       message = await channel.send({
-        content: `Chunk ${chunkIndex} of ${metaData.fileName}`,
+       content: `chunk_${chunkIndex}`,
         files: [attachment],
       });
     } catch (sendError) {
@@ -94,6 +100,7 @@ export const uploadChunk = async (req, res) => {
         throw new Error(`Invalid chunk index: ${chunkIndex}`);
       }
       metaData.chunksMetadata[chunkIdx].messageId = message.id;
+       metaData.chunksMetadata[chunkIdx].iv = iv; // Save IV for this chunk
       const uploadedCount = metaData.chunksMetadata.filter(
         (c) => c.messageId && c.messageId !== ""
       ).length;
@@ -258,6 +265,27 @@ const streamFileFromDiscord = async (metaData, res) => {
           throw new Error(
             `Failed to process chunk ${chunkMetadata.chunkIndex}`
           );
+        }
+
+          if (metaData.isEncrypted && chunkMetadata.iv) {
+          try {
+            chunkBuffer = decryptChunk(
+              chunkBuffer,
+              metaData._id.toString(),
+              chunkMetadata.iv
+            );
+            console.log(
+              `Chunk ${chunkMetadata.chunkIndex} decrypted: ${chunkBuffer.length} bytes`
+            );
+          } catch (decryptError) {
+            console.error(
+              `Decryption failed for chunk ${chunkMetadata.chunkIndex}:`,
+              decryptError
+            );
+            throw new Error(
+              `Failed to decrypt chunk ${chunkMetadata.chunkIndex}`
+            );
+          }
         }
 
         // Stream chunk directly to response

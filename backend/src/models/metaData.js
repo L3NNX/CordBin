@@ -4,6 +4,7 @@ const chunkSchema = new mongoose.Schema(
   {
     chunkIndex: { type: Number, required: true },
     messageId: { type: String },
+     iv: { type: String },  // encryption IV per chunk (hex string)
   },
   { _id: false }
 );
@@ -20,6 +21,7 @@ const metaDataSchema = new mongoose.Schema({
     enum: ['uploading', 'complete', 'failed'],
     default: 'uploading',
   },
+  isEncrypted: { type: Boolean, default: true },
   chunksMetadata: {
     type: [chunkSchema],
     default: [],
