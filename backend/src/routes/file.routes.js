@@ -4,6 +4,7 @@ import {
   downloadFile,
   initaliseFileUpload,
   uploadChunk,
+    uploadStatus,
   listALlFiles,
   fileDelete,
   fileDetails,
@@ -18,10 +19,9 @@ router.post("/upload/init",verifyJWT, initaliseFileUpload);
 router.post("/upload/chunk", verifyJWT, upload.single("chunk"), uploadChunk);
 router.get("/download/:fileId", downloadFile);
 router.get("/list",verifyJWT, listALlFiles);
-// router.get("/list", listALlFiles);
 router.get("/preview/:fileId", previewFile);
 router.delete("/delete",verifyJWT, fileDelete);
-// router.delete("/delete", fileDelete);
 router.post("/filedata", fileDetails);
+router.get("/upload/status/:fileId", verifyJWT, uploadStatus);
 
 export default router;

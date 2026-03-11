@@ -119,7 +119,19 @@ export const fileService = {
     } catch (error) {
       throw error.response?.data || error;
     }
-  }
+  },
+
+  // Status file
+  getUploadStatus: async (fileId) => {
+    try {
+      const response = await apiClient.get(
+        `${API_CONFIG.ENDPOINTS.FILE_UPLOAD_STATUS}/${fileId}`
+      );
+      return response.data;
+    } catch (error) {
+      throw error.response?.data || error;
+    }
+  },
 };
 
 export default apiClient;

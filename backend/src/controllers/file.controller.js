@@ -511,3 +511,38 @@ export const fileDetails = async (req, res) => {
     res.status(500).json({ message: "Internal server error" });
   }
 };
+
+
+export const uploadStatus = async (req, res) => {
+  try {
+    const { fileId } = req.params;
+    const userId = req.userId;
+
+    const metaData = await metaDataModel.findById(fileId);
+    if (!metaData) {
+      return res.status(404).json({ message: "File not found" });
+    }
+
+    if (metaData.ownerId?.toString() !== userId) {
+      return res.status(403).json({ message: "Not authorized" });
+    }
+
+    // Which chunks already have a Discord message (1-based indices)
+    const uploadedChunks = metaData.chunksMetadata
+      .filter((c) => c.messageId && c.messageId !== "")
+      .map((c) => c.chunkIndex);
+
+    res.status(200).json({
+      fileId: metaData._id,
+      fileName: metaData.fileName,
+      fileSize: metaData.fileSize,
+      fileType: metaData.fileType,
+      totalChunks: metaData.totalChunks,
+      uploadedChunks,
+      status: metaData.status,
+    });
+  } catch (error) {
+    console.error("Error getting upload status:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};

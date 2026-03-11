@@ -19,11 +19,13 @@ import {
 import { fileService } from "../service/services";
 import { cn } from "../lib/utils";
 
+const CHUNK_SIZE = 8 * 1024 * 1024; 
+
 const Dashboard = () => {
   const { logout } = useAuth();
   const [files, setFiles] = useState([]);
-    const [incompleteFiles, setIncompleteFiles] = useState([]);
-      const [showIncompleteBanner, setShowIncompleteBanner] = useState(true);
+  const [incompleteFiles, setIncompleteFiles] = useState([]);
+  const [showIncompleteBanner, setShowIncompleteBanner] = useState(true);
   const [viewMode, setViewMode] = useState("grid");
   const [searchQuery, setSearchQuery] = useState("");
   const [activeFilter, setActiveFilter] = useState("all");
@@ -34,8 +36,9 @@ const Dashboard = () => {
   const [showStats, setShowStats] = useState(false);
   const [loading, setLoading] = useState(false);
   const [visibleCount, setVisibleCount] = useState(20);
- const [isUploading, setIsUploading] = useState(false);
-
+  const [isUploading, setIsUploading] = useState(false);
+  const [resumingFiles, setResumingFiles] = useState({});
+  
   useEffect(() => {
     loadFiles();
   }, []);
@@ -78,6 +81,12 @@ const loadFiles = async () => {
       setLoading(false);
     }
   };
+
+  const formatSize = (bytes) => {
+  if (bytes < 1024) return bytes + " B";
+  if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + " KB";
+  return (bytes / (1024 * 1024)).toFixed(1) + " MB";
+};
 
   // ─── Filter by category ────────────────────────────────────
   const categoryFilteredFiles = useMemo(() => {
@@ -202,11 +211,116 @@ const loadFiles = async () => {
       toast.error("Failed to remove file");
     }
   };
-const handleRetryIncomplete = async (file) => {
-    await handleDeleteIncomplete(file.id);
-    setShowUploadDialog(true);
-    toast.info(`Re-upload "${file.name}" — select the file again`);
+const handleResumeUpload = async (incompleteFile, browserFile) => {
+    if (browserFile.size !== incompleteFile.size) {
+      toast.error(
+        `File size doesn't match. Expected ${formatSize(incompleteFile.size)} ` +
+        `but got ${formatSize(browserFile.size)}. Select the correct file.`
+      );
+      return;
+    }
+
+    const fileId = incompleteFile.id;
+
+    setResumingFiles((prev) => ({
+      ...prev,
+      [fileId]: { progress: 0, status: 'resuming' },
+    }));
+
+    try {
+      const status = await fileService.getUploadStatus(fileId);
+      const { uploadedChunks, totalChunks } = status;
+      const uploadedSet = new Set(uploadedChunks);
+
+      // Find missing chunks (1-based)
+      const missingChunks = [];
+      for (let i = 1; i <= totalChunks; i++) {
+        if (!uploadedSet.has(i)) missingChunks.push(i);
+      }
+
+      if (missingChunks.length === 0) {
+        toast.success(`"${incompleteFile.name}" is already fully uploaded!`);
+        setResumingFiles((prev) => ({
+          ...prev,
+          [fileId]: { progress: 100, status: 'complete' },
+        }));
+        loadFiles();
+        return;
+      }
+
+      toast.info(
+        `Resuming "${incompleteFile.name}" — ${missingChunks.length} of ${totalChunks} chunks remaining`
+      );
+
+      let completedCount = 0;
+      const initialProgress = Math.round((uploadedChunks.length / totalChunks) * 100);
+
+      setResumingFiles((prev) => ({
+        ...prev,
+        [fileId]: { progress: initialProgress, status: 'resuming' },
+      }));
+
+      for (const chunkIndex1Based of missingChunks) {
+        const chunkIndex0Based = chunkIndex1Based - 1;
+        const start = chunkIndex0Based * CHUNK_SIZE;
+        const end = Math.min(start + CHUNK_SIZE, browserFile.size);
+        const chunk = browserFile.slice(start, end);
+
+        // Retry logic
+        let lastError = null;
+        for (let attempt = 1; attempt <= 3; attempt++) {
+          try {
+            await fileService.uploadChunk(fileId, chunkIndex0Based, chunk, totalChunks);
+            lastError = null;
+            break;
+          } catch (err) {
+            lastError = err;
+            if (attempt < 3) await new Promise((r) => setTimeout(r, 2000 * Math.pow(2, attempt - 1)));
+          }
+        }
+        if (lastError) throw lastError;
+
+        completedCount++;
+        const progress = Math.round(
+          ((uploadedChunks.length + completedCount) / totalChunks) * 100
+        );
+        setResumingFiles((prev) => ({
+          ...prev,
+          [fileId]: { progress, status: 'resuming' },
+        }));
+      }
+
+      setResumingFiles((prev) => ({
+        ...prev,
+        [fileId]: { progress: 100, status: 'complete' },
+      }));
+      toast.success(`"${incompleteFile.name}" upload complete!`);
+
+      setTimeout(() => {
+        loadFiles();
+        setResumingFiles((prev) => {
+          const next = { ...prev };
+          delete next[fileId];
+          return next;
+        });
+      }, 2000);
+    } catch (error) {
+      console.error('Resume error:', error);
+      setResumingFiles((prev) => ({
+        ...prev,
+        [fileId]: { progress: 0, status: 'error' },
+      }));
+      toast.error(`Failed to resume "${incompleteFile.name}"`);
+      setTimeout(() => {
+        setResumingFiles((prev) => {
+          const next = { ...prev };
+          delete next[fileId];
+          return next;
+        });
+      }, 3000);
+    }
   };
+
 
   const handleFileClick = (file) => {
     setSelectedFile(file);
@@ -351,7 +465,8 @@ const handleRetryIncomplete = async (file) => {
       {showIncompleteBanner && (
         <IncompleteFileBanner
           files={incompleteFiles}
-          onRetry={handleRetryIncomplete}
+          resumingFiles={resumingFiles} 
+           onResume={handleResumeUpload} 
           onDelete={handleDeleteIncomplete}
           onDismiss={() => setShowIncompleteBanner(false)}
         />
