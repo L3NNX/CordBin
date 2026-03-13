@@ -17,6 +17,11 @@ export const API_CONFIG = {
     FILE_DOWNLOAD: "/api/files/download",
     FILE_PREVIEW: "/api/files/preview",
     FILE_UPLOAD_STATUS: "/api/files/upload/status",
+
+    FILE_SHARED_CREATE: "/api/files/share/create",     
+    FILE_SHARED_REMOVE: "/api/files/share/remove",     
+    FILE_SHARED_INFO: "/api/files/shared",             
+    FILE_SHARED_DOWNLOAD: "/api/files/shared",
   },
 };
 

@@ -4,7 +4,7 @@ const chunkSchema = new mongoose.Schema(
   {
     chunkIndex: { type: Number, required: true },
     messageId: { type: String },
-     iv: { type: String },  // encryption IV per chunk (hex string)
+    iv: { type: String },  // encryption IV per chunk (hex string)
   },
   { _id: false }
 );
@@ -16,7 +16,7 @@ const metaDataSchema = new mongoose.Schema({
   ownerId: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
 
   totalChunks: { type: Number, required: true },
-   status: {
+  status: {
     type: String,
     enum: ['uploading', 'complete', 'failed'],
     default: 'uploading',
@@ -26,6 +26,9 @@ const metaDataSchema = new mongoose.Schema({
     type: [chunkSchema],
     default: [],
   },
+  shareToken: { type: String, sparse: true },
+  shareExpiresAt: { type: Date },
+  isPublic: { type: Boolean, default: false },
   uploadDate: { type: Date, default: Date.now }
 });
 

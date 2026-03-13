@@ -9,6 +9,10 @@ import {
   fileDelete,
   fileDetails,
   previewFile,
+  getSharedFileInfo,
+  downloadSharedFile,
+   createShareLink,      
+  removeShareLink, 
 } from "../controllers/file.controller.js";
 import { verifyJWT } from "../middleware/verifyJWT.js";
 
@@ -23,5 +27,9 @@ router.get("/preview/:fileId", previewFile);
 router.delete("/delete",verifyJWT, fileDelete);
 router.post("/filedata", fileDetails);
 router.get("/upload/status/:fileId", verifyJWT, uploadStatus);
+router.post("/share/create", verifyJWT, createShareLink);
+router.post("/share/remove", verifyJWT, removeShareLink);
+router.get("/shared/:token/info", getSharedFileInfo);  
+router.get("/shared/:token/download", downloadSharedFile);
 
 export default router;

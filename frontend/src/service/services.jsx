@@ -132,6 +132,56 @@ export const fileService = {
       throw error.response?.data || error;
     }
   },
+
+  // ✅ Create share link
+  createShareLink: async (fileId, expiresIn = null) => {
+    try {
+      const response = await apiClient.post(API_CONFIG.ENDPOINTS.FILE_SHARED_CREATE, {
+        fileId,
+        expiresIn, // hours or null for no expiry
+      });
+      return response.data;
+    } catch (error) {
+      throw error.response?.data || error;
+    }
+  },
+
+  // ✅ Remove share link
+  removeShareLink: async (fileId) => {
+    try {
+      const response = await apiClient.post(API_CONFIG.ENDPOINTS.FILE_SHARED_REMOVE, {
+        fileId,
+      });
+      return response.data;
+    } catch (error) {
+      throw error.response?.data || error;
+    }
+  },
+
+  // ✅ Get shared file info (NO AUTH)
+  getSharedFileInfo: async (token) => {
+    try {
+      const response = await apiClient.get(
+        `${API_CONFIG.ENDPOINTS.FILE_SHARED_INFO}/${token}/info`
+      );
+      return response.data;
+    } catch (error) {
+      throw error.response?.data || error;
+    }
+  },
+
+  // ✅ Download shared file (NO AUTH)
+  downloadSharedFile: async (token) => {
+    try {
+      const response = await apiClient.get(
+        `${API_CONFIG.ENDPOINTS.FILE_SHARED_DOWNLOAD}/${token}/download`,
+        { responseType: 'blob' }
+      );
+      return response;
+    } catch (error) {
+      throw error.response?.data || error;
+    }
+  },
 };
 
 export default apiClient;

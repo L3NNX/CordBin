@@ -546,3 +546,130 @@ export const uploadStatus = async (req, res) => {
     res.status(500).json({ message: "Internal server error" });
   }
 };
+
+export const createShareLink = async (req, res) => {
+  try {
+    const { fileId, expiresIn } = req.body; // expiresIn in hours
+    const userId = req.userId;
+
+    const metaData = await metaDataModel.findById(fileId);
+    if (!metaData) return res.status(404).json({ message: "File not found" });
+    if (metaData.ownerId?.toString() !== userId) {
+      return res.status(403).json({ message: "Not authorized" });
+    }
+    if (metaData.status !== "complete") {
+      return res.status(400).json({ message: "File not fully uploaded" });
+    }
+
+    const token = crypto.randomBytes(32).toString("hex");
+    const expiresAt = expiresIn
+      ? new Date(Date.now() + expiresIn * 60 * 60 * 1000)
+      : null;
+
+    metaData.shareToken = token;
+    metaData.shareExpiresAt = expiresAt;
+    metaData.isPublic = true;
+    await metaData.save();
+
+    res.status(200).json({
+      shareToken: token,
+      shareUrl: `${process.env.FRONTEND_URL}/shared/${token}`,
+      expiresAt,
+    });
+  } catch (error) {
+    console.error("Error creating share link:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
+
+// Remove share link
+export const removeShareLink = async (req, res) => {
+  try {
+    const { fileId } = req.body;
+    const userId = req.userId;
+
+    const metaData = await metaDataModel.findById(fileId);
+    if (!metaData) return res.status(404).json({ message: "File not found" });
+    if (metaData.ownerId?.toString() !== userId) {
+      return res.status(403).json({ message: "Not authorized" });
+    }
+
+    metaData.shareToken = undefined;
+    metaData.shareExpiresAt = undefined;
+    metaData.isPublic = false;
+    await metaData.save();
+
+    res.status(200).json({ message: "Share link removed" });
+  } catch (error) {
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
+
+// Download shared file (NO AUTH required)
+export const downloadSharedFile = async (req, res) => {
+  try {
+    const { token } = req.params;
+
+    const metaData = await metaDataModel.findOne({
+      shareToken: token,
+      isPublic: true,
+    });
+
+    if (!metaData) {
+      return res.status(404).json({ message: "Shared file not found" });
+    }
+
+    // Check expiry
+    if (metaData.shareExpiresAt && metaData.shareExpiresAt < new Date()) {
+      return res.status(410).json({ message: "Share link has expired" });
+    }
+
+    if (metaData.status !== "complete") {
+      return res.status(400).json({ message: "File not available" });
+    }
+
+    const encodedFilename = encodeURIComponent(metaData.fileName);
+    res.setHeader("Content-Type", metaData.fileType);
+    res.setHeader(
+      "Content-Disposition",
+      `attachment; filename*=UTF-8''${encodedFilename}`
+    );
+    res.setHeader("Content-Length", metaData.fileSize);
+
+    await streamFileFromDiscord(metaData, res);
+  } catch (error) {
+    console.error("Error downloading shared file:", error);
+    if (!res.headersSent) {
+      res.status(500).json({ message: "Internal server error" });
+    }
+  }
+};
+
+// Get shared file info (NO AUTH — for preview page)
+export const getSharedFileInfo = async (req, res) => {
+  try {
+    const { token } = req.params;
+
+    const metaData = await metaDataModel
+      .findOne({ shareToken: token, isPublic: true })
+      .select("fileName fileSize fileType uploadDate shareExpiresAt");
+
+    if (!metaData) {
+      return res.status(404).json({ message: "Shared file not found" });
+    }
+
+    if (metaData.shareExpiresAt && metaData.shareExpiresAt < new Date()) {
+      return res.status(410).json({ message: "Share link has expired" });
+    }
+
+    res.status(200).json({
+      fileName: metaData.fileName,
+      fileSize: metaData.fileSize,
+      fileType: metaData.fileType,
+      uploadDate: metaData.uploadDate,
+      expiresAt: metaData.shareExpiresAt,
+    });
+  } catch (error) {
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
