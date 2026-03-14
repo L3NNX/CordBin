@@ -133,7 +133,7 @@ export const fileService = {
     }
   },
 
-  // ✅ Create share link
+  // Create share link
   createShareLink: async (fileId, expiresIn = null) => {
     try {
       const response = await apiClient.post(API_CONFIG.ENDPOINTS.FILE_SHARED_CREATE, {
@@ -146,7 +146,7 @@ export const fileService = {
     }
   },
 
-  // ✅ Remove share link
+  // Remove share link
   removeShareLink: async (fileId) => {
     try {
       const response = await apiClient.post(API_CONFIG.ENDPOINTS.FILE_SHARED_REMOVE, {
@@ -158,7 +158,7 @@ export const fileService = {
     }
   },
 
-  // ✅ Get shared file info (NO AUTH)
+  // Get shared file info (NO AUTH)
   getSharedFileInfo: async (token) => {
     try {
       const response = await apiClient.get(
@@ -170,7 +170,7 @@ export const fileService = {
     }
   },
 
-  // ✅ Download shared file (NO AUTH)
+  // Download shared file (NO AUTH)
   downloadSharedFile: async (token) => {
     try {
       const response = await apiClient.get(
@@ -182,6 +182,16 @@ export const fileService = {
       throw error.response?.data || error;
     }
   },
+
+  // Get storage stats
+  getStorageStats: async () => {
+  try {
+    const response = await apiClient.get("/api/files/stats");
+    return response.data;
+  } catch (error) {
+    throw error.response?.data || error;
+  }
+},
 };
 
 export default apiClient;

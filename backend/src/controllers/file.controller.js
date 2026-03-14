@@ -193,7 +193,7 @@ export const downloadFile = async (req, res) => {
   }
 };
 
-const streamFileFromDiscord = async (metaData, res) => {
+export const streamFileFromDiscord = async (metaData, res) => {
   let channel;
   try {
     console.log(`Streaming file: ${metaData.fileName}`);
@@ -593,7 +593,6 @@ export const createShareLink = async (req, res) => {
   }
 };
 
-// Remove share link
 export const removeShareLink = async (req, res) => {
   try {
     const { fileId } = req.body;
@@ -616,7 +615,6 @@ export const removeShareLink = async (req, res) => {
   }
 };
 
-// Download shared file (NO AUTH required)
 export const downloadSharedFile = async (req, res) => {
   try {
     const { token } = req.params;
@@ -656,7 +654,6 @@ export const downloadSharedFile = async (req, res) => {
   }
 };
 
-// Get shared file info (NO AUTH — for preview page)
 export const getSharedFileInfo = async (req, res) => {
   try {
     const { token } = req.params;
@@ -681,6 +678,72 @@ export const getSharedFileInfo = async (req, res) => {
       expiresAt: metaData.shareExpiresAt,
     });
   } catch (error) {
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
+
+export const getStorageStats = async (req, res) => {
+  try {
+    const userId = req.userId;
+
+    const files = await metaDataModel
+      .find({ ownerId: userId, status: "complete" })
+      .select("fileName fileSize fileType uploadDate")
+      .sort({ uploadDate: -1 });
+
+    const totalSize = files.reduce((sum, f) => sum + (f.fileSize || 0), 0);
+    const fileCount = files.length;
+
+    // Size AND count by category
+    const categories = {};
+    files.forEach((f) => {
+      const mime = (f.fileType || "").toLowerCase();
+      let category = "Other";
+      if (mime.startsWith("image/")) category = "Images";
+      else if (mime.startsWith("video/")) category = "Videos";
+      else if (mime.startsWith("audio/")) category = "Audio";
+      else if (mime.includes("pdf")) category = "PDFs";
+      else if (mime.includes("text") || mime.includes("json")) category = "Text";
+      else if (mime.includes("zip") || mime.includes("rar") || mime.includes("tar")) category = "Archives";
+      else if (mime.includes("word") || mime.includes("document") || mime.includes("spreadsheet")) category = "Documents";
+
+      if (!categories[category]) {
+        categories[category] = { count: 0, size: 0 };
+      }
+      categories[category].count++;
+      categories[category].size += f.fileSize || 0;
+    });
+
+    // Recent uploads
+    const recentUploads = files.slice(0, 5).map((f) => ({
+      id: f._id,
+      name: f.fileName,
+      size: f.fileSize,
+      type: f.fileType,
+      uploadedAt: f.uploadDate,
+    }));
+
+    // Largest files
+    const largestFiles = [...files]
+      .sort((a, b) => (b.fileSize || 0) - (a.fileSize || 0))
+      .slice(0, 5)
+      .map((f) => ({
+        id: f._id,
+        name: f.fileName,
+        size: f.fileSize,
+        type: f.fileType,
+      }));
+
+    res.json({
+      totalSize,
+      fileCount,
+      storageLimit: 1073741824, // 1GB — replace with user's actual limit
+      categories,
+      recentUploads,
+      largestFiles,
+    });
+  } catch (error) {
+    console.error("Error getting storage stats:", error);
     res.status(500).json({ message: "Internal server error" });
   }
 };

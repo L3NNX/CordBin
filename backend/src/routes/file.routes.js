@@ -12,7 +12,8 @@ import {
   getSharedFileInfo,
   downloadSharedFile,
    createShareLink,      
-  removeShareLink, 
+  removeShareLink,
+  getStorageStats, 
 } from "../controllers/file.controller.js";
 import { verifyJWT } from "../middleware/verifyJWT.js";
 
@@ -31,5 +32,6 @@ router.post("/share/create", verifyJWT, createShareLink);
 router.post("/share/remove", verifyJWT, removeShareLink);
 router.get("/shared/:token/info", getSharedFileInfo);  
 router.get("/shared/:token/download", downloadSharedFile);
+router.get("/stats", verifyJWT, getStorageStats);
 
 export default router;
