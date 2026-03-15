@@ -7,6 +7,8 @@ import {
   FileQuestion, Loader2, Shield,
 } from 'lucide-react';
 import { fileService } from '../service/services';
+import { API_CONFIG } from '../config/api';
+import { toast } from 'sonner';
 
 const formatSize = (bytes) => {
   if (bytes < 1024) return bytes + ' B';
@@ -55,27 +57,17 @@ const SharedFile = () => {
     }
   };
 
-  const handleDownload = async () => {
-    setDownloading(true);
-    try {
-      const response = await fileService.downloadSharedFile(token);
-      const blob = new Blob([response.data]);
-      const url = window.URL.createObjectURL(blob);
-      const link = document.createElement('a');
-      link.href = url;
-      link.setAttribute('download', fileInfo.fileName);
-      document.body.appendChild(link);
-      link.click();
-      link.remove();
-      window.URL.revokeObjectURL(url);
-    } catch (err) {
-      console.error('Download error:', err);
-      alert('Failed to download file');
-    } finally {
-      setDownloading(false);
-    }
-  };
-
+const handleDownload = () => {
+  setDownloading(true);
+  
+  // Direct browser download — shows native progress bar
+  const downloadUrl = `${API_CONFIG.BASE_URL}/api/files/shared/${token}/download`;
+  window.location.href = downloadUrl;
+  
+  // Reset button after a moment (download is handled by browser now)
+  setTimeout(() => setDownloading(false), 2000);
+  toast.success('Download started');
+};
   // Loading
   if (loading) {
     return (

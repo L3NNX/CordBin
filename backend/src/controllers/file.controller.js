@@ -133,8 +133,21 @@ export const uploadChunk = async (req, res) => {
 
 export const downloadFile = async (req, res) => {
   const fileId = req.params.fileId;
+
+  const token = req.query.token;
+  let userId = req.userId; 
+
+  if (!userId && token) {
+    try {
+      const jwt = await import('jsonwebtoken');
+      const decoded = jwt.default.verify(token, process.env.JWT_SECRET);
+      userId = decoded.userId || decoded.id;
+    } catch {
+      return res.status(401).json({ message: "Invalid token" });
+    }
+  }
+
   try {
-    // Validate fileId
     if (!fileId || typeof fileId !== "string") {
       return res.status(400).json({ message: "Invalid file ID" });
     }
@@ -143,7 +156,6 @@ export const downloadFile = async (req, res) => {
     try {
       metaData = await metaDataModel.findById(fileId);
     } catch (dbError) {
-      console.error("Database error fetching file:", dbError);
       return res.status(500).json({ message: "Database error" });
     }
 
@@ -151,20 +163,20 @@ export const downloadFile = async (req, res) => {
       return res.status(404).json({ message: "File not found" });
     }
 
-     if (metaData.status !== 'complete') {
+    if (metaData.status !== 'complete') {
       return res.status(400).json({ message: "File upload is not complete" });
     }
 
-    // Validate metadata has required fields
+    // ✅ Verify ownership
+    if (userId && metaData.ownerId?.toString() !== userId) {
+      return res.status(403).json({ message: "Not authorized" });
+    }
+
     if (!metaData.fileName || !metaData.fileType || !metaData.fileSize) {
-      console.error("Invalid file metadata:", metaData);
       return res.status(500).json({ message: "Invalid file metadata" });
     }
 
-    // Encode filename properly for Content-Disposition header
     const encodedFilename = encodeURIComponent(metaData.fileName);
-
-    // Set headers for file download
     res.setHeader("Content-Type", metaData.fileType);
     res.setHeader(
       "Content-Disposition",
@@ -172,7 +184,6 @@ export const downloadFile = async (req, res) => {
     );
     res.setHeader("Content-Length", metaData.fileSize);
 
-    // Stream the file to the frontend
     await streamFileFromDiscord(metaData, res);
   } catch (error) {
     console.error("Error downloading file:", error);

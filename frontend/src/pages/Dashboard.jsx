@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo,useRef } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { toast } from "sonner";
 import MainLayout from "../components/layout/MainLayout";
 import FileUploadZone from "../components/files/FileUploadZone";
@@ -18,6 +18,7 @@ import {
 } from "../components/ui/dialog";
 import { fileService } from "../service/services";
 import { cn } from "../lib/utils";
+import { API_CONFIG } from "../config/api";
 
 const CHUNK_SIZE = 8 * 1024 * 1024; 
 
@@ -332,24 +333,14 @@ const handleResumeUpload = async (incompleteFile, browserFile) => {
     setShowShare(true);
   };
 
-  const handleDownload = async (file) => {
-    try {
-      const response = await fileService.downloadFile(file.id);
-      const blob = new Blob([response.data]);
-      const url = window.URL.createObjectURL(blob);
-      const link = document.createElement("a");
-      link.href = url;
-      link.setAttribute("download", file.name);
-      document.body.appendChild(link);
-      link.click();
-      link.remove();
-      window.URL.revokeObjectURL(url);
-      toast.success("Download started");
-    } catch (error) {
-      console.error("Error downloading file:", error);
-      toast.error("Failed to download file");
-    }
-  };
+  const handleDownload = (file) => {
+  const token = localStorage.getItem('accessToken');
+  const downloadUrl = `${API_CONFIG.BASE_URL}${API_CONFIG.ENDPOINTS.FILE_DOWNLOAD}/${file.id}?token=${token}`;
+  
+  // ✅ Native browser download with progress bar
+  window.location.href = downloadUrl;
+  toast.success('Download started');
+};
 
   return (
     <MainLayout
