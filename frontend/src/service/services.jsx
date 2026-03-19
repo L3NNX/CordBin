@@ -186,7 +186,7 @@ export const fileService = {
   // Get storage stats
   getStorageStats: async () => {
   try {
-    const response = await apiClient.get("/api/files/stats");
+     const response = await apiClient.get(API_CONFIG.ENDPOINTS.FILE_STATS);
     return response.data;
   } catch (error) {
     throw error.response?.data || error;
