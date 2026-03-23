@@ -1,10 +1,9 @@
 import { AttachmentBuilder } from "discord.js";
-import crypto from "crypto";
+import crypto from "crypto";     
 import metaDataModel from "../models/metaData.js";
-// import client from "../utils/discord.js";
-import client, { waitForDiscord } from "../utils/discord.js";
+import client from "../utils/discord.js";
 import { encryptChunk, decryptChunk } from "../utils/encryption.js";
-// client.login(process.env.DISCORD_BOT_TOKEN);
+client.login(process.env.DISCORD_BOT_TOKEN);
 
 export const initaliseFileUpload = async (req, res) => {
   try {
@@ -60,17 +59,14 @@ export const uploadChunk = async (req, res) => {
       return res.status(400).json({ message: "Chunk file buffer is missing" });
     }
 
-    const { encrypted, iv } = encryptChunk(chunk.buffer, fileId);
-    // ✅ OBFUSCATE the filename — Discord sees random name, not original
+     const { encrypted, iv } = encryptChunk(chunk.buffer, fileId);
+      // ✅ OBFUSCATE the filename — Discord sees random name, not original
     const obfuscatedName = `${crypto.randomBytes(6).toString("hex")}_${chunkIndex}.enc`;
-
+    
     const attachment = new AttachmentBuilder(encrypted, {
       name: obfuscatedName, // ✅ Not "test.txt.part1" anymore
     });
-    const discordReady = await waitForDiscord(15000);
-    if (!discordReady) {
-      return res.status(503).json({ message: "Discord service unavailable" });
-    }
+
     let channel;
     try {
       channel = await client.channels.fetch(process.env.DISCORD_CHANNEL_ID);
@@ -85,7 +81,7 @@ export const uploadChunk = async (req, res) => {
     let message;
     try {
       message = await channel.send({
-        content: `chunk_${chunkIndex}`,
+       content: `chunk_${chunkIndex}`,
         files: [attachment],
       });
     } catch (sendError) {
@@ -104,7 +100,7 @@ export const uploadChunk = async (req, res) => {
         throw new Error(`Invalid chunk index: ${chunkIndex}`);
       }
       metaData.chunksMetadata[chunkIdx].messageId = message.id;
-      metaData.chunksMetadata[chunkIdx].iv = iv; // Save IV for this chunk
+       metaData.chunksMetadata[chunkIdx].iv = iv; // Save IV for this chunk
       const uploadedCount = metaData.chunksMetadata.filter(
         (c) => c.messageId && c.messageId !== ""
       ).length;
@@ -139,7 +135,7 @@ export const downloadFile = async (req, res) => {
   const fileId = req.params.fileId;
 
   const token = req.query.token;
-  let userId = req.userId;
+  let userId = req.userId; 
 
   if (!userId && token) {
     try {
@@ -282,7 +278,7 @@ export const streamFileFromDiscord = async (metaData, res) => {
           );
         }
 
-        if (metaData.isEncrypted && chunkMetadata.iv) {
+          if (metaData.isEncrypted && chunkMetadata.iv) {
           try {
             chunkBuffer = decryptChunk(
               chunkBuffer,
@@ -341,7 +337,7 @@ export const previewFile = async (req, res) => {
     return res.status(404).json({ message: "File not found" });
   }
 
-  if (metaData.status !== 'complete') {
+   if (metaData.status !== 'complete') {
     return res.status(400).json({ message: "File upload is not complete" });
   }
 
@@ -360,10 +356,10 @@ export const listALlFiles = async (req, res) => {
     const userId = req.userId;
     const files = await metaDataModel
       .find({ ownerId: userId })
-      .select("fileName fileSize fileType totalChunks uploadDate status chunksMetadata _id")
+       .select("fileName fileSize fileType totalChunks uploadDate status chunksMetadata _id")
       .sort({ uploadDate: -1 });
-    const formatted = files.map((file) => {
-      const chunksUploaded = file.chunksMetadata
+       const formatted = files.map((file) => {
+       const chunksUploaded = file.chunksMetadata
         ? file.chunksMetadata.filter((c) => c.messageId && c.messageId !== "").length
         : 0;
 
@@ -378,7 +374,7 @@ export const listALlFiles = async (req, res) => {
         chunksUploaded,
       };
     });
-    res.status(200).json({ files: formatted });
+   res.status(200).json({ files: formatted });
   } catch (error) {
     console.error("Error listing files:", error);
     res.status(500).json({ message: "Internal server error" });
