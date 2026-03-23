@@ -108,31 +108,19 @@ export const fileService = {
     }
   },
 
-  // // Delete file
-  // deleteFile: async (fileIds) => {
-  //   try {
-  //      const ids = Array.isArray(fileIds) ? fileIds : [fileIds];
-  //     const response = await apiClient.delete(API_CONFIG.ENDPOINTS.FILE_DELETE, {
-  //       data: { fileIds: ids }
-  //     });
-  //     return response.data;
-  //   } catch (error) {
-  //     throw error.response?.data || error;
-  //   }
-  // },
+  // Delete file
   deleteFile: async (fileIds) => {
-  try {
-    const ids = Array.isArray(fileIds) ? fileIds : [fileIds];
-    
-    // ✅ axios.post(url, BODY) — second arg IS the body, no "data" wrapper
-    const response = await apiClient.post(API_CONFIG.ENDPOINTS.FILE_DELETE, {
-      fileIds: ids,
-    });
-    return response.data;
-  } catch (error) {
-    throw error.response?.data || error;
-  }
-},
+    try {
+       const ids = Array.isArray(fileIds) ? fileIds : [fileIds];
+      const response = await apiClient.delete(API_CONFIG.ENDPOINTS.FILE_DELETE, {
+        data: { fileIds: ids }
+      });
+      return response.data;
+    } catch (error) {
+      throw error.response?.data || error;
+    }
+  },
+
   // Status file
   getUploadStatus: async (fileId) => {
     try {

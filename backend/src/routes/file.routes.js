@@ -25,7 +25,7 @@ router.post("/upload/chunk", verifyJWT, upload.single("chunk"), uploadChunk);
 router.get("/download/:fileId", downloadFile);
 router.get("/list",verifyJWT, listALlFiles);
 router.get("/preview/:fileId", previewFile);
-router.post("/delete",verifyJWT, fileDelete);
+router.delete("/delete",verifyJWT, fileDelete);
 router.post("/filedata", fileDetails);
 router.get("/upload/status/:fileId", verifyJWT, uploadStatus);
 router.post("/share/create", verifyJWT, createShareLink);
