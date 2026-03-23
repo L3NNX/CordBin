@@ -43,7 +43,6 @@
 
 // export default client;
 
-
 import { Client, GatewayIntentBits } from "discord.js";
 import "dotenv/config";
 
@@ -55,7 +54,6 @@ const client = new Client({
   ],
 });
 
-// ✅ Track if bot is ready
 let isReady = false;
 
 client.once("ready", (readyClient) => {
@@ -68,31 +66,19 @@ client.on("error", (error) => {
   isReady = false;
 });
 
-// ✅ Login immediately and handle errors
 const loginPromise = client
   .login(process.env.DISCORD_BOT_TOKEN)
-  .then(() => {
-    console.log("✅ Discord login initiated");
-  })
-  .catch((err) => {
-    console.error("❌ Discord login FAILED:", err.message);
-  });
+  .then(() => console.log("✅ Discord login initiated"))
+  .catch((err) => console.error("❌ Discord login FAILED:", err.message));
 
-// ✅ Helper: wait for bot to be ready before using it
 export const waitForDiscord = async (timeoutMs = 15000) => {
   if (isReady) return true;
-
   await loginPromise;
-
   const start = Date.now();
   while (!isReady && Date.now() - start < timeoutMs) {
     await new Promise((r) => setTimeout(r, 500));
   }
-
-  if (!isReady) {
-    console.error("❌ Discord bot not ready after", timeoutMs, "ms");
-  }
-
+  if (!isReady) console.error("❌ Discord not ready after", timeoutMs, "ms");
   return isReady;
 };
 

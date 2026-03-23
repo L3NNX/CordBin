@@ -2,7 +2,7 @@ import { AttachmentBuilder } from "discord.js";
 import crypto from "crypto";     
 import metaDataModel from "../models/metaData.js";
 // import client from "../utils/discord.js";
-import client, { waitForDiscord, isDiscordReady } from "../utils/discord.js";
+import client, { waitForDiscord } from "../utils/discord.js";
 import { encryptChunk, decryptChunk } from "../utils/encryption.js";
 // client.login(process.env.DISCORD_BOT_TOKEN);
 
@@ -54,18 +54,19 @@ export const uploadChunk = async (req, res) => {
       return res.status(404).json({ message: "File metadata not found" });
     }
 
-    const ready = await waitForDiscord(15000);
-    if (!ready) {
-      return res.status(503).json({
-        message: "Discord bot is starting up. Please retry.",
-      });
-    }
-
     console.log(`Uploading chunk ${chunkIndex}/${totalChunks} to Discord`);
 
     if (!chunk.buffer) {
       return res.status(400).json({ message: "Chunk file buffer is missing" });
     }
+
+      console.log("[CHUNK] Waiting for Discord...");
+    const ready = await waitForDiscord(15000);
+    if (!ready) {
+      console.error("[CHUNK] Discord NOT ready");
+      return res.status(503).json({ message: "Discord service starting up. Retry in a few seconds." });
+    }
+    console.log("[CHUNK] Discord ready ✅");
 
      const { encrypted, iv } = encryptChunk(chunk.buffer, fileId);
       // ✅ OBFUSCATE the filename — Discord sees random name, not original
@@ -208,17 +209,15 @@ export const streamFileFromDiscord = async (metaData, res) => {
 
       const ready = await waitForDiscord(15000);
     if (!ready) throw new Error("Discord bot not ready");
-
-    // Fetch Discord channel with error handling
+    let channel;
     try {
       channel = await client.channels.fetch(process.env.DISCORD_CHANNEL_ID);
-      if (!channel) {
-        throw new Error("Discord channel not found");
-      }
+      if (!channel) throw new Error("Discord channel not found");
     } catch (channelError) {
       console.error("Failed to fetch Discord channel:", channelError);
       throw new Error("Discord service unavailable");
     }
+
 
     // Validate chunks metadata
     if (!metaData.chunksMetadata || metaData.chunksMetadata.length === 0) {
@@ -403,13 +402,9 @@ export const fileDelete = async (req, res) => {
     // Fetch Discord channel with error handling
     let channel;
     try {
-      // channel = await client.channels.fetch(process.env.DISCORD_CHANNEL_ID);
-      // if (!channel) {
-      //   console.warn("Discord channel not found, will skip Discord cleanup");
-      // }
-        const ready = await waitForDiscord(10000);
-      if (ready) {
-        channel = await client.channels.fetch(process.env.DISCORD_CHANNEL_ID);
+      channel = await client.channels.fetch(process.env.DISCORD_CHANNEL_ID);
+      if (!channel) {
+        console.warn("Discord channel not found, will skip Discord cleanup");
       }
     } catch (channelError) {
       console.error("Failed to fetch Discord channel:", channelError);
