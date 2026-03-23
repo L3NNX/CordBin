@@ -20,7 +20,7 @@ import { fileService } from "../service/services";
 import { cn } from "../lib/utils";
 import { API_CONFIG } from "../config/api";
 
-const CHUNK_SIZE = 8 * 1024 * 1024; 
+const CHUNK_SIZE = 2 * 1024 * 1024; 
 
 const Dashboard = () => {
   const { logout } = useAuth();
