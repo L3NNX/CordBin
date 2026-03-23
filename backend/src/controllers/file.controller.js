@@ -53,81 +53,80 @@ export const uploadChunk = async (req, res) => {
       return res.status(404).json({ message: "File metadata not found" });
     }
 
-    console.log(`Uploading chunk ${chunkIndex}/${totalChunks} to Discord`);
-
     if (!chunk.buffer) {
-      return res.status(400).json({ message: "Chunk file buffer is missing" });
+      return res.status(400).json({ message: "Chunk buffer missing" });
     }
 
-     const { encrypted, iv } = encryptChunk(chunk.buffer, fileId);
-      // ✅ OBFUSCATE the filename — Discord sees random name, not original
+    console.log(`Uploading chunk ${chunkIndex}/${totalChunks}`);
+
+    // Encrypt chunk
+    const { encrypted, iv } = encryptChunk(chunk.buffer, fileId);
+
     const obfuscatedName = `${crypto.randomBytes(6).toString("hex")}_${chunkIndex}.enc`;
-    
+
     const attachment = new AttachmentBuilder(encrypted, {
-      name: obfuscatedName, // ✅ Not "test.txt.part1" anymore
+      name: obfuscatedName,
     });
 
     let channel;
     try {
       channel = await client.channels.fetch(process.env.DISCORD_CHANNEL_ID);
-      if (!channel) {
-        throw new Error("Discord channel not found");
-      }
-    } catch (channelError) {
-      console.error("Failed to fetch Discord channel:", channelError);
-      return res.status(503).json({ message: "Discord service unavailable" });
+      if (!channel) throw new Error("Channel not found");
+    } catch (err) {
+      console.error("Channel fetch failed:", err);
+      return res.status(503).json({ message: "Discord unavailable" });
     }
 
-    let message;
-    try {
-      message = await channel.send({
-       content: `chunk_${chunkIndex}`,
-        files: [attachment],
-      });
-    } catch (sendError) {
-      console.error("Failed to send message to Discord:", sendError);
-      return res
-        .status(503)
-        .json({ message: "Failed to upload chunk to Discord" });
-    }
-
-    console.log(`Chunk ${chunkIndex} uploaded with message ID:`, message.id);
-
-    // Update metadata with message ID
-    try {
-      const chunkIdx = parseInt(chunkIndex) - 1;
-      if (chunkIdx < 0 || chunkIdx >= metaData.chunksMetadata.length) {
-        throw new Error(`Invalid chunk index: ${chunkIndex}`);
-      }
-      metaData.chunksMetadata[chunkIdx].messageId = message.id;
-       metaData.chunksMetadata[chunkIdx].iv = iv; // Save IV for this chunk
-      const uploadedCount = metaData.chunksMetadata.filter(
-        (c) => c.messageId && c.messageId !== ""
-      ).length;
-      if (uploadedCount >= metaData.totalChunks) {
-        metaData.status = 'complete';
-        console.log(`✅ All ${metaData.totalChunks} chunks uploaded. File marked complete.`);
-      }
-      await metaData.save();
-    } catch (saveError) {
-      console.error("Failed to update metadata:", saveError);
-      // Attempt to delete the Discord message since metadata wasn't saved
-      try {
-        await message.delete();
-      } catch (deleteError) {
-        console.error("Failed to cleanup Discord message:", deleteError);
-      }
-      return res.status(500).json({ message: "Failed to save chunk metadata" });
-    }
-
+    // ✅ SEND RESPONSE IMMEDIATELY (IMPORTANT)
     res.status(200).json({
-      message: "Chunk uploaded successfully",
-      messageId: message.id,
-      chunkIndex: parseInt(chunkIndex),
+      message: "Chunk received",
+      chunkIndex: Number(chunkIndex),
     });
+
+    // ✅ ASYNC DISCORD UPLOAD (NON-BLOCKING)
+    channel
+      .send({
+        content: `chunk_${chunkIndex}`,
+        files: [attachment],
+      })
+      .then(async (message) => {
+        console.log(`Chunk ${chunkIndex} uploaded → ${message.id}`);
+
+        try {
+          const idx = Number(chunkIndex) - 1;
+
+          if (idx < 0 || idx >= metaData.chunksMetadata.length) {
+            throw new Error("Invalid chunk index");
+          }
+
+          metaData.chunksMetadata[idx].messageId = message.id;
+          metaData.chunksMetadata[idx].iv = iv;
+
+          const uploadedCount = metaData.chunksMetadata.filter(
+            (c) => c.messageId && c.messageId !== ""
+          ).length;
+
+          if (uploadedCount >= metaData.totalChunks) {
+            metaData.status = "complete";
+            console.log("✅ File upload complete");
+          }
+
+          await metaData.save();
+        } catch (err) {
+          console.error("Metadata update failed:", err);
+        }
+      })
+      .catch((err) => {
+        console.error("Discord upload failed:", err);
+      });
+
   } catch (error) {
-    console.error(`Error uploading chunk:`, error);
-    res.status(500).json({ message: "Internal server error" });
+    console.error("Upload chunk error:", error);
+
+    // Only send response if not already sent
+    if (!res.headersSent) {
+      res.status(500).json({ message: "Internal server error" });
+    }
   }
 };
 
