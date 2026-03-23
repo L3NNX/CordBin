@@ -8,9 +8,9 @@ import { fileService } from '../../service/services';
 import { useToast } from '../../hooks/use-toast';
 import { cn } from '../../lib/utils';
 
-const CHUNK_SIZE = 8 * 1024 * 1024;
-const MAX_CONCURRENT = 3;
-const MAX_RETRIES = 3;
+const CHUNK_SIZE = 2 * 1024 * 1024;
+const MAX_CONCURRENT = 2;
+const MAX_RETRIES = 5;
 const RETRY_DELAY_BASE = 2000;
 
 const formatSize = (bytes) => {
