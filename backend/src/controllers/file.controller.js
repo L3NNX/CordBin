@@ -1,9 +1,10 @@
 import { AttachmentBuilder } from "discord.js";
 import crypto from "crypto";     
 import metaDataModel from "../models/metaData.js";
-import client from "../utils/discord.js";
+// import client from "../utils/discord.js";
+import client, { waitForDiscord, isDiscordReady } from "../utils/discord.js";
 import { encryptChunk, decryptChunk } from "../utils/encryption.js";
-client.login(process.env.DISCORD_BOT_TOKEN);
+// client.login(process.env.DISCORD_BOT_TOKEN);
 
 export const initaliseFileUpload = async (req, res) => {
   try {
@@ -51,6 +52,13 @@ export const uploadChunk = async (req, res) => {
     const metaData = await metaDataModel.findById(fileId);
     if (!metaData) {
       return res.status(404).json({ message: "File metadata not found" });
+    }
+
+    const ready = await waitForDiscord(15000);
+    if (!ready) {
+      return res.status(503).json({
+        message: "Discord bot is starting up. Please retry.",
+      });
     }
 
     console.log(`Uploading chunk ${chunkIndex}/${totalChunks} to Discord`);
@@ -197,6 +205,9 @@ export const streamFileFromDiscord = async (metaData, res) => {
   let channel;
   try {
     console.log(`Streaming file: ${metaData.fileName}`);
+
+      const ready = await waitForDiscord(15000);
+    if (!ready) throw new Error("Discord bot not ready");
 
     // Fetch Discord channel with error handling
     try {
@@ -392,9 +403,13 @@ export const fileDelete = async (req, res) => {
     // Fetch Discord channel with error handling
     let channel;
     try {
-      channel = await client.channels.fetch(process.env.DISCORD_CHANNEL_ID);
-      if (!channel) {
-        console.warn("Discord channel not found, will skip Discord cleanup");
+      // channel = await client.channels.fetch(process.env.DISCORD_CHANNEL_ID);
+      // if (!channel) {
+      //   console.warn("Discord channel not found, will skip Discord cleanup");
+      // }
+        const ready = await waitForDiscord(10000);
+      if (ready) {
+        channel = await client.channels.fetch(process.env.DISCORD_CHANNEL_ID);
       }
     } catch (channelError) {
       console.error("Failed to fetch Discord channel:", channelError);
