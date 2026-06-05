@@ -1,47 +1,68 @@
 // pages/Landing.tsx
-import React, { useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { ArrowRight } from 'lucide-react';
-
-import Navbar from '../components/layout/Navbar';
-import Hero from '../components/layout/Hero';
-import Features from '../components/layout/Features';
-import Pricing from '../components/layout/Pricing';
-import FAQ from '../components/layout/FAQ';
-import Footer from '../components/layout/Footer';
-import Testimonials from '../components/layout/Testimonials';
-import HowItWorks from '../components/layout/HowItWorks';
-import { useAuth } from '../hooks/useAuth';
+import Navbar from "../components/layout/Navbar";
+import Hero from "../components/layout/Hero";
+import Features from "../components/layout/Features";
+import Pricing from "../components/layout/Pricing";
+import FAQ from "../components/layout/FAQ";
+import Footer from "../components/layout/Footer";
+import Testimonials from "../components/layout/Testimonials";
 
 const Landing = () => {
-    const navigate = useNavigate();
-  const { user, loading } = useAuth();
-
-  // Redirect logged-in users to dashboard
-  useEffect(() => {
-    if (!loading && user) {
-      navigate('/dashboard', { replace: true });
-    }
-  }, [user, loading, navigate])
-
   return (
-    <div className="min-h-screen bg-background text-foreground">
+    <>
       <Navbar />
 
-      <Hero />
-      
-      <Features />
+      <main className="bg-[#f5f5f5]">
 
-      <HowItWorks />  
+        {/* HERO */}
+        <section className="w-full px-3 sm:px-6 lg:px-8">
+          <div className="h-10 mx-auto max-w-[1720px] border border-y border-border bg-[repeating-linear-gradient(45deg,rgba(0,0,0,0.03)_0_2px,transparent_2px_10px)]" />
+          <div className="mx-auto max-w-[1720px] border-x border-border">
+            <Hero />
+          </div>
+        </section>
 
-      <Pricing />
+        {/* FEATURES */}
+        <section className="w-full px-3 sm:px-6 lg:px-8">
+          <div className="h-10 mx-auto max-w-[1720px] border border-y border-border bg-[repeating-linear-gradient(45deg,rgba(0,0,0,0.03)_0_2px,transparent_2px_10px)]" />
+          <div className="mx-auto max-w-[1720px] border-x border-border">
+            <Features />
+          </div>
+        </section>
 
-      <Testimonials />
+        {/* PRICING */}
+        <section className="w-full px-3 sm:px-6 lg:px-8">
+          <div className="h-10 mx-auto max-w-[1720px] border border-y border-border bg-[repeating-linear-gradient(45deg,rgba(0,0,0,0.03)_0_2px,transparent_2px_10px)]" />
+          <div className="mx-auto max-w-[1720px] border-x border-border">
+            <Testimonials />
+          </div>
+        </section>
 
-      <FAQ />
+        {/* PRICING */}
+        <section className="w-full px-3 sm:px-6 lg:px-8">
+          <div className="h-10 mx-auto max-w-[1720px] border border-y border-border bg-[repeating-linear-gradient(45deg,rgba(0,0,0,0.03)_0_2px,transparent_2px_10px)]" />
+          <div className="mx-auto max-w-[1720px] border-x border-border">
+            <Pricing />
+          </div>
+        </section>
+
+        {/* FAQ */}
+        <section className="w-full px-3 sm:px-6 lg:px-8">
+          <div className="h-10 mx-auto max-w-[1720px] border border-y border-border bg-[repeating-linear-gradient(45deg,rgba(0,0,0,0.03)_0_2px,transparent_2px_10px)]" />
+          <div className="mx-auto max-w-[1720px] border-x border-border">
+            <FAQ />
+          </div>
+        </section>
+
+             {/* Final Bottom Hatch (same padding wrapper as other strips) */}
+        <section className="w-full px-3 sm:px-6 lg:px-8">
+          <div className="mx-auto h-20 w-full max-w-[1720px] border border-y border-border bg-[repeating-linear-gradient(45deg,rgba(0,0,0,0.03)_0_2px,transparent_2px_10px)]" />
+        </section>
+
+      </main>
 
       <Footer />
-    </div>
+    </>
   );
 };
 
