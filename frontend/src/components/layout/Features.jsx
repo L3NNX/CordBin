@@ -1,106 +1,147 @@
-import React from 'react';
-import { Upload, Share2, Shield, Folder, Zap, Users } from 'lucide-react';
-import { cn } from '../../lib/utils';
+import React from "react";
+import { ShieldCheck, Code, Activity, SquareCheckBig } from "lucide-react";
+import { Button } from "../ui/button";
 
-const features = [
+const featureList = [
   {
-    icon: Upload,
-    title: "Easy File Upload",
+    icon: ShieldCheck,
+    title: "Automated Pre-Deploy Validation",
     description:
-      "Drag and drop files or click to upload. Support for all file types with bulk upload capability.",
+      "Every deployment is checked for configuration, licenses, and quality issues before it goes live.",
   },
   {
-    icon: Share2,
-    title: "Secure Sharing",
+    icon: Code,
+    title: "Code & Test Signals",
     description:
-      "Share files with anyone using secure links. Control access and set expiration dates.",
+      "Surface test failures, warnings, and code quality signals in one clear execution log.",
   },
   {
-    icon: Shield,
-    title: "Enterprise Security",
+    icon: Activity,
+    title: "Real-Time Execution Feedback",
     description:
-      "Bank-level encryption for your files. Your data is protected with industry-leading security.",
+      "Get instant feedback on your pipeline execution with real-time logs and status updates.",
   },
   {
-    icon: Folder,
-    title: "Smart Organization",
+    icon: SquareCheckBig,
+    title: "Actionable Validation Results",
     description:
-      "Organize files into folders. Search and filter to find what you need instantly.",
+      "Clear, actionable results that help your team fix issues fast and ship with confidence.",
+    active: true,
   },
-  {
-    icon: Zap,
-    title: "Lightning Fast",
-    description:
-      "Optimized for speed. Upload, download, and share files in seconds, not minutes.",
-  },
-  // {
-  //   icon: Users,
-  //   title: "Team Collaboration",
-  //   description:
-  //     "Work together seamlessly. Share folders with your team and collaborate in real-time.",
-  // },
-  
 ];
 
 const Features = () => {
   return (
-    <section id="features" className="py-28 bg-muted/50 md:py-36" data-testid="features-section">
-      <div className="container mx-auto max-w-6xl px-6">
-        {/* Header */}
-        <div className="mx-auto mb-16 max-w-3xl text-center md:mb-20">
-          <div className="mb-6 inline-flex items-center gap-2.5 rounded-full border border-accent/20 bg-accent/5 px-5 py-2">
-            <span className="h-2 w-2 rounded-full bg-accent animate-pulse-dot" />
-            <span className="font-mono text-[11px] uppercase tracking-[0.15em] text-accent">
-              Features
-            </span>
+    <div className="relative border border-border bg-[#f5f5f5] p-6 sm:p-8 lg:p-10">
+
+      {/* Corner brackets */}
+      <span className="pointer-events-none absolute inset-0 z-10">
+        <span className="absolute left-0 top-0 h-3.5 w-3.5 border-l border-t border-foreground/40" />
+        <span className="absolute right-0 top-0 h-3.5 w-3.5 border-r border-t border-foreground/40" />
+        <span className="absolute bottom-0 left-0 h-3.5 w-3.5 border-b border-l border-foreground/40" />
+        <span className="absolute bottom-0 right-0 h-3.5 w-3.5 border-b border-r border-foreground/40" />
+      </span>
+
+      {/* Top grid */}
+      <div className="grid gap-8 lg:grid-cols-[1fr_340px] lg:gap-10">
+
+        <div>
+          <div className="mb-6 inline-flex items-center gap-2 font-mono text-xs text-foreground/50">
+            <span className="h-3.5 w-[4px] bg-foreground/40"></span>
+            <span>Features</span>
           </div>
 
-          <h2
-            className="font-display text-3xl tracking-tight text-foreground sm:text-4xl md:text-[3.25rem] md:leading-[1.15]"
-            data-testid="features-title"
-          >
-            Everything you need to{' '}
-            <span className="gradient-text">manage your files</span>
+          <h2 className="max-w-[700px] text-[2.4rem] sm:text-[3rem] lg:text-[3.6rem] leading-[0.95] tracking-[-0.04em]">
+            Catch issues before they
+            <br className="hidden sm:block" />
+            reach production
           </h2>
-
-          <p className="mt-5 text-base text-muted-foreground sm:text-lg" data-testid="features-description">
-            Powerful features designed to make file management effortless
-          </p>
         </div>
 
-        {/* Grid — first card spans 2 cols on lg for asymmetry */}
-        <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
-          {features.map((feature, index) => (
-            <div
-              key={index}
-              className={cn(
-                "group relative overflow-hidden rounded-2xl border border-border bg-card p-7 transition-all duration-300",
-                "hover:-translate-y-1 hover:border-accent/20 hover:shadow-lg",
-                index === 0 && "lg:col-span-2"
-              )}
-              data-testid={`feature-card-${index}`}
-            >
-              {/* Hover gradient overlay */}
-              <div className="pointer-events-none absolute inset-0 rounded-2xl opacity-0 transition-opacity duration-300 card-hover-gradient group-hover:opacity-100" />
+        <div className="lg:pt-14">
+          <p className="max-w-[320px] text-base sm:text-lg leading-relaxed text-foreground/60">
+            Every deployment is automatically checked for critical quality issues before it goes live.
+          </p>
 
-              <div className="relative">
-                <div className="mb-5 grid h-12 w-12 place-items-center rounded-xl gradient-accent shadow-accent-sm transition-transform duration-300 group-hover:scale-110">
-                  <feature.icon className="h-5 w-5 text-accent-foreground" />
+      <Button variant="corner">
+  Contact us
+</Button>
+        </div>
+      </div>
+
+      {/* Feature + Image grid */}
+      <div className="mt-10 grid gap-3 lg:grid-cols-[1fr_1.5fr] lg:items-stretch">
+
+        {/* LEFT */}
+        <div className="flex h-full flex-col gap-3">
+
+          {featureList.map((feature, i) => (
+            <div key={i} className="flex-1">
+              <article
+                className={`relative h-full border bg-white px-6 py-7 sm:px-8 overflow-hidden ${
+                  feature.active
+                    ? "border-black/20"
+                    : "border-black/10 hover:border-black/15"
+                }`}
+              >
+                <span className="pointer-events-none absolute inset-0 z-10">
+                  <span className="absolute left-0 top-0 h-3.5 w-3.5 border-l border-t border-foreground/40" />
+                  <span className="absolute right-0 top-0 h-3.5 w-3.5 border-r border-t border-foreground/40" />
+                  <span className="absolute bottom-0 left-0 h-3.5 w-3.5 border-b border-l border-foreground/40" />
+                  <span className="absolute bottom-0 right-0 h-3.5 w-3.5 border-b border-r border-foreground/40" />
+                </span>
+
+                <div className="flex items-start gap-4">
+                  <feature.icon className="mt-1 size-5 shrink-0 text-black/40" />
+                  <div className="flex-1">
+                    <h3
+                      className={`text-base sm:text-lg font-medium leading-snug ${
+                        feature.active ? "text-black" : "text-black/50"
+                      }`}
+                    >
+                      {feature.title}
+                    </h3>
+
+                    {feature.active && (
+                      <p className="mt-2 text-sm sm:text-base leading-relaxed text-black/55">
+                        {feature.description}
+                      </p>
+                    )}
+                  </div>
                 </div>
 
-                <h3 className="mb-2.5 text-lg font-semibold tracking-tight text-foreground">
-                  {feature.title}
-                </h3>
-
-                <p className="text-sm leading-relaxed text-muted-foreground">
-                  {feature.description}
-                </p>
-              </div>
+                {feature.active && (
+                  <div className="absolute bottom-0 left-0 h-[3px] w-full bg-black/5">
+                    <div className="h-full bg-black w-[80%]" />
+                  </div>
+                )}
+              </article>
             </div>
           ))}
         </div>
+
+        {/* RIGHT IMAGE */}
+        <div className="relative border border-border p-1">
+          <div className="relative min-h-[380px] sm:min-h-[480px] overflow-hidden">
+
+            <img
+              src="https://dummyimage.com/1200x900/999999/000000"
+              alt=""
+              className="absolute inset-0 h-full w-full object-cover"
+            />
+
+            <div className="absolute border border-black/20 bg-black left-4 top-4 right-0 bottom-4 sm:left-6 sm:top-6 sm:bottom-6 lg:left-8 lg:top-8 lg:bottom-8">
+              <img
+                src="https://dummyimage.com/1200x800/111111/ffffff"
+                alt=""
+                className="h-full w-full object-cover"
+              />
+            </div>
+          </div>
+        </div>
+
       </div>
-    </section>
+    </div>
   );
 };
 
