@@ -1,119 +1,192 @@
-import React from 'react';
-import { cn } from '../../lib/utils';
+// components/layout/Testimonials.jsx
+import React from "react";
 
 const testimonials = [
   {
+    content: "CordBin finally gave us a single place to reason about files and sharing.",
     name: "Sarah Johnson",
     role: "Marketing Director",
     company: "TechCorp",
-    content:
-      "CordBin has transformed how our team shares and manages files. The interface is intuitive and the sharing features are exactly what we needed.",
   },
   {
+    content:
+      "Before CordBin, file sharing was scattered across tools. Now every share runs through the same permission layer — consistently.",
     name: "Michael Chen",
     role: "Freelance Designer",
     company: "Independent",
-    content:
-      "I've tried many file storage solutions, but CordBin is by far the best. Fast, secure, and incredibly easy to use. Highly recommended!",
-    featured: true,
   },
   {
+    content:
+      "CordBin reduced collaboration anxiety across the team. Fewer broken links, fewer access issues, fewer last‑minute surprises.",
     name: "Emily Rodriguez",
     role: "Project Manager",
     company: "Creative Studio",
+  },
+  {
     content:
-      "The collaboration features are outstanding. Our team can now work together seamlessly, and the security features give us peace of mind.",
+      "We used to rely on tribal knowledge for folders and permissions. With CordBin, policies live in the workspace — not in people's heads.",
+    name: "Daniel Foster",
+    role: "Engineering Lead",
+    company: "SparkPoint",
+  },
+  {
+    content:
+      "Reviewing changes became faster because context is already there. You don't need to ask what happened — you can see it.",
+    name: "Aylin Demir",
+    role: "Co-founder",
+    company: "BuildOps",
+  },
+  {
+    content:
+      "We replaced multiple sharing workflows with one system. Admin overhead dropped immediately.",
+    name: "Ryan Mitchell",
+    role: "Founder",
+    company: "Taskly",
+  },
+  {
+    content:
+      "What surprised us most was how little setup it needed. We were securely sharing large files within the first day.",
+    name: "Lina Berg",
+    role: "Product Marketing Manager",
+    company: "DataFuse",
+  },
+  {
+    content:
+      "We stopped discovering access problems after sending links. Catching permission issues early changed how confidently we ship deliverables.",
+    name: "Marcus Reed",
+    role: "Product Designer",
+    company: "Connectly",
+  },
+  {
+    content:
+      "Production readiness is no longer a checklist — it’s enforced. That shift alone changed our security culture.",
+    name: "Lucas Bennett",
+    role: "Creative Director",
+    company: "LaunchLab",
+  },
+
+  // dim row (like Nextflow)
+  {
+    content:
+      "It feels like infrastructure, not another tool. CordBin fades into the background and just keeps sharing reliable.",
+    name: "Alex Morgan",
+    role: "Head of Growth",
+    company: "CloudSync",
+    dim: true,
+  },
+  {
+    content:
+      "The activity timeline alone is worth it. Seeing uploads, shares, and access in one flow saves hours every week.",
+    name: "Julia Novak",
+    role: "Head of Marketing",
+    company: "PayNow",
+    dim: true,
+  },
+  {
+    content:
+      "It's the first system that made file governance feel intentional. Not reactive. Not manual. Just built‑in.",
+    name: "Maya Rodriguez",
+    role: "SaaS Growth Consultant",
+    company: "",
+    dim: true,
   },
 ];
 
-const StarIcon = () => (
-  <svg className="h-4 w-4 fill-current text-amber-400" viewBox="0 0 20 20">
-    <path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z" />
-  </svg>
-);
+function initials(name) {
+  return name
+    .split(" ")
+    .filter(Boolean)
+    .map((p) => p[0])
+    .join("")
+    .slice(0, 2)
+    .toUpperCase();
+}
+
+function TestimonialCard({ content, name, role, company, dim }) {
+  return (
+    <article
+      className={`relative border px-5 py-5 sm:px-6 sm:py-6 bg-[#f6f6f5] h-full flex flex-col justify-between ${
+        dim ? "border-black/10" : "border-black/15"
+      }`}
+    >
+      {/* Card corner brackets */}
+      <span aria-hidden="true" className="pointer-events-none absolute inset-0 z-10">
+        <span className="absolute left-0 top-0 h-3.5 w-3.5 border-l border-t border-black/30" />
+        <span className="absolute right-0 top-0 h-3.5 w-3.5 border-r border-t border-black/30" />
+        <span className="absolute bottom-0 left-0 h-3.5 w-3.5 border-b border-l border-black/30" />
+        <span className="absolute bottom-0 right-0 h-3.5 w-3.5 border-b border-r border-black/30" />
+      </span>
+
+      <p className={`text-sm sm:text-base leading-relaxed ${dim ? "text-black/35" : "text-black/65"}`}>
+        {content}
+      </p>
+
+      <div className="mt-6 flex items-center gap-3">
+        <span
+          className={`inline-flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden border font-mono text-[0.62rem] tracking-wide ${
+            dim
+              ? "border-black/8 bg-black/[0.03] text-black/25"
+              : "border-black/18 bg-black/[0.06] text-black/70"
+          }`}
+        >
+          <img
+            alt={name}
+            loading="lazy"
+            decoding="async"
+            width={40}
+            height={40}
+            className={`h-full w-full object-cover grayscale-100 brightness-125 contrast-75 ${dim ? "opacity-45" : ""}`}
+            src={`https://dummyimage.com/80x80/bdbdbd/000000&text=${encodeURIComponent(
+              initials(name)
+            )}`}
+          />
+        </span>
+
+        <div>
+          <p className={`font-mono text-sm ${dim ? "text-black/35" : "text-black/80"}`}>{name}</p>
+          <p className={`font-mono text-xs ${dim ? "text-black/25" : "text-black/50"}`}>
+            {role}
+            {company ? ` at ${company}` : ""}
+          </p>
+        </div>
+      </div>
+    </article>
+  );
+}
 
 const Testimonials = () => {
   return (
-    <section id="testimonials" className="py-28 md:py-36" data-testid="testimonials-section">
-      <div className="container mx-auto max-w-6xl px-6">
-        {/* Header */}
-        <div className="mx-auto mb-16 max-w-3xl text-center md:mb-20">
-          <div className="mb-6 inline-flex items-center gap-2.5 rounded-full border border-accent/20 bg-accent/5 px-5 py-2">
-            <span className="h-2 w-2 rounded-full bg-accent animate-pulse-dot" />
-            <span className="font-mono text-[11px] uppercase tracking-[0.15em] text-accent">
-              Testimonials
-            </span>
-          </div>
+    <div
+      id="testimonials"
+      className="relative border border-black/12 bg-[#f3f3f2] px-6 py-10 sm:px-8 sm:py-12 lg:px-10 lg:py-14"
+      data-testid="testimonials-section"
+    >
+      {/* Panel corner brackets */}
+      <span aria-hidden="true" className="pointer-events-none absolute inset-0 z-10">
+        <span className="absolute left-0 top-0 h-3.5 w-3.5 border-l border-t border-black/30" />
+        <span className="absolute right-0 top-0 h-3.5 w-3.5 border-r border-t border-black/30" />
+        <span className="absolute bottom-0 left-0 h-3.5 w-3.5 border-b border-l border-black/30" />
+        <span className="absolute bottom-0 right-0 h-3.5 w-3.5 border-b border-r border-black/30" />
+      </span>
 
-          <h2
-            className="font-display text-3xl tracking-tight text-foreground sm:text-4xl md:text-[3.25rem] md:leading-[1.15]"
-            data-testid="testimonials-title"
-          >
-            Loved by users{' '}
-            <span className="gradient-text">worldwide</span>
-          </h2>
-
-          <p className="mt-5 text-base text-muted-foreground sm:text-lg" data-testid="testimonials-description">
-            See what our customers have to say
-          </p>
-        </div>
-
-        {/* Cards grid — center card offset vertically on desktop */}
-        <div className="grid gap-6 md:grid-cols-3 md:gap-8">
-          {testimonials.map((testimonial, index) => (
-            <div
-              key={index}
-              className={cn(
-                "group relative rounded-2xl border p-7 transition-all duration-300 sm:p-8",
-                testimonial.featured
-                  ? "border-transparent md:translate-y-[-1rem]"
-                  : "border-border bg-card hover:border-accent/20 hover:shadow-lg"
-              )}
-              data-testid={`testimonial-card-${index}`}
-            >
-              {/* Gradient border wrap for featured card */}
-              {testimonial.featured && (
-                <div className="pointer-events-none absolute inset-0 rounded-2xl bg-gradient-to-br from-accent via-accent-secondary to-accent p-[1.5px]">
-                  <div className="h-full w-full rounded-[calc(1rem-1.5px)] bg-card" />
-                </div>
-              )}
-
-              <div className="relative">
-                {/* Accent bar */}
-                <div className="mb-6 h-1 w-10 rounded-full gradient-accent" />
-
-                {/* Stars */}
-                <div className="mb-5 flex gap-1">
-                  {[1, 2, 3, 4, 5].map((star) => (
-                    <StarIcon key={star} />
-                  ))}
-                </div>
-
-                {/* Quote */}
-                <p className="mb-8 leading-relaxed text-muted-foreground">
-                  "{testimonial.content}"
-                </p>
-
-                {/* Author */}
-                <div className="flex items-center gap-3">
-                  <div className="grid h-10 w-10 place-items-center rounded-full bg-accent/10 font-medium text-accent text-sm">
-                    {testimonial.name.charAt(0)}
-                  </div>
-                  <div>
-                    <p className="text-sm font-semibold text-foreground">
-                      {testimonial.name}
-                    </p>
-                    <p className="text-xs text-muted-foreground">
-                      {testimonial.role} · {testimonial.company}
-                    </p>
-                  </div>
-                </div>
-              </div>
-            </div>
-          ))}
-        </div>
+      <div className="mb-6 inline-flex items-center gap-2 font-mono text-xs text-black/50">
+        <span className="h-3.5 w-[2px] bg-black/40" />
+        <span>Testimonials</span>
       </div>
-    </section>
+
+      <h2 className="max-w-[700px] text-[2.4rem] sm:text-[3rem] lg:text-[3.6rem] leading-[0.95] tracking-[-0.04em] text-black/90">
+        Trusted by teams shipping
+        <br className="hidden sm:block" />
+        to production
+      </h2>
+
+      {/* Symmetrical card grid */}
+      <div className="mt-10 grid gap-3 md:grid-cols-2 xl:grid-cols-3 auto-rows-fr">
+        {testimonials.map((t, idx) => (
+          <TestimonialCard key={idx} {...t} />
+        ))}
+      </div>
+    </div>
   );
 };
 
