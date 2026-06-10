@@ -1,25 +1,22 @@
-import React, { useState } from 'react';
-import { Check } from 'lucide-react';
-import { cn } from '../../lib/utils';
+import React, { useState } from "react";
+import { Check } from "lucide-react";
 
 const plans = [
   {
     name: "Starter",
-    price: "0",
-    desc: "Perfect for casual storage",
+    price: 0,
+    desc: "Perfect for casual storage.",
     features: [
       "10GB Encrypted Storage",
       "Basic Share Links",
       "Mobile Access",
       "Standard Support",
     ],
-    cta: "Join Free",
-    featured: false,
   },
   {
     name: "Pro",
-    price: "12",
-    desc: "The professional's choice",
+    price: 12,
+    desc: "The professional's choice.",
     features: [
       "1TB Fast Storage",
       "Semantic AI Search",
@@ -27,13 +24,12 @@ const plans = [
       "Priority Syncing",
       "Version History",
     ],
-    cta: "Start Free Trial",
-    featured: true,
+    popular: true,
   },
   {
     name: "Team",
-    price: "49",
-    desc: "Built for scaling teams",
+    price: 49,
+    desc: "Built for scaling teams.",
     features: [
       "Unlimited Storage",
       "Custom Domain Links",
@@ -41,165 +37,144 @@ const plans = [
       "Admin Dashboard",
       "Audit Logs",
     ],
-    cta: "Contact Sales",
-    featured: false,
   },
 ];
 
 const Pricing = () => {
-  const [isYearly, setIsYearly] = useState(false);
+  const [yearly, setYearly] = useState(false);
 
-  const getPrice = (base) => {
-    const num = parseInt(base);
-    return isYearly ? Math.floor(num * 0.8) : num;
-  };
+    const getPrice = (price) =>
+    yearly ? Math.floor(price * 0.8) : price;
 
   return (
-    <section id="pricing" className="py-28 md:py-36" data-testid="pricing-section">
-      <div className="container mx-auto max-w-6xl px-6">
-        {/* Header */}
-        <div className="mx-auto mb-16 max-w-3xl text-center md:mb-20">
-          <div className="mb-6 inline-flex items-center gap-2.5 rounded-full border border-accent/20 bg-accent/5 px-5 py-2">
-            <span className="h-2 w-2 rounded-full bg-accent animate-pulse-dot" />
-            <span className="font-mono text-[11px] uppercase tracking-[0.15em] text-accent">
-              Pricing
-            </span>
-          </div>
+    <section id="pricing" className="w-full bg-[#f3f3f2]">
 
-          <h2 className="font-display text-3xl tracking-tight text-foreground sm:text-4xl md:text-[3.25rem] md:leading-[1.15]">
-            Simple, honest{' '}
-            <span className="gradient-text">pricing</span>
-          </h2>
+      <div className="relative border border-border bg-[#f3f3f2] px-6 py-10 sm:px-8 sm:py-12 lg:px-10 lg:py-14">
 
-          <p className="mx-auto mt-5 max-w-xl text-base text-muted-foreground sm:text-lg">
-            Choose a plan that scales with your growth. No hidden fees, no complexity.
-          </p>
+        {/* Corner brackets */}
+        <span className="pointer-events-none absolute inset-0 z-10">
+          <span className="absolute left-0 top-0 h-3.5 w-3.5 border-l border-t border-black/30" />
+          <span className="absolute right-0 top-0 h-3.5 w-3.5 border-r border-t border-black/30" />
+          <span className="absolute bottom-0 left-0 h-3.5 w-3.5 border-b border-l border-black/30" />
+          <span className="absolute bottom-0 right-0 h-3.5 w-3.5 border-b border-r border-black/30" />
+        </span>
+
+        {/* Eyebrow */}
+        <div className="mb-6 inline-flex items-center gap-2 font-mono text-xs text-black/50">
+          <span className="h-3.5 w-[4px] bg-black/40"></span>
+          <span>Pricing</span>
         </div>
 
-        {/* Billing toggle */}
-        <div className="mb-14 flex items-center justify-center gap-4 md:mb-16">
-          <span
-            className={cn(
-              "text-sm font-medium transition-colors duration-150",
-              !isYearly ? "text-foreground" : "text-muted-foreground"
-            )}
-          >
-            Monthly
-          </span>
+        {/* Heading */}
+        <h2 className="max-w-[740px] text-[2.4rem] sm:text-[3rem] lg:text-[3.6rem] leading-[0.95] tracking-[-0.04em] text-black/90">
+          Simple licensing for
+          <br className="hidden sm:block" />
+          production teams
+        </h2>
+
+        {/* Billing Toggle */}
+        <div className="mt-8 flex items-center justify-center gap-4">
+          <span className="font-mono text-sm text-black/90">Monthly</span>
 
           <button
-            onClick={() => setIsYearly(!isYearly)}
-            className={cn(
-              "relative flex h-7 w-12 items-center rounded-full p-1 transition-colors duration-200",
-              isYearly ? "gradient-accent" : "bg-border"
-            )}
-            aria-label={isYearly ? "Switch to monthly" : "Switch to yearly"}
+            onClick={() => setYearly(!yearly)}
+            className="relative h-6 w-11 border border-black/15 bg-black/8"
           >
-            <div
-              className={cn(
-                "h-5 w-5 rounded-full bg-white shadow-sm transition-transform duration-200",
-                isYearly ? "translate-x-5" : "translate-x-0"
-              )}
+            <span
+              className={`absolute top-1/2 h-3.5 w-3.5 -translate-y-1/2 border border-black/10 bg-white transition-all duration-200 ${
+                yearly ? "left-[22px]" : "left-[3px]"
+              }`}
             />
           </button>
 
-          <span
-            className={cn(
-              "text-sm font-medium transition-colors duration-150",
-              isYearly ? "text-foreground" : "text-muted-foreground"
-            )}
-          >
+          <span className="font-mono text-sm text-black/40">
             Yearly
-            <span className="ml-1.5 font-mono text-[11px] text-accent">-20%</span>
           </span>
         </div>
 
-        {/* Cards */}
-        <div className="grid gap-6 lg:grid-cols-3 lg:gap-8">
+        {/* Plans Grid */}
+        <div className="mt-8 grid gap-3 xl:grid-cols-3">
+
           {plans.map((plan, i) => (
-            <div
+            <article
               key={i}
-              className={cn(
-                "relative rounded-2xl text-left transition-all duration-300",
-                plan.featured
-                  ? "lg:-translate-y-4"
-                  : "hover:-translate-y-1"
-              )}
-              data-testid={`pricing-card-${i}`}
+              className="relative border border-black/12 bg-[#f6f6f5] px-5 py-6 sm:px-6 sm:py-7"
             >
-              {/* Gradient border for featured */}
-              {plan.featured && (
-                <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-accent via-accent-secondary to-accent p-[1.5px]">
-                  <div className="h-full w-full rounded-[calc(1rem-1.5px)] bg-card" />
-                </div>
-              )}
 
-              <div
-                className={cn(
-                  "relative rounded-2xl p-8 sm:p-10",
-                  plan.featured
-                    ? "shadow-xl"
-                    : "border border-border bg-card hover:border-accent/20 hover:shadow-lg"
-                )}
-              >
-                {/* Popular badge */}
-                {plan.featured && (
-                  <div className="absolute -top-3.5 right-8 rounded-full gradient-accent px-4 py-1.5 shadow-accent-sm">
-                    <span className="font-mono text-[10px] uppercase tracking-[0.12em] text-accent-foreground">
-                      Most Popular
-                    </span>
-                  </div>
-                )}
+              {/* Card corner brackets */}
+              <span className="pointer-events-none absolute inset-0 z-10">
+                <span className="absolute left-0 top-0 h-3.5 w-3.5 border-l border-t border-black/30" />
+                <span className="absolute right-0 top-0 h-3.5 w-3.5 border-r border-t border-black/30" />
+                <span className="absolute bottom-0 left-0 h-3.5 w-3.5 border-b border-l border-black/30" />
+                <span className="absolute bottom-0 right-0 h-3.5 w-3.5 border-b border-r border-black/30" />
+              </span>
 
-                {/* Plan name & desc */}
-                <h3 className="text-lg font-semibold text-foreground">{plan.name}</h3>
-                <p className="mt-1 text-sm text-muted-foreground">{plan.desc}</p>
+              <div className="flex items-start justify-between gap-3">
+                <h3 className="text-xl font-medium tracking-[-0.03em] text-black/90">
+                  {plan.name}
+                </h3>
 
-                {/* Price */}
-                <div className="mt-7 flex items-baseline gap-1.5">
-                  <span className="font-display text-5xl text-foreground">
-                    ${getPrice(plan.price)}
+                {plan.popular && (
+                  <span className="border border-black/12 bg-[#efefee] px-2.5 py-1 font-mono text-xs text-black/80">
+                    Popular
                   </span>
-                  <span className="text-sm text-muted-foreground">/mo</span>
-                </div>
-
-                {/* CTA */}
-                <button
-                  className={cn(
-                    "mt-8 w-full rounded-xl py-3.5 text-sm font-medium transition-all duration-200 active:scale-[0.98]",
-                    plan.featured
-                      ? "gradient-accent text-accent-foreground shadow-sm hover:-translate-y-0.5 hover:shadow-accent-sm hover:brightness-110"
-                      : "border border-border bg-card text-foreground hover:border-accent/30 hover:bg-accent/5"
-                  )}
-                >
-                  {plan.cta}
-                </button>
-
-                {/* Features */}
-                <ul className="mt-8 space-y-3.5">
-                  {plan.features.map((feature, j) => (
-                    <li key={j} className="flex items-center gap-3 text-sm text-muted-foreground">
-                      <div
-                        className={cn(
-                          "grid h-5 w-5 shrink-0 place-items-center rounded-full",
-                          plan.featured
-                            ? "gradient-accent"
-                            : "bg-accent/10"
-                        )}
-                      >
-                        <Check
-                          size={11}
-                          strokeWidth={3}
-                          className={plan.featured ? "text-accent-foreground" : "text-accent"}
-                        />
-                      </div>
-                      {feature}
-                    </li>
-                  ))}
-                </ul>
+                )}
               </div>
-            </div>
+
+              <p className="mt-3 min-h-[48px] max-w-[290px] text-sm text-black/60">
+                {plan.desc}
+              </p>
+
+              <div className="mt-5 flex items-end gap-2">
+                <span className="text-4xl tracking-[-0.05em] text-black/90">
+                  ${getPrice(plan.price)}
+                </span>
+                <span className="pb-1 font-mono text-sm text-black/50">
+                  /month
+                </span>
+              </div>
+
+              <button
+                className={`relative mt-4 flex h-11 w-full items-center justify-center border font-mono text-sm tracking-wide transition-colors ${
+                  plan.popular
+                    ? "border-black bg-black text-white hover:bg-neutral-800"
+                    : "border-black/15 bg-[#f8f8f7] text-black/85 hover:bg-black/5"
+                }`}
+              >
+                Get Started
+
+                <span className="pointer-events-none absolute inset-0">
+                  <span className="absolute left-0 top-0 h-2.5 w-2.5 border-l border-t border-black/20" />
+                  <span className="absolute right-0 top-0 h-2.5 w-2.5 border-r border-t border-black/20" />
+                  <span className="absolute bottom-0 left-0 h-2.5 w-2.5 border-b border-l border-black/20" />
+                  <span className="absolute bottom-0 right-0 h-2.5 w-2.5 border-b border-r border-black/20" />
+                </span>
+              </button>
+
+              <div className="mt-6 flex items-center gap-4">
+                <span className="h-px flex-1 bg-black/10"></span>
+                <span className="font-mono text-xs text-black/40">
+                  What you get
+                </span>
+                <span className="h-px flex-1 bg-black/10"></span>
+              </div>
+
+              <ul className="mt-4 space-y-3">
+                {plan.features.map((feature, j) => (
+                  <li key={j} className="flex items-start gap-2.5">
+                    <span className="mt-0.5 inline-flex h-5 w-5 items-center justify-center rounded-full bg-black/10">
+                      <Check className="size-3 text-black/65" />
+                    </span>
+                    <span className="text-sm text-black/65">
+                      {feature}
+                    </span>
+                  </li>
+                ))}
+              </ul>
+
+            </article>
           ))}
+
         </div>
       </div>
     </section>
