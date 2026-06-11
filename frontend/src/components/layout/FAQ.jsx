@@ -1,31 +1,38 @@
-import React, { useState } from 'react';
-import { ChevronDown } from 'lucide-react';
-import { cn } from '../../lib/utils';
+// components/layout/FAQ.tsx
+import React, { useState } from "react";
+import { Plus } from "lucide-react";
+import { cn } from "../../lib/utils";
 
 const faqs = [
   {
     question: "How secure is my data?",
-    answer: "We use bank-level 256-bit encryption for all files. Your data is encrypted both in transit and at rest. We never access your files without your permission.",
+    answer:
+      "We use bank-level 256-bit encryption for all files. Your data is encrypted both in transit and at rest. We never access your files without your permission.",
   },
   {
     question: "Can I upgrade or downgrade my plan anytime?",
-    answer: "Yes! You can change your plan at any time. If you upgrade, you'll be charged the prorated difference. If you downgrade, the credit will be applied to your next billing cycle.",
+    answer:
+      "Yes! You can change your plan at any time. If you upgrade, you'll be charged the prorated difference. If you downgrade, the credit will be applied to your next billing cycle.",
   },
   {
     question: "What file types are supported?",
-    answer: "We support all file types including documents, images, videos, audio files, archives, and more. There are no restrictions on file types.",
+    answer:
+      "We support all file types including documents, images, videos, audio files, archives, and more. There are no restrictions on file types.",
   },
   {
     question: "Is there a file size limit?",
-    answer: "Free users can upload files up to 2GB each. Pro and Enterprise users have no file size limits.",
+    answer:
+      "Free users can upload files up to 2GB each. Pro and Enterprise users have no file size limits.",
   },
   {
     question: "Can I share files with people who don't have an account?",
-    answer: "Absolutely! You can generate secure sharing links that anyone can access, regardless of whether they have an account.",
+    answer:
+      "Absolutely! You can generate secure sharing links that anyone can access, regardless of whether they have an account.",
   },
   {
     question: "Do you offer refunds?",
-    answer: "Yes, we offer a 30-day money-back guarantee for all paid plans. If you're not satisfied, we'll refund your payment in full.",
+    answer:
+      "Yes, we offer a 30-day money-back guarantee for all paid plans. If you're not satisfied, we'll refund your payment in full.",
   },
 ];
 
@@ -33,79 +40,116 @@ const FAQ = () => {
   const [openIndex, setOpenIndex] = useState(null);
 
   return (
-    <section id="faq" className="py-28 md:py-36 bg-muted/50" data-testid="faq-section">
-      <div className="container mx-auto max-w-6xl px-6">
-        {/* Section header */}
-        <div className="mx-auto mb-16 max-w-3xl text-center md:mb-20">
-          <div className="mb-6 inline-flex items-center gap-2.5 rounded-full border border-accent/20 bg-accent/5 px-5 py-2">
-            <span className="h-2 w-2 rounded-full bg-accent animate-pulse-dot" />
-            <span className="font-mono text-[11px] uppercase tracking-[0.15em] text-accent">
-              Support
-            </span>
+    <div
+      id="faqs"
+      className="relative border border-black/12 bg-[#f3f3f2] px-6 py-10 sm:px-8 sm:py-12 lg:px-10 lg:py-14"
+      data-testid="faq-section"
+    >
+      {/* Panel corner brackets */}
+      <span aria-hidden="true" className="pointer-events-none absolute inset-0 z-10">
+        <span className="absolute left-0 top-0 h-3.5 w-3.5 border-l border-t border-black/50" />
+        <span className="absolute right-0 top-0 h-3.5 w-3.5 border-r border-t border-black/50" />
+        <span className="absolute bottom-0 left-0 h-3.5 w-3.5 border-b border-l border-black/50" />
+        <span className="absolute bottom-0 right-0 h-3.5 w-3.5 border-b border-r border-black/50" />
+      </span>
+
+      <div className="grid gap-8 lg:grid-cols-[1fr_1.4fr] lg:gap-16">
+        {/* Left sticky column */}
+        <div className="lg:sticky lg:top-24 lg:self-start">
+          <div className="mb-6 inline-flex items-center gap-2 font-mono text-xs text-black/50">
+            <span className="h-3.5 w-[4px] bg-black/40" />
+            <span>FAQ</span>
           </div>
 
-          <h2
-            className="font-display text-3xl tracking-tight text-foreground sm:text-4xl md:text-[3.25rem] md:leading-[1.15]"
-            data-testid="faq-title"
-          >
-            Frequently asked{' '}
-            <span className="gradient-text">questions</span>
+          <h2 className="text-[2.4rem] sm:text-[3rem] lg:text-[3.6rem] leading-[0.95] tracking-[-0.04em] text-black/90">
+            Questions we
+            <br />
+            get asked
           </h2>
 
-          <p className="mt-5 text-base text-muted-foreground sm:text-lg" data-testid="faq-description">
-            Everything you need to know about CordBin
+          <p className="mt-5 max-w-[320px] text-sm sm:text-base leading-relaxed text-black/55">
+            Can't find what you're looking for? Reach out and we'll get back to you within one
+            business day.
           </p>
+
+          <a
+            className="relative mt-6 inline-flex h-11 items-center border border-black/15 bg-white px-6 font-mono text-sm text-black/80 transition-colors hover:bg-black/5"
+            href="/contact"
+          >
+            <span aria-hidden="true" className="pointer-events-none absolute inset-0">
+              <span className="absolute left-0 top-0 h-2.5 w-2.5 border-l border-t !border-l-black/50 !border-t-black/50" />
+              <span className="absolute right-0 top-0 h-2.5 w-2.5 border-r border-t !border-r-black/50 !border-t-black/50" />
+              <span className="absolute bottom-0 left-0 h-2.5 w-2.5 border-b border-l !border-b-black/50 !border-l-black/50" />
+              <span className="absolute bottom-0 right-0 h-2.5 w-2.5 border-b border-r !border-b-black/50 !border-r-black/50" />
+            </span>
+            Contact us
+          </a>
         </div>
 
-        {/* FAQ items */}
-        <div className="mx-auto max-w-3xl space-y-3">
+        {/* FAQ list */}
+        <div className="flex flex-col gap-3">
           {faqs.map((faq, index) => {
             const isOpen = openIndex === index;
 
             return (
-              <div
-                key={index}
-                className={cn(
-                  "rounded-xl border bg-card overflow-hidden transition-all duration-300",
-                  isOpen
-                    ? "border-accent/25 shadow-lg shadow-accent/5"
-                    : "border-border hover:border-border/80"
-                )}
-                data-testid={`faq-item-${index}`}
-              >
+              <article key={index} className="relative border border-black/12 bg-[#f6f6f5]">
+                {/* Card corner brackets */}
+                <span aria-hidden="true" className="pointer-events-none absolute inset-0 z-10">
+                  <span className="absolute left-0 top-0 h-3.5 w-3.5 border-l border-t !border-black/50" />
+                  <span className="absolute right-0 top-0 h-3.5 w-3.5 border-r border-t !border-black/50" />
+                  <span className="absolute bottom-0 left-0 h-3.5 w-3.5 border-b border-l !border-black/50" />
+                  <span className="absolute bottom-0 right-0 h-3.5 w-3.5 border-b border-r !border-black/50" />
+                </span>
+
                 <button
+                  type="button"
+                  className="flex w-full items-start justify-between gap-6 px-5 py-5 text-left sm:px-6 sm:py-6"
+                  aria-expanded={isOpen}
                   onClick={() => setOpenIndex(isOpen ? null : index)}
-                  className="flex w-full items-center justify-between gap-4 p-5 text-left sm:p-6"
                 >
-                  <h3 className="text-base font-semibold text-foreground sm:text-lg">
-                    {faq.question}
-                  </h3>
-                  <ChevronDown
+                  <span
                     className={cn(
-                      "h-5 w-5 shrink-0 transition-all duration-300",
-                      isOpen
-                        ? "rotate-180 text-accent"
-                        : "text-muted-foreground"
+                      "text-sm sm:text-base font-medium leading-snug tracking-[-0.01em] transition-colors duration-200",
+                      isOpen ? "text-black/90" : "text-black/75"
                     )}
-                  />
+                  >
+                    {faq.question}
+                  </span>
+
+                  <span className="relative mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center border border-black/15 bg-[#f0f0ef] text-black/60 transition-colors duration-200">
+                    <span aria-hidden="true" className="pointer-events-none absolute inset-0">
+                      <span className="absolute left-0 top-0 h-1.5 w-1.5 border-l border-t border-l-black border-t-black" />
+                      <span className="absolute right-0 top-0 h-1.5 w-1.5 border-r border-t border-r-black border-t-black" />
+                      <span className="absolute bottom-0 left-0 h-1.5 w-1.5 border-b border-l border-b-black border-l-black" />
+                      <span className="absolute bottom-0 right-0 h-1.5 w-1.5 border-b border-r border-b-black border-r-black" />
+                    </span>
+
+                    <Plus
+                      className={cn("size-3 transition-transform duration-200", isOpen && "rotate-45")}
+                    />
+                  </span>
                 </button>
 
                 <div
                   className={cn(
-                    "overflow-hidden transition-all duration-300",
-                    isOpen ? "max-h-96" : "max-h-0"
+                    "grid transition-all duration-300 ease-in-out",
+                    isOpen ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0"
                   )}
                 >
-                  <p className="px-5 pb-5 leading-relaxed text-muted-foreground sm:px-6 sm:pb-6">
-                    {faq.answer}
-                  </p>
+                  <div className="overflow-hidden">
+                    <div className="border-t border-black/[0.08] px-5 pb-5 pt-4 sm:px-6 sm:pb-6">
+                      <p className="max-w-[820px] text-sm sm:text-base leading-relaxed text-black/55">
+                        {faq.answer}
+                      </p>
+                    </div>
+                  </div>
                 </div>
-              </div>
+              </article>
             );
           })}
         </div>
       </div>
-    </section>
+    </div>
   );
 };
 
