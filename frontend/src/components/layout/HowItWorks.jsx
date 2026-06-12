@@ -1,97 +1,112 @@
-import React from 'react';
-import { ArrowRight } from 'lucide-react';
-import { cn } from '../../lib/utils';
+// components/layout/HowItWorks.tsx
+import React from "react";
 
 const steps = [
   {
-    number: "01",
-    title: "Upload Your Files",
+    stepLabel: "Step 1",
+    title: "Upload your files",
     description:
       "Drag and drop your files or select them from your device. We support all file types.",
+    bgImage: "https://dummyimage.com/1200x900/cfcfcf/000000",
+    panelImage: "https://dummyimage.com/1200x900/0b0b0b/ffffff&text=Panel+1",
   },
   {
-    number: "02",
-    title: "Organize & Manage",
+    stepLabel: "Step 2",
+    title: "Organize & manage",
     description:
       "Create folders, tag files, and organize your content exactly how you want it.",
+    bgImage: "https://dummyimage.com/1200x900/cfcfcf/000000",
+    panelImage: "https://dummyimage.com/1200x900/0b0b0b/ffffff&text=Panel+2",
   },
   {
-    number: "03",
-    title: "Share & Collaborate",
+    stepLabel: "Step 3",
+    title: "Share & collaborate",
     description:
       "Generate secure links and share with anyone. Control who can access your files.",
+    bgImage: "https://dummyimage.com/1200x900/cfcfcf/000000",
+    panelImage: "https://dummyimage.com/1200x900/0b0b0b/ffffff&text=Panel+3",
   },
 ];
 
 const HowItWorks = () => {
   return (
-    <section id="how-it-works" className="py-28 md:py-36" data-testid="how-it-works-section">
-      <div className="container mx-auto max-w-6xl px-6">
-        {/* Header */}
-        <div className="mx-auto mb-16 max-w-3xl text-center md:mb-20">
-          <div className="mb-6 inline-flex items-center gap-2.5 rounded-full border border-accent/20 bg-accent/5 px-5 py-2">
-            <span className="h-2 w-2 rounded-full bg-accent animate-pulse-dot" />
-            <span className="font-mono text-[11px] uppercase tracking-[0.15em] text-accent">
-              How It Works
-            </span>
-          </div>
+    <div className="relative border border-black/12 bg-[#f3f3f2] px-6 py-10 sm:px-8 sm:py-12 lg:px-10 lg:py-14">
+      {/* Panel corner brackets */}
+      <span aria-hidden="true" className="pointer-events-none absolute inset-0 z-10">
+        <span className="absolute left-0 top-0 h-3.5 w-3.5 border-l border-t border-black/30" />
+        <span className="absolute right-0 top-0 h-3.5 w-3.5 border-r border-t border-black/30" />
+        <span className="absolute bottom-0 left-0 h-3.5 w-3.5 border-b border-l border-black/30" />
+        <span className="absolute bottom-0 right-0 h-3.5 w-3.5 border-b border-r border-black/30" />
+      </span>
 
-          <h2
-            className="font-display text-3xl tracking-tight text-foreground sm:text-4xl md:text-[3.25rem] md:leading-[1.15]"
-            data-testid="how-it-works-title"
-          >
-            Get started in{' '}
-            <span className="gradient-text">three simple steps</span>
-          </h2>
-
-          <p className="mt-5 text-base text-muted-foreground sm:text-lg" data-testid="how-it-works-description">
-            Simple, fast, and secure file management
-          </p>
-        </div>
-
-        {/* Steps */}
-        <div className="relative mx-auto max-w-5xl">
-          {/* Connecting line — visible on desktop only */}
-          <div className="pointer-events-none absolute top-12 left-[16.66%] right-[16.66%] hidden h-[2px] md:block">
-            <div className="h-full w-full rounded-full bg-gradient-to-r from-accent/20 via-accent/10 to-accent/20" />
-          </div>
-
-          <div className="grid gap-10 md:grid-cols-3 md:gap-8">
-            {steps.map((step, index) => (
-              <div
-                key={index}
-                className="relative flex flex-col items-center text-center"
-                data-testid={`step-${index}`}
-              >
-                {/* Step number */}
-                <div className="relative mb-7">
-                  <div className="grid h-20 w-20 place-items-center rounded-2xl border border-accent/20 bg-card font-mono text-2xl font-semibold text-accent shadow-sm transition-all duration-300 hover:shadow-accent-sm hover:-translate-y-0.5">
-                    {step.number}
-                  </div>
-
-                  {/* Arrow connector between steps — desktop only */}
-                  {index < steps.length - 1 && (
-                    <div className="absolute -right-4/2 top-1/2 hidden -translate-y-1/4 md:block">
-                      <div className="grid h-7 w-7 place-items-center rounded-full gradient-accent shadow-accent-sm">
-                        <ArrowRight size={14} className="text-accent-foreground" />
-                      </div>
-                    </div>
-                  )}
-                </div>
-
-                {/* Content */}
-                <h3 className="mb-3 text-lg font-semibold tracking-tight text-foreground">
-                  {step.title}
-                </h3>
-                <p className="max-w-[280px] text-sm leading-relaxed text-muted-foreground">
-                  {step.description}
-                </p>
-              </div>
-            ))}
-          </div>
-        </div>
+      <div className="mb-6 inline-flex items-center gap-2 font-mono text-xs text-black/50">
+        <span className="h-3.5 w-[4px] bg-black/40" />
+        <span>How it works</span>
       </div>
-    </section>
+
+      <h2 className="max-w-[700px] text-[2.4rem] sm:text-[3rem] lg:text-[3.6rem] leading-[0.95] tracking-[-0.04em] text-black/90">
+        From upload to sharing
+        <br className="hidden sm:block" />— simple, controlled, and trackable
+      </h2>
+
+      <div className="mt-10 grid gap-3 lg:grid-cols-3">
+        {steps.map((item, idx) => (
+          <article key={idx} className="relative border border-black/12 bg-[#f5f5f4]">
+            {/* Card corner brackets */}
+            <span aria-hidden="true" className="pointer-events-none absolute inset-0 z-10">
+              <span className="absolute left-0 top-0 h-3.5 w-3.5 border-l border-t border-black/30" />
+              <span className="absolute right-0 top-0 h-3.5 w-3.5 border-r border-t border-black/30" />
+              <span className="absolute bottom-0 left-0 h-3.5 w-3.5 border-b border-l border-black/30" />
+              <span className="absolute bottom-0 right-0 h-3.5 w-3.5 border-b border-r border-black/30" />
+            </span>
+
+            {/* Image block */}
+            <div className="relative h-[290px] overflow-hidden border-b border-black/10">
+              <img
+                alt=""
+                aria-hidden="true"
+                src={item.bgImage}
+                className="absolute inset-0 h-full w-full object-cover brightness-125 contrast-75"
+              />
+
+              <div className="absolute inset-x-4 top-10 bottom-10 border border-black/20 bg-black overflow-hidden">
+                {/* Inner white corner brackets */}
+                <span aria-hidden="true" className="pointer-events-none absolute inset-0 z-10">
+                  <span className="absolute left-0 top-0 h-3.5 w-3.5 border-l border-t border-white/15" />
+                  <span className="absolute right-0 top-0 h-3.5 w-3.5 border-r border-t border-white/15" />
+                  <span className="absolute bottom-0 left-0 h-3.5 w-3.5 border-b border-l border-white/15" />
+                  <span className="absolute bottom-0 right-0 h-3.5 w-3.5 border-b border-r border-white/15" />
+                </span>
+
+                <div className="relative h-full w-full bg-[#070707]">
+                  <img
+                    alt="Step panel"
+                    src={item.panelImage}
+                    className="absolute inset-0 h-full w-full object-cover object-left-top"
+                  />
+                </div>
+              </div>
+            </div>
+
+            {/* Text block */}
+            <div className="px-5 py-5 sm:px-6">
+              <div className="mb-2 inline-flex items-center gap-2 font-mono text-xs text-black/45">
+                <span className="h-3 w-[2px] bg-black/25" />
+                <span>{item.stepLabel}</span>
+              </div>
+
+              <h3 className="text-xl sm:text-2xl font-medium leading-snug tracking-[-0.03em] text-black/90">
+                {item.title}
+              </h3>
+
+              <p className="mt-2 text-sm sm:text-base leading-relaxed text-black/55">
+                {item.description}
+              </p>
+            </div>
+          </article>
+        ))}
+      </div>
+    </div>
   );
 };
 
