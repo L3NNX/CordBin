@@ -48,85 +48,77 @@ export const uploadChunk = async (req, res) => {
       return res.status(400).json({ message: "Missing required fields" });
     }
 
+    if (!chunk.buffer) {
+      return res.status(400).json({ message: "Chunk buffer missing" });
+    }
+
     const metaData = await metaDataModel.findById(fileId);
     if (!metaData) {
       return res.status(404).json({ message: "File metadata not found" });
     }
 
-    if (!chunk.buffer) {
-      return res.status(400).json({ message: "Chunk buffer missing" });
-    }
-
     console.log(`Uploading chunk ${chunkIndex}/${totalChunks}`);
 
-    // Encrypt chunk
     const { encrypted, iv } = encryptChunk(chunk.buffer, fileId);
 
-    const obfuscatedName = `${crypto.randomBytes(6).toString("hex")}_${chunkIndex}.enc`;
+    const obfuscatedName =
+      `${crypto.randomBytes(6).toString("hex")}_${chunkIndex}.enc`;
 
-    const attachment = new AttachmentBuilder(encrypted, {
-      name: obfuscatedName,
-    });
+    const channel = await client.channels.fetch(
+      process.env.DISCORD_CHANNEL_ID
+    );
 
-    let channel;
-    try {
-      channel = await client.channels.fetch(process.env.DISCORD_CHANNEL_ID);
-      if (!channel) throw new Error("Channel not found");
-    } catch (err) {
-      console.error("Channel fetch failed:", err);
+    if (!channel) {
       return res.status(503).json({ message: "Discord unavailable" });
     }
 
-    // ✅ SEND RESPONSE IMMEDIATELY (IMPORTANT)
+    // ✅ WAIT for Discord upload
+    const message = await channel.send({
+      content: `chunk_${chunkIndex}`,
+      files: [
+        new AttachmentBuilder(encrypted, { name: obfuscatedName }),
+      ],
+    });
+
+    console.log(`Chunk ${chunkIndex} uploaded → ${message.id}`);
+
+    // ✅ ATOMIC UPDATE (NO save())
+    const idx = Number(chunkIndex) - 1;
+
+    await metaDataModel.updateOne(
+      { _id: fileId },
+      {
+        $set: {
+          [`chunksMetadata.${idx}.messageId`]: message.id,
+          [`chunksMetadata.${idx}.iv`]: iv,
+        },
+      }
+    );
+
+    // ✅ Re-check if complete
+    const updatedDoc = await metaDataModel.findById(fileId);
+
+    const uploadedCount = updatedDoc.chunksMetadata.filter(
+      (c) => c.messageId && c.messageId !== ""
+    ).length;
+
+    if (uploadedCount >= updatedDoc.totalChunks) {
+      await metaDataModel.updateOne(
+        { _id: fileId },
+        { $set: { status: "complete" } }
+      );
+      console.log("✅ File upload complete");
+    }
+
+    // ✅ NOW respond
     res.status(200).json({
-      message: "Chunk received",
+      message: "Chunk uploaded successfully",
       chunkIndex: Number(chunkIndex),
     });
 
-    // ✅ ASYNC DISCORD UPLOAD (NON-BLOCKING)
-    channel
-      .send({
-        content: `chunk_${chunkIndex}`,
-        files: [attachment],
-      })
-      .then(async (message) => {
-        console.log(`Chunk ${chunkIndex} uploaded → ${message.id}`);
-
-        try {
-          const idx = Number(chunkIndex) - 1;
-
-          if (idx < 0 || idx >= metaData.chunksMetadata.length) {
-            throw new Error("Invalid chunk index");
-          }
-
-          metaData.chunksMetadata[idx].messageId = message.id;
-          metaData.chunksMetadata[idx].iv = iv;
-
-          const uploadedCount = metaData.chunksMetadata.filter(
-            (c) => c.messageId && c.messageId !== ""
-          ).length;
-
-          if (uploadedCount >= metaData.totalChunks) {
-            metaData.status = "complete";
-            console.log("✅ File upload complete");
-          }
-
-          await metaData.save();
-        } catch (err) {
-          console.error("Metadata update failed:", err);
-        }
-      })
-      .catch((err) => {
-        console.error("Discord upload failed:", err);
-      });
-
   } catch (error) {
     console.error("Upload chunk error:", error);
-
-    // Only send response if not already sent
-    if (!res.headersSent) {
-      res.status(500).json({ message: "Internal server error" });
-    }
+    res.status(500).json({ message: "Internal server error" });
   }
 };
 
