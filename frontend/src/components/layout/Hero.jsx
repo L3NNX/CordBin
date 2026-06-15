@@ -1,6 +1,6 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
-
+import heroGif from "../../assets/hero.gif";
 const Hero = () => {
   const navigate = useNavigate();
 
@@ -20,7 +20,7 @@ const Hero = () => {
         {/* LEFT PANEL */}
         <div className="flex flex-col border-b border-border lg:border-b-0 lg:border-r">
 
-          <div className="flex flex-1 flex-col px-6 pt-8 pb-10 sm:px-10 sm:pt-10 sm:pb-14 lg:px-14 lg:pt-12 lg:pb-20 xl:px-16 xl:pt-14 xl:pb-24">
+          <div className="flex flex-col px-6 pt-8 pb-6 sm:px-10 sm:pt-10 sm:pb-8 lg:px-14 lg:pt-12 lg:pb-10 xl:px-16 xl:pt-14 xl:pb-10">
 
             {/* Eyebrow */}
             <div className="relative mb-6 inline-flex w-fit items-center border border-border px-1 py-1">
@@ -87,31 +87,17 @@ const Hero = () => {
         </div>
 
         {/* RIGHT PANEL */}
-        <div className="relative m-1 min-h-[300px] overflow-hidden sm:min-h-[420px] lg:min-h-[670px]">
+        <div className="relative m-1 min-h-[300px] overflow-hidden sm:min-h-[420px] lg:min-h-[520px]">
 
-          {/* Background image */}
-          <img
-            src="https://dummyimage.com/1200x900/999999/000000"
-            alt=""
-            className="absolute inset-0 h-full w-full object-cover"
-          />
-
-          {/* Inner product frame */}
-          <div className="absolute bottom-5 left-5 right-0 top-5 border border-border bg-black p-3 sm:bottom-8 sm:left-8 sm:top-8 sm:p-5 lg:bottom-12 lg:left-12 lg:top-12 lg:p-6">
+          {/* Hero GIF */}
+          <div className="absolute overflow-hidden border border-border bg-black sm:bottom-8 sm:left-8 sm:top-8 lg:bottom-12 lg:left-0 lg:top-12">
             <img
-              src="https://dummyimage.com/1200x800/111111/ffffff"
-              alt="Dashboard preview"
-              className="h-full w-full object-cover"
+              src={heroGif}
+              alt="Workflow Preview"
+              className="h-full w-full object-contain "
+              draggable={false}
             />
           </div>
-
-          {/* Inner corner brackets */}
-          <span className="pointer-events-none absolute inset-0 z-20">
-            <span className="absolute left-0 top-0 h-3.5 w-3.5 border-l border-t border-foreground/40" />
-            <span className="absolute right-0 top-0 h-3.5 w-3.5 border-r border-t border-foreground/40" />
-            <span className="absolute bottom-0 left-0 h-3.5 w-3.5 border-b border-l border-foreground/40" />
-            <span className="absolute bottom-0 right-0 h-3.5 w-3.5 border-b border-r border-foreground/40" />
-          </span>
 
         </div>
 
