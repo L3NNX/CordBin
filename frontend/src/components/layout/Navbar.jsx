@@ -52,9 +52,18 @@ const Navbar = () => {
             <div className="hidden items-center gap-3 md:flex">
 
 
-              <Button variant="corner" onClick={handleAuth}>
-                Contact us
-              </Button>
+              <div className="hidden items-center gap-3 md:flex">
+                <Button variant="corner"
+                  className="border-black bg-black text-white hover:bg-neutral-800 hover:text-white"
+                  onClick={handleAuth}
+                >
+                  Login
+                </Button>
+
+                <Button variant="corner">
+                  Contact us
+                </Button>
+              </div>
             </div>
 
           </div>
