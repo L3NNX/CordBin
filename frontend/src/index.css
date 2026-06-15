@@ -1,16 +1,41 @@
-/* ============================================
-   1. TAILWIND v4
-   ============================================ */
+@font-face {
+  font-family: "Geist";
+  src: url("https://nexflow-nextjsshop.vercel.app/_next/static/media/caa3a2e1cccd8315-s.p.16t1db8_9y2o~.woff2")
+    format("woff2");
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Geist Mono";
+  src: url("https://nexflow-nextjsshop.vercel.app/_next/static/media/797e433ab948586e-s.p.0.q-h669a_dqa.woff2")
+    format("woff2");
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Geist Fallback";
+  src: local("Arial");
+
+  ascent-override: 95.94%;
+  descent-override: 28.16%;
+  line-gap-override: 0%;
+  size-adjust: 104.76%;
+}
 @import "tailwindcss";
 
 /* ============================================
    2. THEME CONFIGURATION
    ============================================ */
 @theme {
-  /* Typography */
-  --font-sans: 'Geist', ui-sans-serif, system-ui, -apple-system, sans-serif;
-  --font-display: 'Geist', ui-sans-serif, system-ui, -apple-system, sans-serif;
-  --font-mono: 'Geist Mono', ui-monospace, monospace;
+  --font-sans: "Geist", "Geist Fallback", ui-sans-serif, system-ui, -apple-system, sans-serif;
+
+  --font-display: "Geist", "Geist Fallback", ui-sans-serif, system-ui, -apple-system, sans-serif;
+
+  --font-mono: "Geist Mono", ui-monospace, monospace;
 
   /* Radius */
   --radius: 0.5rem;
@@ -130,9 +155,13 @@ body {
 h1,
 h2 {
   font-family: var(--font-display);
-  font-weight: 700;
+  font-weight: 300;
   letter-spacing: -0.04em;
-  line-height: 1.05;
+  line-height: 0.95;
+
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 h3,
