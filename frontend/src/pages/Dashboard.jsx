@@ -342,269 +342,300 @@ const handleResumeUpload = async (incompleteFile, browserFile) => {
   toast.success('Download started');
 };
 
-  return (
-    <MainLayout
-      onShowStats={() => setShowStats(true)}
-      onUpload={() => setShowUploadDialog(true)}
-      onFilterChange={setActiveFilter}
-      activeFilter={activeFilter}
-      onLogout={logout}
-      storageUsed={storageUsed}
-      storageTotal={1073741824} // 1 GB — replace with actual limit from your API
-    >
-      {/* Sticky toolbar */}
-      <div className="sticky top-0 z-10 -mx-6 mb-6 border-b border-border/60 bg-background/80 px-6 pt-6 pb-5 backdrop-blur-xl">
-        {/* Top row: title + actions */}
-        <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-          <div>
+// Replace ONLY the return (...) block in your Dashboard with this (logic unchanged)
+
+return (
+  <MainLayout
+    onShowStats={() => setShowStats(true)}
+    onUpload={() => setShowUploadDialog(true)}
+    onFilterChange={setActiveFilter}
+    activeFilter={activeFilter}
+    onLogout={logout}
+    storageUsed={storageUsed}
+    storageTotal={1073741824}
+  >
+    {/* ── Page wrapper ── */}
+    <div className="min-h-full px-6 py-8 md:px-10">
+      <div className="mx-auto max-w-7xl space-y-8">
+
+        {/* ── Page header ── */}
+        <div className="flex flex-col gap-5 sm:flex-row sm:items-end sm:justify-between">
+          <div className="space-y-1">
+            <p className="font-mono text-[11px] uppercase tracking-widest text-muted-foreground/60">
+              {isSearching ? "Search" : "Library"}
+            </p>
             <h1
-              className="font-display text-2xl tracking-tight text-foreground md:text-3xl"
+              className="text-3xl tracking-tight"
               data-testid="dashboard-title"
             >
-              {isSearching ? "Search Results" : getCategoryLabel()}
+              {isSearching ? "Search results" : getCategoryLabel()}
             </h1>
-            <p className="mt-1 text-sm text-muted-foreground">
+            <p className="text-sm text-muted-foreground">
               {isSearching ? (
                 <>
-                  {filteredFiles.length} file
-                  {filteredFiles.length !== 1 && "s"}
-                  {" found for "}
-                  <span className="font-medium text-foreground">
+                  {filteredFiles.length}{" "}
+                  {filteredFiles.length === 1 ? "file" : "files"} for{" "}
+                  <span className="text-foreground">
                     &ldquo;{searchQuery}&rdquo;
                   </span>
                 </>
               ) : (
                 <>
-                  {filteredFiles.length} file
-                  {filteredFiles.length !== 1 && "s"}
+                  {filteredFiles.length}{" "}
+                  {filteredFiles.length === 1 ? "file" : "files"}
                 </>
               )}
             </p>
           </div>
 
-          <div className="flex gap-2">
-            <button
-              onClick={() => setShowUploadDialog(true)}
-              className="group flex items-center gap-2 rounded-xl gradient-accent px-5 py-2 text-sm font-medium text-accent-foreground
-                shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:shadow-accent-sm active:scale-[0.98]"
-              data-testid="upload-btn"
-            >
-              <Upload className="h-4 w-4" />
-              Upload Files
-            </button>
-          </div>
+          {/* ── Upload button ── */}
+          <button
+            onClick={() => setShowUploadDialog(true)}
+            data-testid="upload-btn"
+            className={cn(
+              "inline-flex shrink-0 items-center gap-2",
+              "h-9 rounded-lg border border-foreground bg-foreground px-4",
+              "font-mono text-xs font-medium text-background",
+              "transition-all duration-150 hover:opacity-80 active:scale-[0.97]",
+            )}
+          >
+            <Upload className="h-3.5 w-3.5" />
+            Upload files
+          </button>
         </div>
 
-        {/* Bottom row: search + view toggle */}
-        <div className="mt-4 flex gap-3">
-          <div className="relative flex-1">
-            <Search className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+        {/* ── Toolbar ── */}
+        <div className="flex items-center gap-3">
+          {/* Search */}
+          <div className="relative flex-1 max-w-sm">
+            <Search className="pointer-events-none absolute left-3 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-muted-foreground" />
             <input
               type="text"
-              placeholder="Search files..."
+              placeholder="Search files…"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="h-10 w-full rounded-xl border border-border bg-card pl-10 pr-10 text-sm text-foreground
-                placeholder:text-muted-foreground/50 transition-colors duration-150
-                focus:border-accent/40 focus:outline-none focus:ring-2 focus:ring-accent/20"
               data-testid="search-input"
+              className={cn(
+                "h-9 w-full rounded-lg border border-border bg-card pl-9 pr-9",
+                "font-mono text-sm placeholder:text-muted-foreground/50",
+                "transition focus:outline-none focus-visible:ring-2 focus-visible:ring-ring",
+              )}
             />
             {isSearching && (
               <button
                 onClick={clearSearch}
-                className="absolute right-3 top-1/2 -translate-y-1/2 rounded-md p-0.5 text-muted-foreground
-                  transition-colors hover:text-foreground"
                 data-testid="clear-search-btn"
-                aria-label="Clear search"
+                className="absolute right-2 top-1/2 -translate-y-1/2 grid h-5 w-5 place-items-center
+                  rounded text-muted-foreground hover:text-foreground transition"
               >
-                <X className="h-4 w-4" />
+                <X className="h-3.5 w-3.5" />
               </button>
             )}
           </div>
 
-          <div className="flex gap-1 rounded-xl border border-border p-1">
+          {/* Spacer */}
+          <div className="flex-1" />
+
+          {/* View toggle */}
+          <div className="flex rounded-lg border border-border overflow-hidden">
             <button
               onClick={() => setViewMode("grid")}
-              className={cn(
-                "grid h-8 w-8 place-items-center rounded-lg transition-all duration-150",
-                viewMode === "grid"
-                  ? "gradient-accent text-accent-foreground shadow-sm"
-                  : "text-muted-foreground hover:text-foreground"
-              )}
               data-testid="grid-view-btn"
               aria-label="Grid view"
+              className={cn(
+                "grid h-9 w-9 place-items-center border-r border-border transition",
+                viewMode === "grid"
+                  ? "bg-foreground text-background"
+                  : "bg-card text-muted-foreground hover:bg-muted",
+              )}
             >
-              <Grid className="h-4 w-4" />
+              <Grid className="h-3.5 w-3.5" />
             </button>
             <button
               onClick={() => setViewMode("list")}
-              className={cn(
-                "grid h-8 w-8 place-items-center rounded-lg transition-all duration-150",
-                viewMode === "list"
-                  ? "gradient-accent text-accent-foreground shadow-sm"
-                  : "text-muted-foreground hover:text-foreground"
-              )}
               data-testid="list-view-btn"
               aria-label="List view"
+              className={cn(
+                "grid h-9 w-9 place-items-center transition",
+                viewMode === "list"
+                  ? "bg-foreground text-background"
+                  : "bg-card text-muted-foreground hover:bg-muted",
+              )}
             >
-              <List className="h-4 w-4" />
+              <List className="h-3.5 w-3.5" />
             </button>
           </div>
         </div>
-      </div>
 
-      {showIncompleteBanner && (
-        <IncompleteFileBanner
-          files={incompleteFiles}
-          resumingFiles={resumingFiles} 
-           onResume={handleResumeUpload} 
-          onDelete={handleDeleteIncomplete}
-          onDismiss={() => setShowIncompleteBanner(false)}
-        />
-      )}
+        {/* ── Incomplete banner ── */}
+        {showIncompleteBanner && incompleteFiles.length > 0 && (
+          <IncompleteFileBanner
+            files={incompleteFiles}
+            resumingFiles={resumingFiles}
+            onResume={handleResumeUpload}
+            onDelete={handleDeleteIncomplete}
+            onDismiss={() => setShowIncompleteBanner(false)}
+          />
+        )}
 
-      {/* Content area */}
-      {loading ? (
-        <div className="flex flex-col items-center justify-center py-20" data-testid="loading-state">
-          <div className="h-8 w-8 animate-spin rounded-full border-2 border-accent/20 border-t-accent" />
-          <p className="mt-4 text-sm text-muted-foreground">Loading files...</p>
-        </div>
-      ) : isSearching && filteredFiles.length === 0 ? (
-        <div className="flex flex-col items-center justify-center py-20" data-testid="no-results-state">
-          <div className="mb-5 grid h-16 w-16 place-items-center rounded-2xl bg-accent/5 border border-accent/10">
-            <Search className="h-7 w-7 text-accent/60" />
-          </div>
-          <h3 className="text-lg font-semibold text-foreground">No results found</h3>
-          <p className="mt-1.5 mb-6 text-sm text-muted-foreground">
-            No files match <span className="font-medium">&ldquo;{searchQuery}&rdquo;</span>
-          </p>
-          <button
-            onClick={clearSearch}
-            className="rounded-xl border border-border px-5 py-2.5 text-sm font-medium text-foreground
-              transition-all duration-200 hover:bg-accent/5 active:scale-[0.98]"
-            data-testid="clear-search-results-btn"
+        {/* ── Content area ── */}
+        {loading ? (
+          <div
+            className="flex flex-col items-center justify-center py-32"
+            data-testid="loading-state"
           >
-            Clear Search
-          </button>
-        </div>
-      ) : filteredFiles.length === 0 ? (
-        <div className="flex flex-col items-center justify-center py-20" data-testid="empty-state">
-          <div className="mb-5 grid h-16 w-16 place-items-center rounded-2xl bg-accent/5 border border-accent/10">
-            <Upload className="h-7 w-7 text-accent/60" />
+            <div className="h-6 w-6 animate-spin rounded-full border-2 border-border border-t-foreground" />
+            <p className="mt-4 font-mono text-xs text-muted-foreground">
+              Loading…
+            </p>
           </div>
-          <h3 className="text-lg font-semibold text-foreground">
-            {activeFilter === "all" ? "No files yet" : `No ${getCategoryLabel().toLowerCase()}`}
-          </h3>
-          <p className="mt-1.5 mb-6 text-sm text-muted-foreground">
-            {activeFilter === "all"
-              ? "Upload your first file to get started"
-              : `You don't have any ${getCategoryLabel().toLowerCase()} yet`}
-          </p>
-          <button
-            onClick={() => setShowUploadDialog(true)}
-            className="group flex items-center gap-2 rounded-xl gradient-accent px-6 py-2.5 text-sm font-medium text-accent-foreground
-              shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:shadow-accent-sm active:scale-[0.98]"
-            data-testid="upload-first-btn"
-          >
-            <Upload className="h-4 w-4" />
-            Upload Files
-          </button>
-        </div>
-      ) : (
-        <div data-testid="files-container">
-          {viewMode === "grid" ? (
-            <FileGrid
-              files={visibleFiles}
-              onFileClick={handleFileClick}
-              onDelete={handleDeleteFile}
-              onShare={handleShare}
-              onDownload={handleDownload}
-            />
-          ) : (
-            <FileList
-              // files={filteredFiles}
-              files={visibleFiles}
-              onFileClick={handleFileClick}
-              onDelete={handleDeleteFile}
-              onShare={handleShare}
-              onDownload={handleDownload}
-            />
-          )}
 
-          {hasMore && (
-            <div className="mt-8 flex flex-col items-center gap-2">
-              <p className="text-xs text-muted-foreground">
-                Showing {visibleFiles.length} of {filteredFiles.length} files
-              </p>
-              <button
-                onClick={() => setVisibleCount((prev) => prev + 20)}
-                className="rounded-xl border border-border px-6 py-2.5 text-sm 
-          font-medium text-foreground transition-all duration-200 
-          hover:bg-accent/5 active:scale-[0.98]"
-                data-testid="load-more-btn"
-              >
-                Load More
-              </button>
+        ) : isSearching && filteredFiles.length === 0 ? (
+          <div
+            className="flex flex-col items-center justify-center py-32"
+            data-testid="no-results-state"
+          >
+            <div className="corner-bracket mb-6 grid h-14 w-14 place-items-center">
+              <Search className="h-6 w-6 text-muted-foreground" />
             </div>
-          )}
-        </div>
-      )}
+            <h3 className="text-base font-semibold">No results</h3>
+            <p className="mt-1 mb-6 text-sm text-muted-foreground">
+              Nothing matched &ldquo;{searchQuery}&rdquo;
+            </p>
+            <button
+              onClick={clearSearch}
+              data-testid="clear-search-results-btn"
+              className="h-9 rounded-lg border border-border bg-card px-5 font-mono text-xs
+                text-muted-foreground transition hover:bg-muted"
+            >
+              Clear search
+            </button>
+          </div>
 
-      {/* Upload Dialog */}
-      <Dialog open={showUploadDialog} onOpenChange={handleUploadDialogChange}>
-        <DialogContent data-testid="upload-dialog"   onPointerDownOutside={(e) => {
-            if (isUploading) e.preventDefault();
-          }}
-          // ← NEW: block escape key during uploads
-          onEscapeKeyDown={(e) => {
-            if (isUploading) e.preventDefault();
-          }}
-          // ← NEW: block any outside interaction during uploads
-          onInteractOutside={(e) => {
-            if (isUploading) e.preventDefault();
-          }}>
-          <DialogHeader>
-                        <DialogTitle className="flex items-center gap-2">
-              Upload Files
-              {isUploading && (
-                <span className="inline-flex items-center gap-1.5 rounded-full bg-accent/10 px-2.5 py-0.5 text-[11px] font-medium text-accent">
-                  <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-accent" />
-                  Uploading…
-                </span>
+        ) : filteredFiles.length === 0 ? (
+          <div
+            className="flex flex-col items-center justify-center py-32"
+            data-testid="empty-state"
+          >
+            <div className="corner-bracket mb-6 grid h-14 w-14 place-items-center">
+              <Upload className="h-6 w-6 text-muted-foreground" />
+            </div>
+            <h3 className="text-base font-semibold">
+              {activeFilter === "all"
+                ? "No files yet"
+                : `No ${getCategoryLabel().toLowerCase()}`}
+            </h3>
+            <p className="mt-1 mb-6 text-sm text-muted-foreground">
+              {activeFilter === "all"
+                ? "Upload your first file to get started"
+                : `You have no ${getCategoryLabel().toLowerCase()} yet`}
+            </p>
+            <button
+              onClick={() => setShowUploadDialog(true)}
+              data-testid="upload-first-btn"
+              className={cn(
+                "inline-flex items-center gap-2 h-9 rounded-lg px-5",
+                "border border-foreground bg-foreground font-mono text-xs text-background",
+                "transition hover:opacity-80 active:scale-[0.97]",
               )}
-            </DialogTitle>
-          </DialogHeader>
-          <FileUploadZone onUploadComplete={handleUploadComplete} onUploadingChange={setIsUploading} />
-        </DialogContent>
-      </Dialog>
+            >
+              <Upload className="h-3.5 w-3.5" />
+              Upload files
+            </button>
+          </div>
 
-      {/* File Preview */}
-      {selectedFile && (
-        <FilePreviewModal
-          file={selectedFile}
-          open={showPreview}
-          onClose={() => setShowPreview(false)}
-          onDownload={() => handleDownload(selectedFile)}
-          onShare={() => {
-            setShowPreview(false);
-            setShowShare(true);
-          }}
+        ) : (
+          <div data-testid="files-container" className="space-y-6">
+            {viewMode === "grid" ? (
+              <FileGrid
+                files={visibleFiles}
+                onFileClick={handleFileClick}
+                onDelete={handleDeleteFile}
+                onShare={handleShare}
+                onDownload={handleDownload}
+              />
+            ) : (
+              <FileList
+                files={visibleFiles}
+                onFileClick={handleFileClick}
+                onDelete={handleDeleteFile}
+                onShare={handleShare}
+                onDownload={handleDownload}
+              />
+            )}
+
+            {hasMore && (
+              <div className="flex flex-col items-center gap-2 pt-6">
+                <p className="font-mono text-[11px] text-muted-foreground">
+                  {visibleFiles.length} of {filteredFiles.length}
+                </p>
+                <button
+                  onClick={() => setVisibleCount((c) => c + 20)}
+                  data-testid="load-more-btn"
+                  className="h-9 rounded-lg border border-border bg-card px-6 font-mono text-xs
+                    text-muted-foreground transition hover:bg-muted active:scale-[0.97]"
+                >
+                  Load more
+                </button>
+              </div>
+            )}
+          </div>
+        )}
+
+      </div>
+    </div>
+
+    {/* ── Upload dialog ── */}
+    <Dialog open={showUploadDialog} onOpenChange={handleUploadDialogChange}>
+      <DialogContent
+        data-testid="upload-dialog"
+        onPointerDownOutside={(e) => isUploading && e.preventDefault()}
+        onEscapeKeyDown={(e) => isUploading && e.preventDefault()}
+        onInteractOutside={(e) => isUploading && e.preventDefault()}
+      >
+        <DialogHeader>
+          <DialogTitle className="flex items-center gap-2 text-base">
+            Upload files
+            {isUploading && (
+              <span className="inline-flex items-center gap-1.5 rounded-md border border-border
+                bg-muted px-2 py-0.5 font-mono text-[10px] text-muted-foreground">
+                <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-foreground" />
+                Uploading…
+              </span>
+            )}
+          </DialogTitle>
+        </DialogHeader>
+        <FileUploadZone
+          onUploadComplete={handleUploadComplete}
+          onUploadingChange={setIsUploading}
         />
-      )}
+      </DialogContent>
+    </Dialog>
 
-      {/* Share */}
-      {selectedFile && (
-        <ShareModal
-          file={selectedFile}
-          open={showShare}
-          onClose={() => setShowShare(false)}
-        />
-      )}
+    {/* ── File preview ── */}
+    {selectedFile && (
+      <FilePreviewModal
+        file={selectedFile}
+        open={showPreview}
+        onClose={() => setShowPreview(false)}
+        onDownload={() => handleDownload(selectedFile)}
+        onShare={() => { setShowPreview(false); setShowShare(true); }}
+      />
+    )}
 
-      {/* Storage Stats */}
-      <StorageDashboard open={showStats} onClose={() => setShowStats(false)} />
-    </MainLayout>
-  );
+    {/* ── Share modal ── */}
+    {selectedFile && (
+      <ShareModal
+        file={selectedFile}
+        open={showShare}
+        onClose={() => setShowShare(false)}
+      />
+    )}
+
+    {/* ── Storage stats ── */}
+    <StorageDashboard open={showStats} onClose={() => setShowStats(false)} />
+  </MainLayout>
+);
 };
 
 export default Dashboard;
