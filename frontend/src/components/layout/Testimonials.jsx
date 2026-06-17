@@ -3,90 +3,91 @@ import React from "react";
 
 const testimonials = [
   {
-    content: "CordBin finally gave us a single place to reason about files and sharing.",
-    name: "Sarah Johnson",
-    role: "Marketing Director",
-    company: "TechCorp",
+    content:
+      "Using Discord as a storage backend sounded risky — until we saw the rate‑limit orchestration in action. It’s surprisingly resilient.",
+    name: "Arjun Mehta",
+    role: "Backend Engineer",
+    company: "InfraStack",
   },
   {
     content:
-      "Before CordBin, file sharing was scattered across tools. Now every share runs through the same permission layer — consistently.",
-    name: "Michael Chen",
-    role: "Freelance Designer",
-    company: "Independent",
+      "Chunked uploads with resume support saved us countless failed transfers on unstable networks. Large objects just complete.",
+    name: "Elena Kovács",
+    role: "DevOps Lead",
+    company: "ScaleOps",
   },
   {
     content:
-      "CordBin reduced collaboration anxiety across the team. Fewer broken links, fewer access issues, fewer last‑minute surprises.",
-    name: "Emily Rodriguez",
-    role: "Project Manager",
-    company: "Creative Studio",
+      "Client‑side AES‑256‑GCM encryption before upload means we never rely on third‑party storage for trust. That’s a big shift.",
+    name: "Noah Kim",
+    role: "Security Engineer",
+    company: "CipherWorks",
   },
   {
     content:
-      "We used to rely on tribal knowledge for folders and permissions. With CordBin, policies live in the workspace — not in people's heads.",
-    name: "Daniel Foster",
-    role: "Engineering Lead",
-    company: "SparkPoint",
+      "The multi‑channel distribution layer makes Discord behave like a distributed object store. That abstraction is impressive.",
+    name: "Marta Silva",
+    role: "Systems Architect",
+    company: "GridLayer",
   },
   {
     content:
-      "Reviewing changes became faster because context is already there. You don't need to ask what happened — you can see it.",
-    name: "Aylin Demir",
-    role: "Co-founder",
-    company: "BuildOps",
+      "We’ve pushed thousands of objects through it. No bans. No Cloudflare lockouts. The rate‑limit manager does its job.",
+    name: "Daniel Ross",
+    role: "Platform Engineer",
+    company: "DeployCore",
   },
   {
     content:
-      "We replaced multiple sharing workflows with one system. Admin overhead dropped immediately.",
-    name: "Ryan Mitchell",
-    role: "Founder",
-    company: "Taskly",
+      "Streaming decryption allows us to preview encrypted objects without exposing raw storage. It feels like a real storage engine.",
+    name: "Hiro Tanaka",
+    role: "Product Engineer",
+    company: "SecureLabs",
   },
   {
     content:
-      "What surprised us most was how little setup it needed. We were securely sharing large files within the first day.",
-    name: "Lina Berg",
-    role: "Product Marketing Manager",
-    company: "DataFuse",
+      "Token‑based access control made secure distribution trivial. We don’t leak internal structure anymore.",
+    name: "Fatima Rahman",
+    role: "Infrastructure Lead",
+    company: "CloudMesh",
   },
   {
     content:
-      "We stopped discovering access problems after sending links. Catching permission issues early changed how confidently we ship deliverables.",
-    name: "Marcus Reed",
-    role: "Product Designer",
-    company: "Connectly",
+      "We replaced traditional bucket storage with Discord infrastructure — and the abstraction layer made it viable.",
+    name: "Jonas Weber",
+    role: "CTO",
+    company: "NodeFlow",
   },
   {
     content:
-      "Production readiness is no longer a checklist — it’s enforced. That shift alone changed our security culture.",
-    name: "Lucas Bennett",
-    role: "Creative Director",
-    company: "LaunchLab",
+      "CordBin behaves less like a file app and more like a controlled object registry.",
+    name: "Isabella Marino",
+    role: "Distributed Systems Engineer",
+    company: "DataForge",
   },
 
-  // dim row (like Nextflow)
+  // dim row
   {
     content:
-      "It feels like infrastructure, not another tool. CordBin fades into the background and just keeps sharing reliable.",
-    name: "Alex Morgan",
-    role: "Head of Growth",
-    company: "CloudSync",
+      "The channel pool logic alone prevents API saturation. That level of defensive design is rare.",
+    name: "Victor Alvarez",
+    role: "API Engineer",
+    company: "",
     dim: true,
   },
   {
     content:
-      "The activity timeline alone is worth it. Seeing uploads, shares, and access in one flow saves hours every week.",
-    name: "Julia Novak",
-    role: "Head of Marketing",
-    company: "PayNow",
+      "We treat it as an encrypted object layer, not a file host. That distinction matters.",
+    name: "Grace Lee",
+    role: "Security Architect",
+    company: "",
     dim: true,
   },
   {
     content:
-      "It's the first system that made file governance feel intentional. Not reactive. Not manual. Just built‑in.",
-    name: "Maya Rodriguez",
-    role: "SaaS Growth Consultant",
+      "It abstracts Discord’s limits into a predictable storage interface. That’s the real value.",
+    name: "Ravi Nair",
+    role: "Infrastructure Consultant",
     company: "",
     dim: true,
   },
@@ -171,13 +172,13 @@ const Testimonials = () => {
 
       <div className="mb-6 inline-flex items-center gap-2 font-mono text-xs text-black/50">
         <span className="h-3.5 w-[2px] bg-black/40" />
-        <span>Testimonials</span>
+        <span>Engineering Feedback</span>
       </div>
 
       <h2 className="max-w-[700px] text-[2.4rem] sm:text-[3rem] lg:text-[3.6rem] leading-[0.95] tracking-[-0.04em] text-black/90">
-        Trusted by teams shipping
+        Used by engineers building
         <br className="hidden sm:block" />
-        to production
+        secure systems
       </h2>
 
       {/* Symmetrical card grid */}
