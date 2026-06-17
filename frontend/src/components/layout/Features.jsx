@@ -5,30 +5,29 @@ import { Button } from "../ui/button";
 const featureList = [
   {
     icon: ShieldCheck,
-    title: "Automated Pre-Deploy Validation",
+    title: "Client-Side AES-256-GCM Encryption",
     description:
-      "Every deployment is checked for configuration, licenses, and quality issues before it goes live.",
+      "All objects are encrypted before upload using AES-256-GCM, ensuring data confidentiality even across third-party infrastructure.",
   },
   {
     icon: Code,
-    title: "Code & Test Signals",
+    title: "Resumable Chunked Uploads",
     description:
-      "Surface test failures, warnings, and code quality signals in one clear execution log.",
+      "Large files are split into secure chunks with automatic retry and resume support for unstable network conditions.",
   },
   {
     icon: Activity,
-    title: "Real-Time Execution Feedback",
+    title: "Streaming Decryption",
     description:
-      "Get instant feedback on your pipeline execution with real-time logs and status updates.",
+      "Download and preview encrypted objects with on-the-fly decryption, without exposing raw storage data.",
   },
   {
     icon: SquareCheckBig,
-    title: "Actionable Validation Results",
+    title: "Token-Based Access Control",
     description:
-      "Clear, actionable results that help your team fix issues fast and ship with confidence.",
+      "Generate secure, time‑limited access tokens for sharing encrypted objects without revealing internal storage structure.",
   },
 ];
-
 const INTERVAL_MS = 3500;
 
 // One bar per feature item — manages its own Web Animations API instance
@@ -118,18 +117,18 @@ const Features = () => {
             <span>Features</span>
           </div>
           <h2 className="max-w-[700px] text-[2.4rem] sm:text-[2.8rem] lg:text-[3.3rem] leading-[0.95] tracking-[-0.04em] font-normal">
-            Catch issues before they
+          Built for resilient
             <br className="hidden sm:block" />
-            reach production
+            object distribution
           </h2>
         </div>
 
         <div className="lg:pt-14">
           <p className="max-w-[320px] text-base sm:text-lg leading-relaxed text-foreground/60">
-            Every deployment is automatically checked for critical quality issues before it goes live.
+            Encrypted object storage powered by Discord infrastructure, designed for secure distribution and controlled access.
           </p>
           <div className="mt-6">
-            <Button variant="corner">Contact us</Button>
+            <Button variant="corner">View Architecture</Button>
           </div>
         </div>
       </div>
