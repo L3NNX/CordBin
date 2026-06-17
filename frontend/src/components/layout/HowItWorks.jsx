@@ -1,30 +1,32 @@
 // components/layout/HowItWorks.tsx
 import React from "react";
-
+import w1 from "../../assets/w1.png";
+import w2 from "../../assets/w2.png";
+import w3 from "../../assets/w3.png";
 const steps = [
   {
     stepLabel: "Step 1",
-    title: "Upload your files",
+    title: "Encrypt & Chunk",
     description:
-      "Drag and drop your files or select them from your device. We support all file types.",
+      "Objects are encrypted client-side using AES-256-GCM, then split into optimized chunks for resilient transfer.",
     bgImage: "https://dummyimage.com/1200x900/cfcfcf/000000",
-    panelImage: "https://dummyimage.com/1200x900/0b0b0b/ffffff&text=Panel+1",
+    panelImage: w1,
   },
   {
     stepLabel: "Step 2",
-    title: "Organize & manage",
+    title: "Distributed Upload",
     description:
-      "Create folders, tag files, and organize your content exactly how you want it.",
+      "Chunks are distributed across multiple Discord channels with intelligent rate-limit handling to prevent API bans and maximize throughput.",
     bgImage: "https://dummyimage.com/1200x900/cfcfcf/000000",
-    panelImage: "https://dummyimage.com/1200x900/0b0b0b/ffffff&text=Panel+2",
+    panelImage: w2,
   },
   {
     stepLabel: "Step 3",
-    title: "Share & collaborate",
+    title: "Secure Retrieval",
     description:
-      "Generate secure links and share with anyone. Control who can access your files.",
+      "Encrypted chunks are streamed and reassembled on demand, with token-based access control and on-the-fly decryption.",
     bgImage: "https://dummyimage.com/1200x900/cfcfcf/000000",
-    panelImage: "https://dummyimage.com/1200x900/0b0b0b/ffffff&text=Panel+3",
+    panelImage: w3,
   },
 ];
 
@@ -54,38 +56,19 @@ const HowItWorks = () => {
           <article key={idx} className="relative border border-black/12 bg-[#f5f5f4]">
             {/* Card corner brackets */}
             <span aria-hidden="true" className="pointer-events-none absolute inset-0 z-10">
-              <span className="absolute left-0 top-0 h-3.5 w-3.5 border-l border-t border-black/30" />
-              <span className="absolute right-0 top-0 h-3.5 w-3.5 border-r border-t border-black/30" />
-              <span className="absolute bottom-0 left-0 h-3.5 w-3.5 border-b border-l border-black/30" />
-              <span className="absolute bottom-0 right-0 h-3.5 w-3.5 border-b border-r border-black/30" />
+              <span className="absolute left-0 top-0 h-3.5 w-3.5 " />
+              <span className="absolute right-0 top-0 h-3.5 w-3.5 " />
+              <span className="absolute bottom-0 left-0 h-3.5 w-3.5 border-b border-l !border-black/50" />
+              <span className="absolute bottom-0 right-0 h-3.5 w-3.5 border-b border-r !border-black/50" />
             </span>
 
-            {/* Image block */}
+
             <div className="relative h-[290px] overflow-hidden border-b border-black/10">
               <img
-                alt=""
-                aria-hidden="true"
-                src={item.bgImage}
-                className="absolute inset-0 h-full w-full object-cover brightness-125 contrast-75"
+                src={item.panelImage}
+                alt="Step visual"
+                className="absolute inset-0 h-full w-full object-cover"
               />
-
-              <div className="absolute inset-x-4 top-10 bottom-10 border border-black/20 bg-black overflow-hidden">
-                {/* Inner white corner brackets */}
-                <span aria-hidden="true" className="pointer-events-none absolute inset-0 z-10">
-                  <span className="absolute left-0 top-0 h-3.5 w-3.5 border-l border-t border-white/15" />
-                  <span className="absolute right-0 top-0 h-3.5 w-3.5 border-r border-t border-white/15" />
-                  <span className="absolute bottom-0 left-0 h-3.5 w-3.5 border-b border-l border-white/15" />
-                  <span className="absolute bottom-0 right-0 h-3.5 w-3.5 border-b border-r border-white/15" />
-                </span>
-
-                <div className="relative h-full w-full bg-[#070707]">
-                  <img
-                    alt="Step panel"
-                    src={item.panelImage}
-                    className="absolute inset-0 h-full w-full object-cover object-left-top"
-                  />
-                </div>
-              </div>
             </div>
 
             {/* Text block */}
