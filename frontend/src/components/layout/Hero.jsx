@@ -1,6 +1,7 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import heroGif from "../../assets/hero.gif";
+
 const Hero = () => {
   const navigate = useNavigate();
 
@@ -28,20 +29,21 @@ const Hero = () => {
                 BETA
               </span>
               <span className="ml-2 text-[10px] uppercase tracking-wide text-muted-foreground">
-                Meet your digital workforce
+                Encrypted Object Storage
               </span>
             </div>
 
             {/* Heading */}
             <h1 className="text-[2.4rem] sm:text-[2.8rem] lg:text-[3.3rem] leading-[0.95] tracking-[-0.04em] max-w-[520px]">
-              Build workflows
+              Secure storage without
               <br />
-              with confidence
+              infrastructure overhead
             </h1>
 
             {/* Description */}
             <p className="mt-4 max-w-[520px] text-muted-foreground text-sm sm:text-base md:text-lg lg:mt-6 lg:text-xl">
-              Create reliable workflows and catch issues before they reach production.
+              Store encrypted objects using AES-256-GCM with resumable chunked uploads,
+              streaming decryption, and token-based access control.
             </p>
 
             {/* Buttons */}
@@ -50,11 +52,11 @@ const Hero = () => {
                 onClick={() => navigate("/dashboard")}
                 className="h-10 border border-primary bg-primary px-4 text-sm text-primary-foreground hover:bg-neutral-800"
               >
-                Book Free Demo
+                Open Console
               </button>
 
               <button className="h-10 border border-border bg-background px-4 text-sm hover:bg-muted">
-                Watch Intro
+                View Architecture
               </button>
             </div>
 
@@ -64,21 +66,26 @@ const Hero = () => {
           <div className="border-t border-border">
             <div className="border-b border-border px-4 py-2.5 sm:px-6 lg:px-8">
               <p className="font-mono text-[10px] uppercase tracking-widest text-muted-foreground">
-                Trusted by teams
+                Built for secure distribution
               </p>
             </div>
 
             <div className="grid grid-cols-3">
-              {[1, 2, 3, 4, 5, 6].map((i) => (
+              {[
+                "AES-256-GCM",
+                "Chunked Uploads",
+                "Resumable Transfers",
+                "Token Access",
+                "Streaming Decryption",
+                "Discord Backend",
+              ].map((item, i) => (
                 <div
                   key={i}
                   className="flex h-14 items-center justify-center border-b border-r border-border sm:h-16 lg:h-20"
                 >
-                  <img
-                    src={`https://dummyimage.com/120x40/cccccc/000000&text=Logo+${i}`}
-                    alt="Logo"
-                    className="h-5 opacity-50 grayscale"
-                  />
+                  <p className="font-mono text-[11px] uppercase tracking-widest text-muted-foreground">
+                    {item}
+                  </p>
                 </div>
               ))}
             </div>
@@ -89,12 +96,11 @@ const Hero = () => {
         {/* RIGHT PANEL */}
         <div className="relative m-1 min-h-[300px] overflow-hidden sm:min-h-[420px] lg:min-h-[520px]">
 
-          {/* Hero GIF */}
           <div className="absolute overflow-hidden border border-border bg-black sm:bottom-8 sm:left-8 sm:top-8 lg:bottom-12 lg:left-0 lg:top-12">
             <img
               src={heroGif}
-              alt="Workflow Preview"
-              className="h-full w-full object-contain "
+              alt="Encrypted Storage Console Preview"
+              className="h-full w-full object-contain"
               draggable={false}
             />
           </div>
