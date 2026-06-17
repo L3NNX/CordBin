@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import { ShieldCheck, Code, Activity, SquareCheckBig } from "lucide-react";
 import { Button } from "../ui/button";
 
@@ -26,13 +26,81 @@ const featureList = [
     title: "Actionable Validation Results",
     description:
       "Clear, actionable results that help your team fix issues fast and ship with confidence.",
-    active: true,
   },
 ];
 
-const Features = () => {
+const INTERVAL_MS = 3500;
+
+// One bar per feature item — manages its own Web Animations API instance
+const ProgressBar = ({ active, paused }) => {
+  const ref = useRef(null);
+  const animRef = useRef(null);
+
+  useEffect(() => {
+    if (!ref.current) return;
+
+    animRef.current?.cancel();
+
+    if (!active) {
+      ref.current.style.width = "0%";
+      return;
+    }
+
+    animRef.current = ref.current.animate(
+      [{ width: "0%" }, { width: "100%" }],
+      { duration: INTERVAL_MS, easing: "linear", fill: "forwards" }
+    );
+
+    if (paused) animRef.current.pause();
+
+    return () => animRef.current?.cancel();
+  }, [active]);
+
+  useEffect(() => {
+    if (!animRef.current) return;
+    if (paused) animRef.current.pause();
+    else animRef.current.play();
+  }, [paused]);
+
   return (
-    <div className="relative border border-border bg-[#f5f5f5] p-6 sm:p-8 lg:p-10">
+    <div
+      ref={ref}
+      className="absolute bottom-0 left-0 h-0.5 bg-foreground"
+      style={{ width: "0%" }}
+    />
+  );
+};
+
+const Features = () => {
+  const [activeIndex, setActiveIndex] = useState(0);
+  const [paused, setPaused] = useState(false);
+  const intervalRef = useRef(null);
+
+  const startTimer = useCallback(() => {
+    clearInterval(intervalRef.current);
+    intervalRef.current = setInterval(() => {
+      setActiveIndex((prev) => (prev + 1) % featureList.length);
+    }, INTERVAL_MS);
+  }, []);
+
+  useEffect(() => {
+    startTimer();
+    return () => clearInterval(intervalRef.current);
+  }, [startTimer]);
+
+  useEffect(() => {
+    if (paused) clearInterval(intervalRef.current);
+    else startTimer();
+    return () => clearInterval(intervalRef.current);
+  }, [paused, startTimer]);
+
+  const handleClick = (i) => {
+    setActiveIndex(i);
+    startTimer();
+  };
+
+  return (
+    <div className="relative border border-border bg-secondary p-6 sm:p-8 lg:p-10">
 
       {/* Corner brackets */}
       <span className="pointer-events-none absolute inset-0 z-10">
@@ -42,16 +110,14 @@ const Features = () => {
         <span className="absolute bottom-0 right-0 h-3.5 w-3.5 border-b border-r border-foreground/40" />
       </span>
 
-      {/* Top grid */}
+      {/* Header */}
       <div className="grid gap-8 lg:grid-cols-[1fr_340px] lg:gap-10">
-
         <div>
           <div className="mb-6 inline-flex items-center gap-2 font-mono text-xs text-foreground/50">
-            <span className="h-3.5 w-[4px] bg-foreground/40"></span>
+            <span className="h-3.5 w-[4px] bg-foreground/40" />
             <span>Features</span>
           </div>
-
-          <h2 className="max-w-[700px] text-[2.4rem] sm:text-[3rem] lg:text-[3.6rem] leading-[0.95] tracking-[-0.04em]">
+          <h2 className="max-w-[700px] text-[2.4rem] sm:text-[2.8rem] lg:text-[3.3rem] leading-[0.95] tracking-[-0.04em] font-normal">
             Catch issues before they
             <br className="hidden sm:block" />
             reach production
@@ -62,75 +128,87 @@ const Features = () => {
           <p className="max-w-[320px] text-base sm:text-lg leading-relaxed text-foreground/60">
             Every deployment is automatically checked for critical quality issues before it goes live.
           </p>
-
-      <Button variant="corner">
-  Contact us
-</Button>
+          <div className="mt-6">
+            <Button variant="corner">Contact us</Button>
+          </div>
         </div>
       </div>
 
-      {/* Feature + Image grid */}
+      {/* Feature list + image */}
       <div className="mt-10 grid gap-3 lg:grid-cols-[1fr_1.5fr] lg:items-stretch">
 
-        {/* LEFT */}
         <div className="flex h-full flex-col gap-3">
+          {featureList.map((feature, i) => {
+            const isActive = activeIndex === i;
+            const Icon = feature.icon;
 
-          {featureList.map((feature, i) => (
-            <div key={i} className="flex-1">
-              <article
-                className={`relative h-full border bg-white px-6 py-7 sm:px-8 overflow-hidden ${
-                  feature.active
-                    ? "border-black/20"
-                    : "border-black/10 hover:border-black/15"
-                }`}
+            return (
+              <button
+                key={i}
+                onClick={() => handleClick(i)}
+                onMouseEnter={() => setPaused(true)}
+                onMouseLeave={() => setPaused(false)}
+                className="flex-1 text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
               >
-                <span className="pointer-events-none absolute inset-0 z-10">
-                  <span className="absolute left-0 top-0 h-3.5 w-3.5 border-l border-t border-foreground/40" />
-                  <span className="absolute right-0 top-0 h-3.5 w-3.5 border-r border-t border-foreground/40" />
-                  <span className="absolute bottom-0 left-0 h-3.5 w-3.5 border-b border-l border-foreground/40" />
-                  <span className="absolute bottom-0 right-0 h-3.5 w-3.5 border-b border-r border-foreground/40" />
-                </span>
+                <article
+                  className={`relative h-full overflow-hidden border bg-card px-6 py-7 sm:px-8 transition-colors duration-200 ${
+                    isActive ? "border-foreground/20" : "border-border hover:border-foreground/15"
+                  }`}
+                >
+                  {/* Corner marks */}
+                  <span className="pointer-events-none absolute inset-0 z-10">
+                    <span className="absolute left-0 top-0 h-3.5 w-3.5 border-l border-t !border-black" />
+                    <span className="absolute right-0 top-0 h-3.5 w-3.5 border-r border-t !border-black" />
+                    <span className="absolute bottom-0 left-0 h-3.5 w-3.5 border-b border-l !border-black" />
+                    <span className="absolute bottom-0 right-0 h-3.5 w-3.5 border-b border-r !border-black" />
+                  </span>
 
-                <div className="flex items-start gap-4">
-                  <feature.icon className="mt-1 size-5 shrink-0 text-black/40" />
-                  <div className="flex-1">
-                    <h3
-                      className={`text-base sm:text-lg font-medium leading-snug ${
-                        feature.active ? "text-black" : "text-black/50"
+                  <div className="flex items-start gap-4">
+                    <Icon
+                      className={`mt-1 size-5 shrink-0 transition-colors duration-200 ${
+                        isActive ? "text-foreground/70" : "text-foreground/30"
                       }`}
-                    >
-                      {feature.title}
-                    </h3>
+                    />
+                    <div className="flex-1">
+                      <h3
+                        className={`text-base sm:text-lg font-medium leading-snug transition-colors duration-200 ${
+                          isActive ? "text-foreground" : "text-foreground/40"
+                        }`}
+                      >
+                        {feature.title}
+                      </h3>
 
-                    {feature.active && (
-                      <p className="mt-2 text-sm sm:text-base leading-relaxed text-black/55">
-                        {feature.description}
-                      </p>
-                    )}
+                      <div
+                        className={`overflow-hidden transition-all duration-300 ease-out ${
+                          isActive ? "max-h-24 opacity-100 mt-2" : "max-h-0 opacity-0"
+                        }`}
+                      >
+                        <p className="text-sm sm:text-base leading-relaxed text-foreground/55">
+                          {feature.description}
+                        </p>
+                      </div>
+                    </div>
                   </div>
-                </div>
 
-                {feature.active && (
-                  <div className="absolute bottom-0 left-0 h-[3px] w-full bg-black/5">
-                    <div className="h-full bg-black w-[80%]" />
+                  {/* Track */}
+                  <div className="absolute bottom-0 left-0 h-[2px] w-full bg-foreground/[0.06]">
+                    <ProgressBar active={isActive} paused={paused} />
                   </div>
-                )}
-              </article>
-            </div>
-          ))}
+                </article>
+              </button>
+            );
+          })}
         </div>
 
-        {/* RIGHT IMAGE */}
+        {/* Image panel */}
         <div className="relative border border-border p-1">
           <div className="relative min-h-[380px] sm:min-h-[480px] overflow-hidden">
-
             <img
               src="https://dummyimage.com/1200x900/999999/000000"
               alt=""
               className="absolute inset-0 h-full w-full object-cover"
             />
-
-            <div className="absolute border border-black/20 bg-black left-4 top-4 right-0 bottom-4 sm:left-6 sm:top-6 sm:bottom-6 lg:left-8 lg:top-8 lg:bottom-8">
+            <div className="absolute border border-foreground/20 bg-foreground/90 left-4 top-4 right-0 bottom-4 sm:left-6 sm:top-6 sm:bottom-6 lg:left-8 lg:top-8 lg:bottom-8">
               <img
                 src="https://dummyimage.com/1200x800/111111/ffffff"
                 alt=""
@@ -139,7 +217,6 @@ const Features = () => {
             </div>
           </div>
         </div>
-
       </div>
     </div>
   );
