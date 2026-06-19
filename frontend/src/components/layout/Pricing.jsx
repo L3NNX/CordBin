@@ -5,37 +5,38 @@ const plans = [
   {
     name: "Starter",
     price: 0,
-    desc: "Perfect for casual storage.",
+    desc: "For individuals testing encrypted object storage.",
     features: [
-      "10GB Encrypted Storage",
-      "Basic Share Links",
-      "Mobile Access",
-      "Standard Support",
+      "10GB Encrypted Volume",
+      "AES-256-GCM Encryption",
+      "Resumable Chunked Uploads",
+      "Token-Based Sharing",
+      "Basic Rate-Limit Handling",
     ],
   },
   {
     name: "Pro",
     price: 12,
-    desc: "The professional's choice.",
+    desc: "For professionals requiring higher throughput and volume.",
     features: [
-      "1TB Fast Storage",
-      "Semantic AI Search",
-      "Password Protection",
-      "Priority Syncing",
-      "Version History",
+      "1TB Encrypted Volume",
+      "Advanced Rate-Limit Orchestration",
+      "Multi-Channel Distribution",
+      "Streaming Decryption",
+      "Priority Transfer Handling",
     ],
     popular: true,
   },
   {
-    name: "Team",
+    name: "Infrastructure",
     price: 49,
-    desc: "Built for scaling teams.",
+    desc: "For teams building on distributed Discord-backed storage.",
     features: [
-      "Unlimited Storage",
-      "Custom Domain Links",
-      "SSO/SAML Login",
-      "Admin Dashboard",
-      "Audit Logs",
+      "Unlimited Encrypted Volume*",
+      "Dedicated Channel Pool",
+      "Extended Rate-Limit Protection",
+      "Access Token Controls",
+      "Audit Logs & Activity Tracking",
     ],
   },
 ];
@@ -67,9 +68,9 @@ const Pricing = () => {
 
         {/* Heading */}
         <h2 className="max-w-[740px] text-[2.4rem] sm:text-[3rem] lg:text-[3.6rem] leading-[0.95] tracking-[-0.04em] text-black/90">
-          Simple licensing for
+          Capacity tiers for 
           <br className="hidden sm:block" />
-          production teams
+          encrypted object storage 
         </h2>
 
         {/* Billing Toggle */}
@@ -103,10 +104,10 @@ const Pricing = () => {
 
               {/* Card corner brackets */}
               <span className="pointer-events-none absolute inset-0 z-10">
-                <span className="absolute left-0 top-0 h-3.5 w-3.5 border-l border-t border-black/30" />
-                <span className="absolute right-0 top-0 h-3.5 w-3.5 border-r border-t border-black/30" />
-                <span className="absolute bottom-0 left-0 h-3.5 w-3.5 border-b border-l border-black/30" />
-                <span className="absolute bottom-0 right-0 h-3.5 w-3.5 border-b border-r border-black/30" />
+                <span className="absolute left-0 top-0 h-3.5 w-3.5 border-l border-t !border-black/50" />
+                <span className="absolute right-0 top-0 h-3.5 w-3.5 border-r border-t !border-black/50" />
+                <span className="absolute bottom-0 left-0 h-3.5 w-3.5 border-b border-l !border-black/50" />
+                <span className="absolute bottom-0 right-0 h-3.5 w-3.5 border-b border-r !border-black/50" />
               </span>
 
               <div className="flex items-start justify-between gap-3">
@@ -116,7 +117,7 @@ const Pricing = () => {
 
                 {plan.popular && (
                   <span className="border border-black/12 bg-[#efefee] px-2.5 py-1 font-mono text-xs text-black/80">
-                    Popular
+                    Recommended
                   </span>
                 )}
               </div>
@@ -144,17 +145,17 @@ const Pricing = () => {
                 Get Started
 
                 <span className="pointer-events-none absolute inset-0">
-                  <span className="absolute left-0 top-0 h-2.5 w-2.5 border-l border-t border-black/20" />
-                  <span className="absolute right-0 top-0 h-2.5 w-2.5 border-r border-t border-black/20" />
-                  <span className="absolute bottom-0 left-0 h-2.5 w-2.5 border-b border-l border-black/20" />
-                  <span className="absolute bottom-0 right-0 h-2.5 w-2.5 border-b border-r border-black/20" />
+                  <span className="absolute left-0 top-0 h-2.5 w-2.5 border-l border-t !border-black/30" />
+                  <span className="absolute right-0 top-0 h-2.5 w-2.5 border-r border-t !border-black/30" />
+                  <span className="absolute bottom-0 left-0 h-2.5 w-2.5 border-b border-l !border-black/30" />
+                  <span className="absolute bottom-0 right-0 h-2.5 w-2.5 border-b border-r !border-black/30" />
                 </span>
               </button>
 
               <div className="mt-6 flex items-center gap-4">
                 <span className="h-px flex-1 bg-black/10"></span>
                 <span className="font-mono text-xs text-black/40">
-                  What you get
+                 Included capabilities
                 </span>
                 <span className="h-px flex-1 bg-black/10"></span>
               </div>
