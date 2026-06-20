@@ -3,43 +3,41 @@ import React from "react";
 
 const footerLinks = [
   {
-    title: "Product",
-    links: [
-      { label: "Features", href: "#features" },
-      { label: "How it works", href: "#how-it-works" },
-      { label: "Pricing", href: "#pricing" },
-      { label: "FAQs", href: "#faqs" },
-    ],
+     title: "Product",
+  links: [
+    { label: "Architecture", href: "#features" },
+    { label: "Storage Model", href: "#how-it-works" },
+    { label: "Capacity Tiers", href: "#pricing" },
+    { label: "Security", href: "#faqs" },
+  ],
   },
+ {
+  title: "Developers",
+  links: [
+    { label: "Documentation", href: "#" },
+    { label: "REST API", href: "#" },
+    { label: "Rate Limit Model", href: "#" },
+    { label: "Channel Pooling", href: "#" },
+    { label: "System Status", href: "#" },
+  ],
+},
   {
-    title: "Developers",
-    links: [
-      { label: "Documentation", href: "#" },
-      { label: "API Reference", href: "#" },
-      { label: "CLI Guide", href: "#" },
-      { label: "Integrations", href: "#" },
-      { label: "Status", href: "#" },
-    ],
-  },
-  {
-    title: "Company",
-    links: [
-      { label: "About", href: "#" },
-      { label: "Blog", href: "#" },
-      { label: "Careers", href: "#" },
-      { label: "Contact", href: "/contact" },
-      { label: "Press", href: "#" },
-    ],
-  },
-  {
-    title: "Legal",
-    links: [
-      { label: "Privacy Policy", href: "#" },
-      { label: "Terms of Service", href: "#" },
-      { label: "Cookie Policy", href: "#" },
-      { label: "Security", href: "#" },
-    ],
-  },
+  title: "Company",
+  links: [
+    { label: "About CordBin", href: "#" },
+    { label: "Architecture Notes", href: "#" },
+    { label: "Changelog", href: "#" },
+    { label: "Contact", href: "/contact" },
+  ],
+},
+{
+  title: "Legal",
+  links: [
+    { label: "Privacy Policy", href: "#" },
+    { label: "Terms of Service", href: "#" },
+    { label: "Security Practices", href: "#" },
+  ],
+},
 ];
 
 const socialLinks = [
