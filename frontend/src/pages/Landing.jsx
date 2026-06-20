@@ -6,6 +6,7 @@ import Pricing from "../components/layout/Pricing";
 import FAQ from "../components/layout/FAQ";
 import Footer from "../components/layout/Footer";
 import Testimonials from "../components/layout/Testimonials";
+import HowItWorks from "../components/layout/HowItWorks";
 
 const Landing = () => {
   return (
@@ -30,7 +31,15 @@ const Landing = () => {
           </div>
         </section>
 
-        {/* PRICING */}
+                {/* FEATURES */}
+        <section className="w-full px-3 sm:px-6 lg:px-8">
+          <div className="h-10 mx-auto max-w-[1720px] border border-y border-border bg-[repeating-linear-gradient(45deg,rgba(0,0,0,0.03)_0_2px,transparent_2px_10px)]" />
+          <div className="mx-auto max-w-[1720px] border-x border-border">
+            <HowItWorks />
+          </div>
+        </section>
+
+        {/* Testimonials */}
         <section className="w-full px-3 sm:px-6 lg:px-8">
           <div className="h-10 mx-auto max-w-[1720px] border border-y border-border bg-[repeating-linear-gradient(45deg,rgba(0,0,0,0.03)_0_2px,transparent_2px_10px)]" />
           <div className="mx-auto max-w-[1720px] border-x border-border">
