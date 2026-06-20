@@ -5,34 +5,34 @@ import { cn } from "../../lib/utils";
 
 const faqs = [
   {
-    question: "How secure is my data?",
+    question: "How is my data secured?",
     answer:
-      "We use bank-level 256-bit encryption for all files. Your data is encrypted both in transit and at rest. We never access your files without your permission.",
+      "All objects are encrypted client-side using AES-256-GCM before being uploaded. Discord only stores encrypted chunks. Decryption occurs only during authorized retrieval.",
   },
   {
-    question: "Can I upgrade or downgrade my plan anytime?",
+    question: "Where are my files actually stored?",
     answer:
-      "Yes! You can change your plan at any time. If you upgrade, you'll be charged the prorated difference. If you downgrade, the credit will be applied to your next billing cycle.",
+      "Objects are distributed across private Discord channels. Metadata is stored separately in MongoDB, allowing secure reassembly without exposing raw storage structure.",
   },
   {
-    question: "What file types are supported?",
+    question: "How do you handle Discord rate limits?",
     answer:
-      "We support all file types including documents, images, videos, audio files, archives, and more. There are no restrictions on file types.",
+      "CordBin tracks global and per-route rate limits in real time, distributing uploads across multiple channels and automatically retrying when necessary to prevent API bans.",
   },
   {
     question: "Is there a file size limit?",
     answer:
-      "Free users can upload files up to 2GB each. Pro and Enterprise users have no file size limits.",
+      "Files are split into encrypted chunks to comply with Discord limits. There is no hard object size restriction, but practical limits depend on your storage tier and channel pool configuration.",
   },
   {
-    question: "Can I share files with people who don't have an account?",
+    question: "How does sharing work?",
     answer:
-      "Absolutely! You can generate secure sharing links that anyone can access, regardless of whether they have an account.",
+      "Access tokens are generated per object. Tokens can be time-limited and revoked at any time. Shared users never see internal Discord URLs or chunk metadata.",
   },
   {
-    question: "Do you offer refunds?",
+    question: "Can uploads resume if interrupted?",
     answer:
-      "Yes, we offer a 30-day money-back guarantee for all paid plans. If you're not satisfied, we'll refund your payment in full.",
+      "Yes. Upload progress is tracked per chunk. If a transfer is interrupted, only remaining encrypted chunks are uploaded.",
   },
 ];
 
