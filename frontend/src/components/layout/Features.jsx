@@ -1,7 +1,8 @@
 import React, { useState, useEffect, useRef, useCallback } from "react";
 import { ShieldCheck, Code, Activity, SquareCheckBig } from "lucide-react";
 import { Button } from "../ui/button";
-
+import ArchitectureDiagram from "./ArchitectureDiagram";
+import feature from "../../assets/feature.png";
 const featureList = [
   {
     icon: ShieldCheck,
@@ -117,7 +118,7 @@ const Features = () => {
             <span>Features</span>
           </div>
           <h2 className="max-w-[700px] text-[2.4rem] sm:text-[2.8rem] lg:text-[3.3rem] leading-[0.95] tracking-[-0.04em] font-normal">
-          Built for resilient
+            Built for resilient
             <br className="hidden sm:block" />
             object distribution
           </h2>
@@ -150,9 +151,8 @@ const Features = () => {
                 className="flex-1 text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
               >
                 <article
-                  className={`relative h-full overflow-hidden border bg-card px-6 py-7 sm:px-8 transition-colors duration-200 ${
-                    isActive ? "border-foreground/20" : "border-border hover:border-foreground/15"
-                  }`}
+                  className={`relative h-full overflow-hidden border bg-card px-6 py-7 sm:px-8 transition-colors duration-200 ${isActive ? "border-foreground/20" : "border-border hover:border-foreground/15"
+                    }`}
                 >
                   {/* Corner marks */}
                   <span className="pointer-events-none absolute inset-0 z-10">
@@ -164,23 +164,20 @@ const Features = () => {
 
                   <div className="flex items-start gap-4">
                     <Icon
-                      className={`mt-1 size-5 shrink-0 transition-colors duration-200 ${
-                        isActive ? "text-foreground/70" : "text-foreground/30"
-                      }`}
+                      className={`mt-1 size-5 shrink-0 transition-colors duration-200 ${isActive ? "text-foreground/70" : "text-foreground/30"
+                        }`}
                     />
                     <div className="flex-1">
                       <h3
-                        className={`text-base sm:text-lg font-medium leading-snug transition-colors duration-200 ${
-                          isActive ? "text-foreground" : "text-foreground/40"
-                        }`}
+                        className={`text-base sm:text-lg font-medium leading-snug transition-colors duration-200 ${isActive ? "text-foreground" : "text-foreground/40"
+                          }`}
                       >
                         {feature.title}
                       </h3>
 
                       <div
-                        className={`overflow-hidden transition-all duration-300 ease-out ${
-                          isActive ? "max-h-24 opacity-100 mt-2" : "max-h-0 opacity-0"
-                        }`}
+                        className={`overflow-hidden transition-all duration-300 ease-out ${isActive ? "max-h-24 opacity-100 mt-2" : "max-h-0 opacity-0"
+                          }`}
                       >
                         <p className="text-sm sm:text-base leading-relaxed text-foreground/55">
                           {feature.description}
@@ -200,21 +197,13 @@ const Features = () => {
         </div>
 
         {/* Image panel */}
-        <div className="relative border border-border p-1">
-          <div className="relative min-h-[380px] sm:min-h-[480px] overflow-hidden">
-            <img
-              src="https://dummyimage.com/1200x900/999999/000000"
-              alt=""
-              className="absolute inset-0 h-full w-full object-cover"
-            />
-            <div className="absolute border border-foreground/20 bg-foreground/90 left-4 top-4 right-0 bottom-4 sm:left-6 sm:top-6 sm:bottom-6 lg:left-8 lg:top-8 lg:bottom-8">
-              <img
-                src="https://dummyimage.com/1200x800/111111/ffffff"
-                alt=""
-                className="h-full w-full object-cover"
-              />
-            </div>
-          </div>
+        <div className="relative border border-border p-4">
+           <img
+                        src={feature}
+                        alt="Encrypted Storage Console Preview"
+                        className="h-full w-full object-contain"
+                        draggable={false}
+                      />
         </div>
       </div>
     </div>
