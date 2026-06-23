@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef, useCallback } from "react";
 import { ShieldCheck, Code, Activity, SquareCheckBig } from "lucide-react";
 import { Button } from "../ui/button";
-import ArchitectureDiagram from "./ArchitectureDiagram";
+
 import feature from "../../assets/feature.png";
 const featureList = [
   {
