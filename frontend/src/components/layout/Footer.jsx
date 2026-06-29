@@ -3,41 +3,36 @@ import React from "react";
 
 const footerLinks = [
   {
-     title: "Product",
-  links: [
-    { label: "Architecture", href: "#features" },
-    { label: "Storage Model", href: "#how-it-works" },
-    { label: "Capacity Tiers", href: "#pricing" },
-    { label: "Security", href: "#faqs" },
-  ],
+    title: "Product",
+    links: [
+      { label: "Architecture", href: "/architecture" },
+      { label: "Security", href: "/security" },
+      { label: "Capacity Tiers", href: "/pricing" },
+      { label: "System Status", href: "/status" },
+    ],
   },
- {
-  title: "Developers",
-  links: [
-    { label: "Documentation", href: "#" },
-    { label: "REST API", href: "#" },
-    { label: "Rate Limit Model", href: "#" },
-    { label: "Channel Pooling", href: "#" },
-    { label: "System Status", href: "#" },
-  ],
-},
   {
-  title: "Company",
-  links: [
-    { label: "About CordBin", href: "#" },
-    { label: "Architecture Notes", href: "#" },
-    { label: "Changelog", href: "#" },
-    { label: "Contact", href: "/contact" },
-  ],
-},
-{
-  title: "Legal",
-  links: [
-    { label: "Privacy Policy", href: "#" },
-    { label: "Terms of Service", href: "#" },
-    { label: "Security Practices", href: "#" },
-  ],
-},
+    title: "Developers",
+    links: [
+      { label: "Documentation", href: "/docs" },
+      { label: "REST API", href: "/docs" },
+      { label: "Changelog", href: "/changelog" },
+    ],
+  },
+  {
+    title: "Company",
+    links: [
+      { label: "About", href: "/about" },
+      { label: "Contact", href: "/contact" },
+    ],
+  },
+  {
+    title: "Legal",
+    links: [
+      { label: "Privacy Policy", href: "/privacy" },
+      { label: "Terms of Service", href: "/terms" },
+    ],
+  },
 ];
 
 const socialLinks = [
@@ -147,10 +142,10 @@ const Footer = () => {
               </p>
 
               <div className="flex items-center gap-6">
-                <a className="font-mono text-xs text-black/40 transition-colors hover:text-black/70" href="#">
+                <a className="font-mono text-xs text-black/40 transition-colors hover:text-black/70" href="/privacy">
                   Privacy
                 </a>
-                <a className="font-mono text-xs text-black/40 transition-colors hover:text-black/70" href="#">
+                <a className="font-mono text-xs text-black/40 transition-colors hover:text-black/70" href="/terms">
                   Terms
                 </a>
                 <a className="font-mono text-xs text-black/40 transition-colors hover:text-black/70" href="#">
